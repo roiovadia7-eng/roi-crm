@@ -1,1 +1,5 @@
+[phases.build]
+cmds = []
 
+[start]
+cmd = "python3 -m http.server $PORT"
