@@ -5,182 +5,190 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROI CRM</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-:root {
-  --bg:#f0f2f5; --sidebar:#1a1f2e; --sidebar2:#252b3b; --accent:#4f6ef7;
-  --accent2:#6c8aff; --white:#fff; --border:#e2e8f0; --text:#1e293b;
-  --text2:#64748b; --success:#10b981; --warn:#f59e0b; --danger:#ef4444;
-  --card:#ffffff; --hover:#f8fafc;
-}
-body { font-family:'Segoe UI',Arial,sans-serif; background:var(--bg); color:var(--text); display:flex; height:100vh; overflow:hidden; }
-
-.sidebar { width:220px; background:var(--sidebar); display:flex; flex-direction:column; flex-shrink:0; }
-.logo { padding:20px 16px; border-bottom:1px solid #2d3548; }
-.logo-title { font-size:22px; font-weight:800; color:#fff; }
-.logo-sub { font-size:11px; color:#8892b0; }
-.nav { flex:1; padding:8px 0; overflow-y:auto; }
-.nav-section { padding:8px 16px 4px; font-size:10px; color:#4a5568; text-transform:uppercase; letter-spacing:1px; }
-.nav-item { display:flex; align-items:center; gap:10px; padding:10px 16px; cursor:pointer; color:#a0aec0; font-size:13.5px; transition:all .15s; border-right:3px solid transparent; }
-.nav-item:hover { background:var(--sidebar2); color:#fff; }
-.nav-item.active { background:var(--sidebar2); color:#fff; border-right-color:var(--accent); }
-.nav-item .icon { font-size:16px; width:20px; text-align:center; }
-.nav-badge { margin-right:auto; background:var(--accent); color:#fff; font-size:10px; padding:1px 6px; border-radius:10px; }
-.user-bar { padding:12px 16px; border-top:1px solid #2d3548; display:flex; align-items:center; gap:10px; }
-.user-avatar { width:34px; height:34px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:14px; flex-shrink:0; }
-.user-name { font-size:13px; color:#e2e8f0; font-weight:600; }
-.user-role { font-size:11px; color:#718096; }
-.main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-.topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0 24px; height:56px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-.page-title { font-size:18px; font-weight:700; color:var(--text); }
-.topbar-actions { display:flex; gap:10px; align-items:center; }
-.btn { padding:8px 16px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; transition:all .15s; }
-.btn-primary { background:var(--accent); color:#fff; }
-.btn-primary:hover { background:var(--accent2); }
-.btn-secondary { background:var(--hover); color:var(--text2); border:1px solid var(--border); }
-.btn-secondary:hover { background:var(--border); }
-.btn-sm { padding:5px 10px; font-size:12px; }
-.btn-danger { background:#fef2f2; color:var(--danger); border:1px solid #fecaca; }
-.btn-success { background:#f0fdf4; color:var(--success); border:1px solid #bbf7d0; }
-.btn-icon { padding:6px 8px; }
-.content { flex:1; overflow-y:auto; padding:24px; }
-.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
-.stat-card { background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--border); }
-.stat-label { font-size:12px; color:var(--text2); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
-.stat-value { font-size:28px; font-weight:800; color:var(--text); }
-.stat-value.accent { color:var(--accent); }
-.stat-value.success { color:var(--success); }
-.stat-value.warn { color:var(--warn); }
-.stat-value.danger { color:var(--danger); }
-.stat-sub { font-size:11px; color:var(--text2); margin-top:4px; }
-.dash-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.dash-card { background:var(--card); border-radius:12px; border:1px solid var(--border); padding:20px; }
-.dash-card-title { font-size:14px; font-weight:700; margin-bottom:16px; color:var(--text); }
-.status-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--hover); }
-.status-row:last-child { border:none; }
-.status-label { font-size:13px; color:var(--text2); display:flex; align-items:center; gap:8px; }
-.status-count { font-size:14px; font-weight:700; color:var(--accent); }
-.table-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
-.search-box { display:flex; align-items:center; gap:8px; background:var(--white); border:1px solid var(--border); border-radius:8px; padding:8px 12px; min-width:220px; }
-.search-box input { border:none; outline:none; font-size:13px; background:transparent; width:100%; }
-.table-wrap { background:var(--card); border-radius:12px; border:1px solid var(--border); overflow:hidden; }
-table { width:100%; border-collapse:collapse; }
-thead th { background:var(--hover); padding:12px 16px; font-size:12px; font-weight:600; color:var(--text2); text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
-tbody tr { cursor:pointer; transition:background .1s; }
-tbody tr:hover { background:var(--hover); }
-tbody td { padding:12px 16px; font-size:13px; border-bottom:1px solid var(--hover); }
-tbody tr:last-child td { border:none; }
-.badge { display:inline-flex; align-items:center; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:600; }
-.badge-blue { background:#eff6ff; color:#3b82f6; }
-.badge-green { background:#f0fdf4; color:var(--success); }
-.badge-yellow { background:#fffbeb; color:var(--warn); }
-.badge-red { background:#fef2f2; color:var(--danger); }
-.badge-gray { background:var(--hover); color:var(--text2); }
-.record-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:100; display:none; align-items:stretch; }
-.record-overlay.open { display:flex; }
-.record-panel { background:var(--bg); width:100%; max-width:1200px; margin:0 auto; display:flex; flex-direction:column; height:100vh; }
-.record-topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0 24px; height:56px; display:flex; align-items:center; gap:12px; flex-shrink:0; }
-.record-back { cursor:pointer; color:var(--text2); font-size:20px; padding:4px; border-radius:6px; }
-.record-back:hover { background:var(--hover); color:var(--text); }
-.record-title-bar { flex:1; }
-.record-name { font-size:18px; font-weight:700; }
-.record-type { font-size:12px; color:var(--text2); }
-.record-body { flex:1; display:grid; grid-template-columns:1fr 380px; overflow:hidden; }
-.record-fields { padding:24px; overflow-y:auto; border-left:1px solid var(--border); }
-.record-notes-col { padding:24px; overflow-y:auto; background:var(--white); }
-.field-section { margin-bottom:24px; }
-.field-section-title { font-size:13px; font-weight:700; color:var(--text2); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
-.field-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.field-item { display:flex; flex-direction:column; gap:4px; }
-.field-label { font-size:11px; color:var(--text2); font-weight:600; }
-.field-value { font-size:13.5px; color:var(--text); padding:8px 10px; background:var(--hover); border-radius:6px; border:1px solid var(--border); min-height:34px; cursor:pointer; }
-.field-value:hover { border-color:var(--accent); }
-.field-value.editable:focus { outline:none; border-color:var(--accent); background:#fff; }
-.field-value.full { grid-column:1/-1; }
-.related-section { background:var(--hover); border-radius:10px; padding:16px; margin-bottom:16px; }
-.related-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-.related-title { font-size:13px; font-weight:700; color:var(--text); }
-.related-count { background:var(--accent); color:#fff; font-size:10px; padding:1px 7px; border-radius:10px; }
-.related-list { display:flex; flex-direction:column; gap:8px; }
-.related-item { background:var(--white); border-radius:8px; padding:10px 14px; cursor:pointer; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-.related-item:hover { border-color:var(--accent); }
-.related-item-name { font-size:13px; font-weight:600; }
-.related-item-sub { font-size:11px; color:var(--text2); }
-.related-empty { font-size:12px; color:var(--text2); text-align:center; padding:12px; }
-.notes-header { font-size:14px; font-weight:700; margin-bottom:16px; }
-.add-note-box { background:var(--hover); border-radius:10px; padding:12px; margin-bottom:16px; border:1px solid var(--border); }
-.add-note-box textarea { width:100%; border:none; background:transparent; font-size:13px; resize:none; outline:none; min-height:70px; font-family:inherit; color:var(--text); }
-.add-note-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:8px; }
-.note-item { background:var(--hover); border-radius:10px; padding:14px; margin-bottom:10px; border-right:3px solid var(--accent); }
-.note-text { font-size:13px; color:var(--text); line-height:1.6; }
-.note-meta { font-size:11px; color:var(--text2); margin-top:6px; display:flex; gap:10px; }
-.note-delete { cursor:pointer; color:var(--danger); }
-.add-task-section { background:#f0f4ff; border-radius:10px; padding:14px; margin-bottom:16px; border:1px solid #c7d2fe; }
-.add-task-title { font-size:12px; font-weight:700; color:var(--accent); margin-bottom:10px; }
-.task-fields { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
-.task-field-full { grid-column:1/-1; }
-.task-input { width:100%; padding:7px 10px; border:1px solid var(--border); border-radius:6px; font-size:12px; font-family:inherit; background:#fff; }
-.task-item { background:#fff; border-radius:8px; padding:10px 14px; margin-bottom:8px; border:1px solid var(--border); display:flex; align-items:flex-start; gap:10px; }
-.task-check { width:16px; height:16px; cursor:pointer; margin-top:2px; flex-shrink:0; }
-.task-info { flex:1; }
-.task-name { font-size:13px; font-weight:600; }
-.task-name.done { text-decoration:line-through; color:var(--text2); }
-.task-meta { font-size:11px; color:var(--text2); margin-top:3px; display:flex; gap:10px; flex-wrap:wrap; }
-.files-section { margin-top:8px; }
-.file-drop { border:2px dashed var(--border); border-radius:10px; padding:20px; text-align:center; cursor:pointer; }
-.file-drop:hover { border-color:var(--accent); background:#f0f4ff; }
-.file-drop-text { font-size:12px; color:var(--text2); }
-.file-list { margin-top:10px; display:flex; flex-direction:column; gap:6px; }
-.file-item { display:flex; align-items:center; gap:10px; background:var(--hover); border-radius:8px; padding:8px 12px; border:1px solid var(--border); }
-.file-icon { font-size:18px; }
-.file-name { font-size:12px; font-weight:600; flex:1; }
-.file-size { font-size:11px; color:var(--text2); }
-.file-del { cursor:pointer; color:var(--danger); }
-.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; display:none; align-items:center; justify-content:center; }
-.modal-overlay.open { display:flex; }
-.modal { background:var(--white); border-radius:16px; padding:28px; width:500px; max-width:95vw; max-height:90vh; overflow-y:auto; }
-.modal h3 { font-size:18px; font-weight:700; margin-bottom:20px; }
-.form-group { margin-bottom:14px; }
-.form-label { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:5px; display:block; }
-.form-control { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; background:#fff; outline:none; }
-.form-control:focus { border-color:var(--accent); }
-.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
-.toast { position:fixed; bottom:24px; left:24px; background:#1e293b; color:#fff; padding:12px 20px; border-radius:10px; font-size:13px; z-index:999; transform:translateY(100px); transition:transform .3s; display:flex; align-items:center; gap:10px; }
-.toast.show { transform:translateY(0); }
-.login-wrap { width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#1a1f2e 0%,#252b3b 100%); }
-.login-card { background:#fff; border-radius:20px; padding:40px; width:380px; }
-.login-logo { text-align:center; margin-bottom:30px; }
-.login-logo-text { font-size:36px; font-weight:900; color:var(--accent); }
-.login-logo-sub { font-size:13px; color:var(--text2); }
-.login-title { font-size:22px; font-weight:700; margin-bottom:6px; }
-.login-sub { font-size:13px; color:var(--text2); margin-bottom:24px; }
-.login-error { background:#fef2f2; color:var(--danger); padding:10px 14px; border-radius:8px; font-size:13px; margin-bottom:16px; display:none; }
-.empty-state { text-align:center; padding:60px 20px; color:var(--text2); }
-.empty-state .es-icon { font-size:48px; margin-bottom:16px; }
-.empty-state .es-title { font-size:16px; font-weight:700; color:var(--text); margin-bottom:6px; }
-.empty-state .es-sub { font-size:13px; }
-::-webkit-scrollbar { width:6px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:3px; }
-@media (max-width:900px) { .record-body { grid-template-columns:1fr; } .stats-grid { grid-template-columns:1fr 1fr; } }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f0f2f5;--sidebar:#1a1f2e;--sidebar2:#252b3b;--accent:#4f6ef7;--accent2:#6c8aff;--white:#fff;--border:#e2e8f0;--text:#1e293b;--text2:#64748b;--success:#10b981;--warn:#f59e0b;--danger:#ef4444;--card:#fff;--hover:#f8fafc}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
+.sidebar{width:220px;background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0}
+.logo{padding:20px 16px;border-bottom:1px solid #2d3548}
+.logo-title{font-size:22px;font-weight:800;color:#fff}
+.logo-sub{font-size:11px;color:#8892b0}
+.nav{flex:1;padding:8px 0;overflow-y:auto}
+.nav-section{padding:8px 16px 4px;font-size:10px;color:#4a5568;text-transform:uppercase;letter-spacing:1px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:#a0aec0;font-size:13.5px;transition:all .15s;border-right:3px solid transparent}
+.nav-item:hover{background:var(--sidebar2);color:#fff}
+.nav-item.active{background:var(--sidebar2);color:#fff;border-right-color:var(--accent)}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.nav-badge{margin-right:auto;background:var(--accent);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px}
+.user-bar{padding:12px 16px;border-top:1px solid #2d3548;display:flex;align-items:center;gap:10px}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+.user-name{font-size:13px;color:#e2e8f0;font-weight:600}
+.user-role{font-size:11px;color:#718096}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.page-title{font-size:18px;font-weight:700}
+.topbar-actions{display:flex;gap:10px;align-items:center}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{background:var(--hover);color:var(--text2);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-danger{background:#fef2f2;color:var(--danger);border:1px solid #fecaca}
+.btn-success{background:#f0fdf4;color:var(--success);border:1px solid #bbf7d0}
+.btn-icon{padding:6px 8px}
+.content{flex:1;overflow-y:auto;padding:24px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--card);border-radius:12px;padding:20px;border:1px solid var(--border)}
+.stat-label{font-size:12px;color:var(--text2);margin-bottom:4px}
+.stat-value{font-size:28px;font-weight:800}
+.stat-value.accent{color:var(--accent)}
+.stat-value.success{color:var(--success)}
+.stat-value.warn{color:var(--warn)}
+.stat-value.danger{color:var(--danger)}
+.stat-sub{font-size:11px;color:var(--text2);margin-top:4px}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dash-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:20px}
+.dash-card-title{font-size:14px;font-weight:700;margin-bottom:16px}
+.status-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--hover)}
+.status-row:last-child{border:none}
+.status-label{font-size:13px;color:var(--text2)}
+.status-count{font-size:14px;font-weight:700;color:var(--accent)}
+.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px;min-width:220px}
+.search-box input{border:none;outline:none;font-size:13px;background:transparent;width:100%}
+.table-wrap{background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--hover);padding:12px 16px;font-size:12px;font-weight:600;color:var(--text2);text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr{cursor:pointer;transition:background .1s}
+tbody tr:hover{background:var(--hover)}
+tbody td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--hover)}
+tbody tr:last-child td{border:none}
+.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-blue{background:#eff6ff;color:#3b82f6}
+.badge-green{background:#f0fdf4;color:var(--success)}
+.badge-yellow{background:#fffbeb;color:var(--warn)}
+.badge-red{background:#fef2f2;color:var(--danger)}
+.badge-gray{background:var(--hover);color:var(--text2)}
+.record-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:stretch}
+.record-overlay.open{display:flex}
+.record-panel{background:var(--bg);width:100%;max-width:1300px;margin:0 auto;display:flex;flex-direction:column;height:100vh}
+.record-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.record-back{cursor:pointer;color:var(--text2);font-size:13px;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--hover);font-weight:600}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px}
+.breadcrumb-item{cursor:pointer;color:var(--accent);font-weight:600}
+.breadcrumb-item:hover{text-decoration:underline}
+.breadcrumb-sep{color:var(--text2)}
+.record-title-bar{flex:1}
+.record-name{font-size:17px;font-weight:700}
+.record-type-badge{font-size:11px;color:var(--text2);background:var(--hover);padding:2px 8px;border-radius:10px;display:inline-block;margin-right:6px}
+.record-body{flex:1;display:grid;grid-template-columns:320px 1fr;overflow:hidden;direction:rtl}
+.record-right{padding:20px;overflow-y:auto;background:var(--white);border-left:1px solid var(--border)}
+.record-left{padding:20px;overflow-y:auto;background:var(--bg);direction:ltr}
+.meta-box{background:var(--hover);border-radius:10px;padding:14px;margin-bottom:16px;border:1px solid var(--border)}
+.meta-box-title{font-size:10px;font-weight:700;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;direction:rtl}
+.meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;font-size:12px;direction:rtl}
+.meta-row:last-child{margin-bottom:0}
+.meta-label{color:var(--text2)}
+.meta-value{font-weight:600;color:var(--text)}
+.creator-badge{display:inline-flex;align-items:center;gap:5px}
+.creator-avatar{width:18px;height:18px;border-radius:50%;color:#fff;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.field-section{margin-bottom:16px;direction:rtl}
+.field-section-title{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.5px}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-item{display:flex;flex-direction:column;gap:3px}
+.field-item.full{grid-column:1/-1}
+.field-label{font-size:10px;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.field-value{font-size:13px;color:var(--text);padding:7px 10px;background:var(--hover);border-radius:6px;border:1px solid var(--border);min-height:32px;cursor:text}
+.field-value:hover{border-color:var(--accent)}
+.field-value.editable:focus{outline:none;border-color:var(--accent);background:#fff}
+input.field-value{font-family:inherit;width:100%;cursor:pointer}
+.left-section{background:var(--white);border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid var(--border);direction:rtl}
+.left-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.left-section-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.left-section-count{background:var(--accent);color:#fff;font-size:10px;padding:1px 7px;border-radius:10px}
+.add-note-box{background:var(--hover);border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid var(--border)}
+.add-note-box textarea{width:100%;border:none;background:transparent;font-size:13px;resize:none;outline:none;min-height:60px;font-family:inherit;color:var(--text);direction:rtl}
+.add-note-actions{display:flex;gap:8px;justify-content:flex-start;margin-top:8px}
+.note-item{background:var(--hover);border-radius:8px;padding:12px;margin-bottom:8px;border-right:3px solid var(--accent)}
+.note-text{font-size:13px;line-height:1.6;direction:rtl;white-space:pre-wrap}
+.note-meta{font-size:11px;color:var(--text2);margin-top:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.note-del{cursor:pointer;color:var(--danger);margin-right:auto}
+.add-task-box{background:#f0f4ff;border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid #c7d2fe}
+.add-task-label{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.task-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.task-full{grid-column:1/-1}
+.tinput{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;direction:rtl}
+.task-item{background:var(--white);border-radius:8px;padding:10px 14px;margin-bottom:8px;border:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+.task-check{width:16px;height:16px;cursor:pointer;margin-top:2px;flex-shrink:0;accent-color:var(--accent)}
+.task-info{flex:1;direction:rtl}
+.task-name{font-size:13px;font-weight:600}
+.task-name.done{text-decoration:line-through;color:var(--text2)}
+.task-meta-row{font-size:11px;color:var(--text2);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.task-del{cursor:pointer;color:var(--danger);font-size:13px;flex-shrink:0;margin-top:2px}
+.related-item{display:flex;align-items:center;justify-content:space-between;background:var(--hover);border-radius:8px;padding:10px 14px;cursor:pointer;border:1px solid var(--border);margin-bottom:8px;transition:all .1s}
+.related-item:hover{border-color:var(--accent);background:#eef2ff;box-shadow:0 2px 8px rgba(79,110,247,.12)}
+.related-item-left{flex:1}
+.related-item-name{font-size:13px;font-weight:600}
+.related-item-sub{font-size:11px;color:var(--text2)}
+.related-arrow{color:var(--accent);font-size:18px;font-weight:700}
+.file-drop{border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer}
+.file-drop:hover{border-color:var(--accent);background:#f0f4ff}
+.file-drop-text{font-size:12px;color:var(--text2)}
+.file-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.file-item{display:flex;align-items:center;gap:10px;background:var(--hover);border-radius:8px;padding:8px 12px;border:1px solid var(--border)}
+.file-icon{font-size:18px}
+.file-name{font-size:12px;font-weight:600;flex:1}
+.file-size{font-size:11px;color:var(--text2)}
+.file-del{cursor:pointer;color:var(--danger)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:16px;padding:28px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:20px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}
+.form-control{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+.form-control:focus{border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.login-wrap{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f2e,#252b3b)}
+.login-card{background:#fff;border-radius:20px;padding:40px;width:380px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo-text{font-size:40px;font-weight:900;color:var(--accent)}
+.login-logo-sub{font-size:13px;color:var(--text2)}
+.login-title{font-size:22px;font-weight:700;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--text2);margin-bottom:24px}
+.login-error{background:#fef2f2;color:var(--danger);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none}
+.users-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.user-card{background:var(--card);border-radius:12px;padding:20px;border:1px solid var(--border);text-align:center}
+.user-card-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;margin:0 auto 12px}
+.user-card-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.user-card-role{font-size:12px;color:var(--text2);margin-bottom:14px}
+.perm-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:12px}
+.perm-yes{color:var(--success);font-weight:700}
+.perm-no{color:var(--danger)}
+.toast{position:fixed;bottom:24px;left:24px;background:#1e293b;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:999;transform:translateY(100px);transition:transform .3s;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast.show{transform:translateY(0)}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text2)}
+.es-icon{font-size:40px;margin-bottom:12px}
+.es-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.es-sub{font-size:12px}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
 </style>
 </head>
 <body>
-
-<!-- LOGIN -->
 <div id="loginPage" class="login-wrap">
   <div class="login-card">
     <div class="login-logo"><div class="login-logo-text">ROI</div><div class="login-logo-sub">מערכת CRM</div></div>
-    <div class="login-title">ברוך הבא 👋</div>
-    <div class="login-sub">התחבר כדי להמשיך</div>
+    <div class="login-title">ברוך הבא 👋</div><div class="login-sub">התחבר כדי להמשיך</div>
     <div class="login-error" id="loginError">שם משתמש או סיסמא שגויים</div>
     <div class="form-group"><label class="form-label">שם משתמש</label><input class="form-control" id="loginUser" type="text" placeholder="roi" dir="ltr"></div>
     <div class="form-group"><label class="form-label">סיסמא</label><input class="form-control" id="loginPass" type="password" placeholder="••••••••" dir="ltr"></div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;" onclick="doLogin()">התחבר</button>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" onclick="doLogin()">התחבר</button>
   </div>
 </div>
-
-<div id="app" style="display:none;width:100%;flex-direction:row;height:100vh;">
+<div id="app" style="display:none;width:100%;flex-direction:row;height:100vh">
 <div class="sidebar">
   <div class="logo"><div class="logo-title">ROI</div><div class="logo-sub">CRM מערכת</div></div>
   <nav class="nav">
@@ -195,9 +203,10 @@ tbody tr:last-child td { border:none; }
     <div class="nav-item" onclick="showPage('meetings')"><span class="icon">📅</span> פגישות<span class="nav-badge" id="badge-meetings">0</span></div>
     <div class="nav-item" onclick="showPage('tasks')"><span class="icon">✅</span> משימות<span class="nav-badge" id="badge-tasks">0</span></div>
     <div class="nav-section">מערכת</div>
+    <div class="nav-item" onclick="showPage('users')" id="usersNavItem" style="display:none"><span class="icon">👤</span> משתמשים</div>
     <div class="nav-item" onclick="showPage('settings')"><span class="icon">⚙️</span> הגדרות</div>
   </nav>
-  <div class="user-bar"><div class="user-avatar" id="userAvatar">ר</div><div><div class="user-name" id="userName">רועי עובדיה</div><div class="user-role">מנהל מערכת</div></div></div>
+  <div class="user-bar"><div class="user-avatar" id="userAvatar">ר</div><div><div class="user-name" id="userName">רועי עובדיה</div><div class="user-role" id="userRoleLabel">מנהל מערכת</div></div></div>
 </div>
 <div class="main">
   <div class="topbar">
@@ -211,21 +220,26 @@ tbody tr:last-child td { border:none; }
   <div class="content" id="mainContent"></div>
 </div>
 </div>
-
 <div class="record-overlay" id="recordOverlay">
   <div class="record-panel">
     <div class="record-topbar">
-      <span class="record-back" onclick="closeRecord()">✕</span>
-      <div class="record-title-bar"><div class="record-name" id="recordName">—</div><div class="record-type" id="recordType">—</div></div>
-      <div style="display:flex;gap:8px;"><button class="btn btn-success btn-sm" onclick="saveRecord()">💾 שמור</button><button class="btn btn-danger btn-sm" onclick="deleteRecord()">🗑️ מחק</button></div>
+      <button class="btn btn-secondary btn-sm record-back" onclick="closeRecord()">✕ סגור</button>
+      <div class="breadcrumb" id="recordBreadcrumb"></div>
+      <div class="record-title-bar" style="flex:1;margin-right:12px">
+        <span class="record-type-badge" id="recordTypeBadge">—</span>
+        <span class="record-name" id="recordName">—</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-success btn-sm" onclick="saveRecord()">💾 שמור</button>
+        <button class="btn btn-danger btn-sm" id="recordDeleteBtn" onclick="deleteRecord()">🗑️ מחק</button>
+      </div>
     </div>
     <div class="record-body">
-      <div class="record-fields" id="recordFields"></div>
-      <div class="record-notes-col" id="recordNotesCol"></div>
+      <div class="record-right" id="recordRight"></div>
+      <div class="record-left" id="recordLeft"></div>
     </div>
   </div>
 </div>
-
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h3 id="modalTitle">הוסף</h3>
@@ -233,227 +247,105 @@ tbody tr:last-child td { border:none; }
     <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">ביטול</button><button class="btn btn-primary" onclick="saveModal()">שמור</button></div>
   </div>
 </div>
-
-<div class="toast" id="toast"><span class="toast-icon">✅</span><span id="toastMsg">נשמר בהצלחה</span></div>
-
+<div class="toast" id="toast"><span id="toastMsg">נשמר ✅</span></div>
 <script>
-const USERS = {'roi':{pass:'Roi2024!',name:'רועי עובדיה',role:'מנהל מערכת',avatar:'ר'},'natan':{pass:'Natan2024!',name:'נתן',role:'נציג מכירות',avatar:'נ'},'ben':{pass:'Ben2024!',name:'בן',role:'נציג מכירות',avatar:'ב'}};
-function loadData(){try{return JSON.parse(localStorage.getItem('roicrm_v3')||'null')||defaultData();}catch(e){return defaultData();}}
-function saveData(){localStorage.setItem('roicrm_v3',JSON.stringify(DB));updateBadges();}
-function defaultData(){return{leads:[],deals:[],clients:[],payments:[],products:[{id:genId(),name:'ליווי מחירות',price:5000,desc:'ליווי מחירות מלא',notes:[],tasks:[],files:[],created:new Date().toISOString()},{id:genId(),name:'קורס דיגיטל',price:2000,desc:'קורס שיווק דיגיטלי',notes:[],tasks:[],files:[],created:new Date().toISOString()}],meetings:[],tasks:[]};}
-let DB=loadData(),currentUser=null,currentPage='dashboard',currentRecord=null,currentRecordType=null,modalMode=null,modalType=null,modalParent=null;
+const USERS={roi:{pass:'Roi2024!',name:'רועי עובדיה',role:'admin',roleLabel:'מנהל מערכת',avatar:'ר',color:'#4f6ef7'},natan:{pass:'Natan2024!',name:'נתן',role:'agent',roleLabel:'נציג מכירות',avatar:'נ',color:'#10b981'},ben:{pass:'Ben2024!',name:'בן',role:'agent',roleLabel:'נציג מכירות',avatar:'ב',color:'#f59e0b'}};
+const PERMS={admin:{canCreate:['leads','deals','clients','payments','products','meetings','tasks'],canDelete:true,canExport:true,canManageUsers:true},agent:{canCreate:['leads','deals','meetings','tasks'],canDelete:false,canExport:false,canManageUsers:false}};
+function perm(a){if(!currentUser)return false;const p=PERMS[currentUser.role];if(a==='delete')return p.canDelete;if(a==='export')return p.canExport;if(a==='users')return p.canManageUsers;if(a.startsWith('create:'))return p.canCreate.includes(a.split(':')[1]);return false;}
+function loadData(){try{return JSON.parse(localStorage.getItem('roicrm_v4')||'null')||defaultData();}catch(e){return defaultData();}}
+function saveData(){localStorage.setItem('roicrm_v4',JSON.stringify(DB));updateBadges();}
+function defaultData(){return{leads:[],deals:[],clients:[],payments:[],products:[{id:genId(),name:'ליווי מחירות',price:5000,desc:'ליווי מחירות מלא',notes:[],tasks:[],files:[],created:now(),updated:now(),createdBy:'roi'},{id:genId(),name:'קורס דיגיטל',price:2000,desc:'קורס שיווק דיגיטלי',notes:[],tasks:[],files:[],created:now(),updated:now(),createdBy:'roi'}],meetings:[],tasks:[]};}
+let DB=loadData(),currentUser=null,currentPage='dashboard',currentRecord=null,currentRecordType=null,recordStack=[],modalType=null,modalParent=null;
 function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
-function fmt(d){if(!d)return'—';const dt=new Date(d);return isNaN(dt)?d:dt.toLocaleDateString('he-IL');}
-function fmtMoney(n){return'₪'+(Number(n)||0).toLocaleString();}
 function now(){return new Date().toISOString();}
-function userName(){return currentUser?.name||'משתמש';}
-function doLogin(){
-  const u=document.getElementById('loginUser').value.trim().toLowerCase();
-  const p=document.getElementById('loginPass').value;
-  const user=USERS[u];
-  if(user&&user.pass===p){currentUser={...user,username:u};document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=user.name;document.getElementById('userAvatar').textContent=user.avatar;document.getElementById('loginError').style.display='none';sessionStorage.setItem('roicrm_user',JSON.stringify({...user,username:u}));showPage('dashboard');}else{document.getElementById('loginError').style.display='block';}
-}
+function todayVal(){return new Date().toISOString().split('T')[0];}
+function fmt(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('he-IL');}catch{return d;}}
+function fmtDT(d){if(!d)return'—';try{return new Date(d).toLocaleString('he-IL',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});}catch{return d;}}
+function fmtMoney(n){return'₪'+(Number(n)||0).toLocaleString();}
+function uName(u){return USERS[u]?.name||u||'—';}
+function uAv(u){return USERS[u]?.avatar||'?';}
+function uCol(u){return USERS[u]?.color||'#888';}
+function doLogin(){const u=document.getElementById('loginUser').value.trim().toLowerCase(),p=document.getElementById('loginPass').value,user=USERS[u];if(user&&user.pass===p){currentUser={...user,username:u};sessionStorage.setItem('roicrm_user',JSON.stringify(currentUser));document.getElementById('loginError').style.display='none';initApp();}else{document.getElementById('loginError').style.display='block';}}
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginPage').style.display!=='none')doLogin();});
 function doLogout(){sessionStorage.removeItem('roicrm_user');currentUser=null;document.getElementById('loginPage').style.display='flex';document.getElementById('app').style.display='none';}
-const PAGE_TITLES={dashboard:'דאשבורד',leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',products:'מוצרים',meetings:'פגישות',tasks:'משימות',settings:'הגדרות'};
-const PAGE_ICONS={leads:'⭐',deals:'💼',clients:'👥',payments:'💰',products:'🛍️',meetings:'📅',tasks:'✅'};
+function initApp(){document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=currentUser.name;document.getElementById('userAvatar').textContent=currentUser.avatar;document.getElementById('userAvatar').style.background=currentUser.color;document.getElementById('userRoleLabel').textContent=currentUser.roleLabel;document.getElementById('usersNavItem').style.display=perm('users')?'flex':'none';updateBadges();showPage('dashboard');}
+const PAGE_TITLES={dashboard:'דאשבורד',leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',products:'מוצרים',meetings:'פגישות',tasks:'משימות',users:'משתמשים',settings:'הגדרות'};
+const PAGE_ICONS={leads:'⭐',deals:'💼',clients:'👥',payments:'💰',products:'🛍️',meetings:'📅',tasks:'✅',users:'👤'};
+const TYPE_LABELS={leads:'מתעניין',deals:'עסקה',clients:'לקוח',payments:'תשלום',products:'מוצר',meetings:'פגישה',tasks:'משימה'};
 const ADD_LABELS={leads:'מתעניין חדש',deals:'עסקה חדשה',clients:'לקוח חדש',payments:'תשלום חדש',products:'מוצר חדש',meetings:'פגישה חדשה',tasks:'משימה חדשה'};
-function showPage(page){
-  currentPage=page;
-  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(el=>{if(el.textContent.includes(PAGE_TITLES[page]))el.classList.add('active');});
-  document.getElementById('pageTitle').textContent=PAGE_TITLES[page]||page;
-  const hasList=['leads','deals','clients','payments','products','meetings','tasks'].includes(page);
-  document.getElementById('addBtn').style.display=hasList?'flex':'none';
-  document.getElementById('addBtn').textContent='+ '+(ADD_LABELS[page]||'הוסף');
-  document.getElementById('exportBtn').style.display=hasList?'flex':'none';
-  renderPage(page);updateBadges();
-}
-function updateBadges(){
-  ['leads','deals','clients','payments','products','meetings','tasks'].forEach(k=>{const el=document.getElementById('badge-'+k);if(el)el.textContent=(DB[k]||[]).length;});
-}
-function renderPage(page){
-  const c=document.getElementById('mainContent');
-  if(page==='dashboard'){c.innerHTML=renderDashboard();return;}
-  if(page==='settings'){c.innerHTML=renderSettings();return;}
-  if(DB[page]!==undefined){c.innerHTML=renderList(page);return;}
-  c.innerHTML='<div class="empty-state"><div class="es-icon">🚧</div><div class="es-title">בקרוב</div></div>';
-}
-function renderDashboard(){
-  const totalLeads=DB.leads.length;
-  const openDeals=DB.deals.filter(d=>d.status!=='סגורה').length;
-  const totalRevenue=DB.payments.filter(p=>p.status==='שולם').reduce((s,p)=>s+(Number(p.amount)||0),0);
-  const pendingTasks=DB.tasks.filter(t=>!t.done).length+DB.leads.flatMap(l=>l.tasks||[]).filter(t=>!t.done).length+DB.deals.flatMap(d=>d.tasks||[]).filter(t=>!t.done).length;
-  return `<div class="stats-grid">
-    <div class="stat-card"><div class="stat-label">⭐ מתעניינים</div><div class="stat-value accent">${totalLeads}</div><div class="stat-sub">ממתינים לטיפול</div></div>
-    <div class="stat-card"><div class="stat-label">💼 עסקאות פתוחות</div><div class="stat-value warn">${openDeals}</div><div class="stat-sub">ממתינות לסגירה</div></div>
-    <div class="stat-card"><div class="stat-label">💰 גביה שנתית</div><div class="stat-value success">${fmtMoney(totalRevenue)}</div><div class="stat-sub">יתרת תשלום</div></div>
-    <div class="stat-card"><div class="stat-label">✅ משימות פתוחות</div><div class="stat-value danger">${pendingTasks}</div><div class="stat-sub">מחכות לביצוע</div></div>
-  </div>
-  <div class="dash-grid">
-    <div class="dash-card"><div class="dash-card-title">סטטוס לידים</div>${renderLeadStatusChart()}</div>
-    <div class="dash-card"><div class="dash-card-title">מחזור מכירות לפי מוצר</div>${renderProductChart()}</div>
-  </div>`;
-}
-function renderLeadStatusChart(){
-  const statuses=['לידים חדשים 🎉','לידים זהב ⭐','פולאופ איכותי 😊','נוצר קשר ראשוני 📞','לא נסגר 😊','ליד לא תקין ❌','חיפוש חופשי 🔍'];
-  return statuses.map(s=>{const count=DB.leads.filter(l=>l.status===s).length;return `<div class="status-row"><span class="status-label">${s}</span><span class="status-count">${count}</span></div>`;}).join('');
-}
-function renderProductChart(){
-  const products=DB.products;
-  if(!products.length)return '<div class="empty-state" style="padding:20px"><div class="es-sub">אין מוצרים</div></div>';
-  return products.map(p=>{const revenue=DB.payments.filter(pay=>pay.productId===p.id&&pay.status==='שולם').reduce((s,pay)=>s+(Number(pay.amount)||0),0);return `<div class="status-row"><span class="status-label">${p.name}</span><span class="status-count">${fmtMoney(revenue)}</span></div>`;}).join('');
-}
+function showPage(page){currentPage=page;document.querySelectorAll('.nav-item').forEach(el=>{el.classList.remove('active');if(el.textContent.trim().includes(PAGE_TITLES[page]?.substring(0,3)||'XXX'))el.classList.add('active');});document.getElementById('pageTitle').textContent=PAGE_TITLES[page]||page;const hasList=['leads','deals','clients','payments','products','meetings','tasks'].includes(page);document.getElementById('addBtn').style.display=(hasList&&perm('create:'+page))?'flex':'none';document.getElementById('addBtn').textContent='+ '+(ADD_LABELS[page]||'הוסף');document.getElementById('exportBtn').style.display=(hasList&&perm('export'))?'flex':'none';renderPage(page);}
+function updateBadges(){['leads','deals','clients','payments','products','meetings','tasks'].forEach(k=>{const el=document.getElementById('badge-'+k);if(el)el.textContent=(DB[k]||[]).length;});}
+function renderPage(page){const c=document.getElementById('mainContent');if(page==='dashboard'){c.innerHTML=renderDashboard();return;}if(page==='users'){c.innerHTML=renderUsers();return;}if(page==='settings'){c.innerHTML=renderSettings();return;}if(DB[page]!==undefined){c.innerHTML=renderList(page);return;}c.innerHTML='<div class="empty-state"><div class="es-icon">🚧</div><div class="es-title">בקרוב</div></div>';}
+function renderDashboard(){const tL=DB.leads.length,oD=DB.deals.filter(d=>d.status!=='סגורה').length,rev=DB.payments.filter(p=>p.status==='שולם').reduce((s,p)=>s+(Number(p.amount)||0),0),tasks=DB.tasks.filter(t=>!t.done).length+DB.leads.flatMap(l=>l.tasks||[]).filter(t=>!t.done).length+DB.deals.flatMap(d=>d.tasks||[]).filter(t=>!t.done).length;return `<div class="stats-grid"><div class="stat-card"><div class="stat-label">⭐ מתעניינים</div><div class="stat-value accent">${tL}</div><div class="stat-sub">ממתינים לטיפול</div></div><div class="stat-card"><div class="stat-label">💼 עסקאות פתוחות</div><div class="stat-value warn">${oD}</div><div class="stat-sub">ממתינות לסגירה</div></div><div class="stat-card"><div class="stat-label">💰 גביה שנתית</div><div class="stat-value success">${fmtMoney(rev)}</div><div class="stat-sub">תשלומים שהתקבלו</div></div><div class="stat-card"><div class="stat-label">✅ משימות פתוחות</div><div class="stat-value danger">${tasks}</div><div class="stat-sub">מחכות לביצוע</div></div></div><div class="dash-grid"><div class="dash-card"><div class="dash-card-title">סטטוס לידים</div>${ ['לידים חדשים 🎉','לידים זהב ⭐','פולאופ איכותי 😊','נוצר קשר ראשוני 📞','לא נסגר 😊','ליד לא תקין ❌','חיפוש חופשי 🔍'].map(s=>`<div class="status-row"><span class="status-label">${s}</span><span class="status-count">${DB.leads.filter(l=>l.status===s).length}</span></div>`).join('')}</div><div class="dash-card"><div class="dash-card-title">מחזור לפי מוצר</div>${DB.products.map(p=>{const r=DB.payments.filter(x=>x.productId===p.id&&x.status==='שולם').reduce((s,x)=>s+(Number(x.amount)||0),0);return`<div class="status-row"><span class="status-label">${p.name}</span><span class="status-count">${fmtMoney(r)}</span></div>`;}).join('')||'<div class="empty-state" style="padding:16px"><div class="es-sub">אין מוצרים</div></div>'}</div></div>`;}
+function renderUsers(){if(!perm('users'))return'<div class="empty-state"><div class="es-icon">🔒</div><div class="es-title">אין הרשאה</div></div>';return`<div class="users-grid">${Object.entries(USERS).map(([k,u])=>{const p=PERMS[u.role];return`<div class="user-card"><div class="user-card-avatar" style="background:${u.color}">${u.avatar}</div><div class="user-card-name">${u.name}</div><div class="user-card-role">${u.roleLabel}</div><div style="border-top:1px solid var(--border);padding-top:12px;text-align:right"><div class="perm-row"><span>יצירת לידים/עסקאות</span><span class="perm-yes">✓</span></div><div class="perm-row"><span>יצירת לקוחות</span><span class="${p.canCreate.includes('clients')?'perm-yes':'perm-no'}">${p.canCreate.includes('clients')?'✓':'✗'}</span></div><div class="perm-row"><span>מחיקת רשומות</span><span class="${p.canDelete?'perm-yes':'perm-no'}">${p.canDelete?'✓':'✗'}</span></div><div class="perm-row"><span>ייצוא נתונים</span><span class="${p.canExport?'perm-yes':'perm-no'}">${p.canExport?'✓':'✗'}</span></div><div class="perm-row"><span>ניהול משתמשים</span><span class="${p.canManageUsers?'perm-yes':'perm-no'}">${p.canManageUsers?'✓':'✗'}</span></div></div></div>`;}).join('')}</div>`;}
+function crBadge(u){if(!u)return'—';return`<span class="creator-badge"><span class="creator-avatar" style="background:${uCol(u)}">${uAv(u)}</span>${uName(u)}</span>`;}
 const LIST_CONFIGS={
-  leads:{title:'מתעניינים',cols:['שם','טלפון','אימייל','סטטוס','תאריך'],fields:r=>[r.name,r.phone||'—',r.email||'—',`<span class="badge badge-blue">${r.status||'חדש'}</span>`,fmt(r.created)]},
-  deals:{title:'עסקאות',cols:['שם עסקה','לקוח/ליד','סכום','סטטוס','מוצר','תאריך'],fields:r=>[r.name,r.clientName||r.leadName||'—',fmtMoney(r.amount),`<span class="badge badge-${r.status==='סגורה'?'green':r.status==='בתהליך'?'yellow':'blue'}">${r.status||'חדשה'}</span>`,r.productName||'—',fmt(r.created)]},
-  clients:{title:'לקוחות',cols:['שם','טלפון','אימייל','סטטוס','תאריך'],fields:r=>[r.name,r.phone||'—',r.email||'—',`<span class="badge badge-green">${r.status||'פעיל'}</span>`,fmt(r.created)]},
-  payments:{title:'תשלומים',cols:['שם לקוח','סכום','תאריך','בנק','אמצעי','מוצר','סטטוס'],fields:r=>[r.clientName||'—',fmtMoney(r.amount),fmt(r.date),r.bank||'—',r.method||'—',r.productName||'—',`<span class="badge badge-${r.status==='שולם'?'green':r.status==='ממתין'?'yellow':'red'}">${r.status||'ממתין'}</span>`]},
-  products:{title:'מוצרים',cols:['שם מוצר','מחיר','תיאור'],fields:r=>[r.name,fmtMoney(r.price),r.desc||'—']},
-  meetings:{title:'פגישות',cols:['נושא','עם מי','תאריך','שעה','סטטוס'],fields:r=>[r.title||r.name,r.withName||'—',fmt(r.date),r.time||'—',`<span class="badge badge-${r.status==='בוצעה'?'green':'blue'}">${r.status||'מתוכננת'}</span>`]},
-  tasks:{title:'משימות',cols:['משימה','מבצע','תאריך ביצוע','תזכורת','סטטוס'],fields:r=>[r.name,r.assignee||'—',fmt(r.dueDate),fmt(r.reminderDate),`<span class="badge badge-${r.done?'green':'yellow'}">${r.done?'בוצע':'בתהליך'}</span>`]}
+  leads:{cols:['שם','טלפון','אימייל','סטטוס','נוצר ע"י','תאריך'],fields:r=>[r.name,r.phone||'—',r.email||'—',`<span class="badge badge-blue">${r.status||'חדש'}</span>`,crBadge(r.createdBy),fmt(r.created)]},
+  deals:{cols:['שם עסקה','לקוח','סכום','סטטוס','מוצר','נוצר ע"י'],fields:r=>[r.name,r.clientName||r.leadName||'—',fmtMoney(r.amount),`<span class="badge badge-${r.status==='סגורה'?'green':r.status==='בתהליך'?'yellow':'blue'}">${r.status||'חדשה'}</span>`,r.productName||'—',crBadge(r.createdBy)]},
+  clients:{cols:['שם','טלפון','אימייל','סטטוס','נוצר ע"י'],fields:r=>[r.name,r.phone||'—',r.email||'—',`<span class="badge badge-green">${r.status||'פעיל'}</span>`,crBadge(r.createdBy)]},
+  payments:{cols:['שם לקוח','סכום','תאריך','בנק','אמצעי','מוצר','סטטוס'],fields:r=>[r.clientName||'—',fmtMoney(r.amount),fmt(r.date),r.bank||'—',r.method||'—',r.productName||'—',`<span class="badge badge-${r.status==='שולם'?'green':r.status==='ממתין'?'yellow':'red'}">${r.status||'ממתין'}</span>`]},
+  products:{cols:['שם מוצר','מחיר','תיאור'],fields:r=>[r.name,fmtMoney(r.price),r.desc||'—']},
+  meetings:{cols:['נושא','עם מי','תאריך','שעה','סטטוס','נוצר ע"י'],fields:r=>[r.title||r.name,r.withName||'—',fmt(r.date),r.time||'—',`<span class="badge badge-${r.status==='בוצעה'?'green':'blue'}">${r.status||'מתוכננת'}</span>`,crBadge(r.createdBy)]},
+  tasks:{cols:['משימה','מבצע','תאריך ביצוע','תזכורת','סטטוס'],fields:r=>[r.name,r.assignee||'—',fmt(r.dueDate),fmt(r.reminderDate),`<span class="badge badge-${r.done?'green':'yellow'}">${r.done?'בוצע':'בתהליך'}</span>`]}
 };
-function renderList(page){
-  const cfg=LIST_CONFIGS[page];const items=DB[page]||[];
-  return `<div class="table-header"><div class="search-box"><span>🔍</span><input placeholder="חיפוש..." oninput="filterTable(this.value,'${page}')" id="search-${page}"></div><div style="font-size:13px;color:var(--text2)">${items.length} רשומות</div></div>
-  <div class="table-wrap"><table id="tbl-${page}"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}<th>פעולות</th></tr></thead>
-  <tbody>${items.length?items.map(r=>`<tr onclick="openRecord('${page}','${r.id}')">${cfg.fields(r).map(f=>`<td>${f}</td>`).join('')}<td onclick="event.stopPropagation()"><button class="btn btn-secondary btn-sm btn-icon" onclick="openRecord('${page}','${r.id}')">📂</button><button class="btn btn-danger btn-sm btn-icon" onclick="deleteItem('${page}','${r.id}')">🗑️</button></td></tr>`).join(''):`<tr><td colspan="${cfg.cols.length+1}"><div class="empty-state"><div class="es-icon">${PAGE_ICONS[page]||'📋'}</div><div class="es-title">אין רשומות</div><div class="es-sub">לחץ "+ הוסף" להוספה</div></div></td></tr>`}
-  </tbody></table></div>`;
-}
+function renderList(page){const cfg=LIST_CONFIGS[page],items=DB[page]||[];return`<div class="table-header"><div class="search-box"><span>🔍</span><input placeholder="חיפוש..." oninput="filterTable(this.value,'${page}')" id="search-${page}"></div><div style="font-size:13px;color:var(--text2)">${items.length} רשומות</div></div><div class="table-wrap"><table id="tbl-${page}"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}<th>פעולות</th></tr></thead><tbody>${items.length?items.map(r=>`<tr onclick="openRecord('${page}','${r.id}')">${cfg.fields(r).map(f=>`<td>${f}</td>`).join('')}<td onclick="event.stopPropagation()"><button class="btn btn-secondary btn-sm btn-icon" onclick="openRecord('${page}','${r.id}')">📂</button>${perm('delete')?`<button class="btn btn-danger btn-sm btn-icon" onclick="deleteItem('${page}','${r.id}')">🗑️</button>`:''}</td></tr>`).join(''):`<tr><td colspan="${cfg.cols.length+1}"><div class="empty-state"><div class="es-icon">${PAGE_ICONS[page]||'📋'}</div><div class="es-title">אין רשומות</div><div class="es-sub">לחץ + הוסף</div></div></td></tr>`}</tbody></table></div>`;}
 function filterTable(q,page){document.querySelectorAll(`#tbl-${page} tbody tr`).forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});}
-function openRecord(type,id){
-  const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;
-  currentRecord={...item};currentRecord.notes=currentRecord.notes||[];currentRecord.tasks=currentRecord.tasks||[];currentRecord.files=currentRecord.files||[];
-  currentRecordType=type;
-  document.getElementById('recordName').textContent=item.name||item.title||'—';
-  document.getElementById('recordType').textContent={leads:'מתעניין',deals:'עסקה',clients:'לקוח',payments:'תשלום',products:'מוצר',meetings:'פגישה',tasks:'משימה'}[type]||type;
-  document.getElementById('recordFields').innerHTML=renderRecordFields(type,currentRecord);
-  document.getElementById('recordNotesCol').innerHTML=renderNotesCol(currentRecord);
-  document.getElementById('recordOverlay').classList.add('open');
-}
-function closeRecord(){document.getElementById('recordOverlay').classList.remove('open');currentRecord=null;currentRecordType=null;renderPage(currentPage);}
-function renderRecordFields(type,r){
-  let html='';
-  const defs={leads:[{k:'name',l:'שם מלא'},{k:'phone',l:'טלפון'},{k:'email',l:'אימייל'},{k:'status',l:'סטטוס'},{k:'source',l:'מקור'},{k:'city',l:'עיר'},{k:'notes_field',l:'הערות',full:true}],
-    deals:[{k:'name',l:'שם עסקה'},{k:'amount',l:'סכום'},{k:'status',l:'סטטוס'},{k:'productName',l:'מוצר'},{k:'closeDate',l:'תאריך סגירה'},{k:'clientName',l:'שם לקוח'},{k:'notes_field',l:'הערות',full:true}],
-    clients:[{k:'name',l:'שם מלא'},{k:'phone',l:'טלפון'},{k:'email',l:'אימייל'},{k:'status',l:'סטטוס'},{k:'city',l:'עיר'},{k:'idNumber',l:'ת.ז'},{k:'notes_field',l:'הערות',full:true}],
-    payments:[{k:'clientName',l:'שם לקוח'},{k:'amount',l:'סכום'},{k:'date',l:'תאריך גבייה'},{k:'bank',l:'בנק'},{k:'method',l:'אמצעי תשלום'},{k:'status',l:'סטטוס'},{k:'checkDate',l:'תאריך המחאה'},{k:'collector',l:'גבה אותו'}],
-    products:[{k:'name',l:'שם מוצר'},{k:'price',l:'מחיר'},{k:'desc',l:'תיאור',full:true}],
-    meetings:[{k:'title',l:'נושא'},{k:'withName',l:'עם מי'},{k:'date',l:'תאריך'},{k:'time',l:'שעה'},{k:'location',l:'מיקום'},{k:'status',l:'סטטוס'},{k:'notes_field',l:'הערות',full:true}],
-    tasks:[{k:'name',l:'משימה'},{k:'assignee',l:'מבצע'},{k:'dueDate',l:'תאריך ביצוע'},{k:'reminderDate',l:'תאריך תזכורת'},{k:'notes_field',l:'הערות',full:true}]
-  };
-  const fields=defs[type]||[{k:'name',l:'שם'}];
-  html+=`<div class="field-section"><div class="field-section-title">📋 פרטים</div><div class="field-grid">`;
-  fields.forEach(f=>{html+=`<div class="field-item${f.full?' style=grid-column:1/-1':''}">
-    <div class="field-label">${f.l}</div>
-    <div class="field-value editable" contenteditable="true" data-field="${f.k}" onblur="updateField('${f.k}',this.textContent)">${r[f.k]||''}</div>
-  </div>`;});
-  html+=`</div></div>`;
-  html+=renderRelatedObjects(type,r);
-  html+=`<div class="field-section"><div class="field-section-title">📎 קבצים</div><div class="files-section"><div class="file-drop" onclick="document.getElementById('fileInput').click()"><input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(event)"><div class="file-drop-text">📎 לחץ להוספת קובץ</div></div><div class="file-list" id="fileList">${renderFileList(r.files||[])}</div></div></div>`;
-  return html;
-}
-function updateField(key,val){if(currentRecord)currentRecord[key]=val.trim();}
-function saveRecord(){
-  if(!currentRecord||!currentRecordType)return;
-  const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);
-  if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();showToast('נשמר ✅');}
-  document.getElementById('recordName').textContent=currentRecord.name||currentRecord.title||'—';
-}
-function deleteRecord(){
-  if(!currentRecord||!currentRecordType)return;
-  if(!confirm('למחוק?'))return;
-  DB[currentRecordType]=DB[currentRecordType].filter(r=>r.id!==currentRecord.id);
-  saveData();closeRecord();showToast('נמחק ✅');
-}
-function renderRelatedObjects(type,r){
-  let html='';
-  if(type==='leads'){html+=renderRelatedSection('💼 עסקאות','deals',r.id,'leadId','deals',r);html+=renderRelatedSection('📅 פגישות','meetings',r.id,'leadId','meetings',r);}
-  if(type==='deals'){html+=renderRelatedSection('👥 לקוח','clients',r.id,'dealId','clients',r);html+=renderRelatedSection('💰 תשלומים','payments',r.id,'dealId','payments',r);}
-  if(type==='clients'){html+=renderRelatedSection('📅 פגישות','meetings',r.id,'clientId','meetings',r);html+=renderRelatedSection('💰 תשלומים','payments',r.id,'clientId','payments',r);}
-  return html;
-}
-function renderRelatedSection(title,dbKey,parentId,fkField,addType,parentRecord){
-  const items=(DB[dbKey]||[]).filter(i=>i[fkField]===parentId);
-  const names={deals:'עסקה',clients:'לקוח',payments:'תשלום',meetings:'פגישה'};
-  return `<div class="related-section"><div class="related-header"><div class="related-title">${title} <span class="related-count">${items.length}</span></div><button class="btn btn-primary btn-sm" onclick="openRelatedAdd('${addType}','${parentRecord.id}','${parentRecord.name||''}')">+ ${names[addType]||''}</button></div>
-  <div class="related-list">${items.length?items.map(i=>`<div class="related-item" onclick="saveRecord();closeRecord();setTimeout(()=>openRecord('${dbKey}','${i.id}'),100)"><div><div class="related-item-name">${i.name||i.title||i.clientName||'—'}</div><div class="related-item-sub">${i.status||i.amount&&fmtMoney(i.amount)||''}</div></div><span>›</span></div>`).join(''):`<div class="related-empty">אין רשומות קשורות</div>`}</div></div>`;
-}
-function openRelatedAdd(type,parentId,parentName){saveRecord();modalParent={id:parentId,name:parentName,type:currentRecordType};openAddModal(type);}
-function renderNotesCol(r){
-  return `<div class="notes-header">📝 הערות ומשימות</div>
-  <div class="add-task-section"><div class="add-task-title">✅ הוסף משימה</div>
-  <div class="task-fields"><div class="task-field-full"><input class="task-input" id="nt-name" placeholder="תיאור המשימה"></div>
-  <input class="task-input" id="nt-assignee" placeholder="מבצע">
-  <input class="task-input" id="nt-due" type="date" title="תאריך ביצוע">
-  <input class="task-input" id="nt-reminder" type="date" title="תאריך תזכורת"></div>
-  <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary btn-sm" onclick="addTask()">+ הוסף</button></div></div>
-  <div id="tasksList">${renderTasksList(r.tasks||[])}</div>
-  <div class="add-note-box"><textarea id="noteInput" placeholder="כתוב הערה..."></textarea>
-  <div class="add-note-actions"><button class="btn btn-primary btn-sm" onclick="addNote()">+ הוסף הערה</button></div></div>
-  <div id="notesList">${renderNotesList(r.notes||[])}</div>`;
-}
-function renderNotesList(notes){if(!notes.length)return'<div style="font-size:12px;color:var(--text2);text-align:center;padding:12px;">אין הערות</div>';return notes.slice().reverse().map(n=>`<div class="note-item"><div class="note-text">${n.text}</div><div class="note-meta"><span>${n.author||'—'}</span><span>${fmt(n.created)}</span><span class="note-delete" onclick="deleteNote('${n.id}')">🗑️</span></div></div>`).join('');}
-function renderTasksList(tasks){return tasks.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div class="task-info"><div class="task-name${t.done?' done':''}">${t.name}</div><div class="task-meta">${t.assignee?`<span>👤 ${t.assignee}</span>`:''}${t.dueDate?`<span>📅 ${fmt(t.dueDate)}</span>`:''}${t.reminderDate?`<span>🔔 ${fmt(t.reminderDate)}</span>`:''}</div></div><span onclick="deleteTask('${t.id}')" style="cursor:pointer;color:var(--danger)">🗑️</span></div>`).join('');}
-function addNote(){const text=document.getElementById('noteInput').value.trim();if(!text)return;if(!currentRecord.notes)currentRecord.notes=[];currentRecord.notes.push({id:genId(),text,author:userName(),created:now()});document.getElementById('noteInput').value='';document.getElementById('notesList').innerHTML=renderNotesList(currentRecord.notes);saveRecordSilent();showToast('הערה נוספה ✅');}
-function deleteNote(id){currentRecord.notes=(currentRecord.notes||[]).filter(n=>n.id!==id);document.getElementById('notesList').innerHTML=renderNotesList(currentRecord.notes);saveRecordSilent();}
-function addTask(){const name=document.getElementById('nt-name').value.trim();if(!name)return;if(!currentRecord.tasks)currentRecord.tasks=[];const task={id:genId(),name,assignee:document.getElementById('nt-assignee').value.trim(),dueDate:document.getElementById('nt-due').value,reminderDate:document.getElementById('nt-reminder').value,done:false,created:now()};currentRecord.tasks.push(task);DB.tasks.push({...task,relatedId:currentRecord.id,relatedType:currentRecordType,relatedName:currentRecord.name});document.getElementById('nt-name').value='';document.getElementById('nt-assignee').value='';document.getElementById('nt-due').value='';document.getElementById('nt-reminder').value='';document.getElementById('tasksList').innerHTML=renderTasksList(currentRecord.tasks);saveRecordSilent();showToast('משימה נוספה ✅');}
-function toggleTask(id,done){const t=(currentRecord.tasks||[]).find(t=>t.id===id);if(t)t.done=done;const gt=DB.tasks.find(t=>t.id===id);if(gt)gt.done=done;saveRecordSilent();}
-function deleteTask(id){currentRecord.tasks=(currentRecord.tasks||[]).filter(t=>t.id!==id);DB.tasks=DB.tasks.filter(t=>t.id!==id);document.getElementById('tasksList').innerHTML=renderTasksList(currentRecord.tasks);saveRecordSilent();}
-function saveRecordSilent(){if(!currentRecord||!currentRecordType)return;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();}}
-function renderFileList(files){if(!files||!files.length)return'';const icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',default:'📎'};return files.map(f=>{const ext=(f.name||'').split('.').pop().toLowerCase();return`<div class="file-item"><span class="file-icon">${icons[ext]||icons.default}</span><span class="file-name">${f.name}</span><span class="file-size">${f.size||''}</span><span class="file-del" onclick="deleteFile('${f.id}')">✕</span></div>`;}).join('');}
-function handleFiles(e){const files=Array.from(e.target.files);files.forEach(f=>{const sizeKB=(f.size/1024).toFixed(1);currentRecord.files=currentRecord.files||[];currentRecord.files.push({id:genId(),name:f.name,size:sizeKB>1024?(sizeKB/1024).toFixed(1)+'MB':sizeKB+'KB',uploaded:now()});});document.getElementById('fileList').innerHTML=renderFileList(currentRecord.files);saveRecordSilent();showToast(files.length+' קובץ/ים הועלו ✅');}
-function deleteFile(id){currentRecord.files=(currentRecord.files||[]).filter(f=>f.id!==id);document.getElementById('fileList').innerHTML=renderFileList(currentRecord.files);saveRecordSilent();}
-function openAddModal(typeOverride){const type=typeOverride||currentPage;modalType=type;modalMode='add';const titles={leads:'מתעניין חדש',deals:'עסקה חדשה',clients:'לקוח חדש',payments:'תשלום חדש',products:'מוצר חדש',meetings:'פגישה חדשה',tasks:'משימה חדשה'};document.getElementById('modalTitle').textContent='✨ '+(titles[type]||'הוסף');document.getElementById('modalBody').innerHTML=getModalForm(type);document.getElementById('modalOverlay').classList.add('open');}
-function closeModal(){document.getElementById('modalOverlay').classList.remove('open');modalMode=null;modalType=null;modalParent=null;}
+function openRecord(type,id,push){const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;if(push&&currentRecord){recordStack.push({type:currentRecordType,id:currentRecord.id,name:currentRecord.name||currentRecord.title||'—'});}else if(!push){recordStack=[];}currentRecord={...item};currentRecord.notes=currentRecord.notes||[];currentRecord.tasks=currentRecord.tasks||[];currentRecord.files=currentRecord.files||[];currentRecordType=type;renderRec();document.getElementById('recordOverlay').classList.add('open');}
+function closeRecord(){if(recordStack.length>0){const p=recordStack.pop();const st=[...recordStack];openRecord(p.type,p.id,false);recordStack=st;}else{document.getElementById('recordOverlay').classList.remove('open');currentRecord=null;currentRecordType=null;recordStack=[];renderPage(currentPage);}}
+function renderRec(){const r=currentRecord,type=currentRecordType;document.getElementById('recordName').textContent=r.name||r.title||'—';document.getElementById('recordTypeBadge').textContent=TYPE_LABELS[type]||type;const bc=document.getElementById('recordBreadcrumb');bc.innerHTML=recordStack.map((s,i)=>`<span class="breadcrumb-item" onclick="navBC(${i})">${TYPE_LABELS[s.type]}: ${s.name}</span><span class="breadcrumb-sep">›</span>`).join('');document.getElementById('recordDeleteBtn').style.display=perm('delete')?'flex':'none';document.getElementById('recordRight').innerHTML=renderRight();document.getElementById('recordLeft').innerHTML=renderLeft();}
+function navBC(idx){const target=recordStack[idx];const st=recordStack.slice(0,idx);openRecord(target.type,target.id,false);recordStack=st;}
+function renderRight(){const r=currentRecord,type=currentRecordType;const defs={leads:[{k:'name',l:'שם מלא'},{k:'phone',l:'טלפון'},{k:'email',l:'אימייל'},{k:'status',l:'סטטוס'},{k:'source',l:'מקור'},{k:'city',l:'עיר'},{k:'notes_field',l:'הערות',full:true}],deals:[{k:'name',l:'שם עסקה'},{k:'amount',l:'סכום'},{k:'status',l:'סטטוס'},{k:'productName',l:'מוצר'},{k:'closeDate',l:'תאריך סגירה',date:true},{k:'clientName',l:'שם לקוח'},{k:'notes_field',l:'הערות',full:true}],clients:[{k:'name',l:'שם מלא'},{k:'phone',l:'טלפון'},{k:'email',l:'אימייל'},{k:'status',l:'סטטוס'},{k:'city',l:'עיר'},{k:'idNumber',l:'ת.ז'},{k:'notes_field',l:'הערות',full:true}],payments:[{k:'clientName',l:'שם לקוח'},{k:'amount',l:'סכום'},{k:'date',l:'תאריך גבייה',date:true},{k:'bank',l:'בנק'},{k:'method',l:'אמצעי תשלום'},{k:'status',l:'סטטוס'},{k:'checkDate',l:'תאריך המחאה',date:true},{k:'collector',l:'גבה אותו'}],products:[{k:'name',l:'שם מוצר'},{k:'price',l:'מחיר'},{k:'desc',l:'תיאור',full:true}],meetings:[{k:'title',l:'נושא'},{k:'withName',l:'עם מי'},{k:'date',l:'תאריך',date:true},{k:'time',l:'שעה'},{k:'location',l:'מיקום'},{k:'status',l:'סטטוס'},{k:'notes_field',l:'הערות',full:true}],tasks:[{k:'name',l:'משימה'},{k:'assignee',l:'מבצע'},{k:'dueDate',l:'תאריך ביצוע',date:true},{k:'reminderDate',l:'תזכורת',date:true},{k:'notes_field',l:'הערות',full:true}]};const fields=defs[type]||[{k:'name',l:'שם'}];let html=`<div class="meta-box"><div class="meta-box-title">מידע על הרשומה</div><div class="meta-row"><span class="meta-label">נוצר על ידי</span><span class="meta-value">${crBadge(r.createdBy)}</span></div><div class="meta-row"><span class="meta-label">תאריך יצירה</span><span class="meta-value">${fmtDT(r.created)}</span></div><div class="meta-row"><span class="meta-label">עדכון אחרון</span><span class="meta-value">${fmtDT(r.updated)||'—'}</span></div>${r.updatedBy?`<div class="meta-row"><span class="meta-label">עודכן ע"י</span><span class="meta-value">${crBadge(r.updatedBy)}</span></div>`:''}</div>`;html+=`<div class="field-section"><div class="field-section-title">פרטי הרשומה</div><div class="field-grid">`;fields.forEach(f=>{const v=r[f.k]||'';html+=`<div class="field-item${f.full?' full':''}"><div class="field-label">${f.l}</div>${f.date?`<input type="date" class="field-value" value="${v||todayVal()}" data-field="${f.k}" onchange="updateField('${f.k}',this.value)">`:`<div class="field-value editable" contenteditable="true" data-field="${f.k}" onblur="updateField('${f.k}',this.textContent)">${v}</div>`}</div>`;});html+=`</div></div>`;return html;}
+function updateField(k,v){if(currentRecord)currentRecord[k]=v.trim();}
+function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [contenteditable]').forEach(el=>{currentRecord[el.dataset.field]=el.textContent.trim();});document.querySelectorAll('#recordRight input[type=date]').forEach(el=>{currentRecord[el.dataset.field]=el.value;});currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();showToast('נשמר ✅');}document.getElementById('recordName').textContent=currentRecord.name||currentRecord.title||'—';}
+function deleteRecord(){if(!perm('delete')){showToast('אין הרשאה ❌');return;}if(!confirm('למחוק?'))return;DB[currentRecordType]=DB[currentRecordType].filter(r=>r.id!==currentRecord.id);saveData();if(recordStack.length>0){const p=recordStack.pop();openRecord(p.type,p.id,false);}else{document.getElementById('recordOverlay').classList.remove('open');currentRecord=null;currentRecordType=null;recordStack=[];renderPage(currentPage);}showToast('נמחק ✅');}
+function renderLeft(){const r=currentRecord,type=currentRecordType;let h='';h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">📝 הערות <span class="left-section-count">${(r.notes||[]).length}</span></div></div><div class="add-note-box"><textarea id="noteInput" placeholder="כתוב הערה..."></textarea><div class="add-note-actions"><button class="btn btn-primary btn-sm" onclick="addNote()">+ הוסף הערה</button></div></div><div id="notesList">${renderNotes(r.notes||[])}</div></div>`;h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">✅ משימות <span class="left-section-count">${(r.tasks||[]).filter(t=>!t.done).length} פתוחות</span></div></div><div class="add-task-box"><div class="add-task-label">+ הוסף משימה</div><div class="task-grid"><div class="task-full"><input class="tinput" id="nt-name" placeholder="תיאור המשימה"></div><input class="tinput" id="nt-assignee" placeholder="מבצע"><input class="tinput" id="nt-due" type="date" value="${todayVal()}" title="תאריך ביצוע"><input class="tinput" id="nt-reminder" type="date" title="תאריך תזכורת"></div><div style="display:flex;justify-content:flex-start"><button class="btn btn-primary btn-sm" onclick="addTask()">+ הוסף</button></div></div><div id="tasksList">${renderTasks(r.tasks||[])}</div></div>`;h+=renderRelated(type,r);h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">📎 קבצים <span class="left-section-count">${(r.files||[]).length}</span></div></div><div class="file-drop" onclick="document.getElementById('fInput').click()"><input type="file" id="fInput" multiple style="display:none" onchange="handleFiles(event)"><div class="file-drop-text">📎 לחץ להוספת קובץ</div></div><div class="file-list" id="fileList">${renderFiles(r.files||[])}</div></div>`;return h;}
+function renderRelated(type,r){let h='';if(type==='leads'){h+=relSec('💼 עסקאות','deals',r.id,'leadId','deals',r);h+=relSec('📅 פגישות','meetings',r.id,'leadId','meetings',r);}if(type==='deals'){h+=relSec('👥 לקוח','clients',r.id,'dealId','clients',r);h+=relSec('💰 תשלומים','payments',r.id,'dealId','payments',r);if(r.productId){const p=DB.products.find(x=>x.id===r.productId);if(p)h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">🛍️ מוצר</div></div><div class="related-item" onclick="openRecord('products','${p.id}',true)"><div class="related-item-left"><div class="related-item-name">${p.name}</div><div class="related-item-sub">${fmtMoney(p.price)}</div></div><span class="related-arrow">›</span></div></div>`;}}if(type==='clients'){h+=relSec('📅 פגישות','meetings',r.id,'clientId','meetings',r);h+=relSec('💰 תשלומים','payments',r.id,'clientId','payments',r);}return h;}
+function relSec(title,dbKey,pid,fk,addType,pr){const items=(DB[dbKey]||[]).filter(i=>i[fk]===pid);const nm={deals:'עסקה',clients:'לקוח',payments:'תשלום',meetings:'פגישה'};const canAdd=perm('create:'+addType);return`<div class="left-section"><div class="left-section-header"><div class="left-section-title">${title} <span class="left-section-count">${items.length}</span></div>${canAdd?`<button class="btn btn-primary btn-sm" onclick="relAdd('${addType}','${pr.id}','${(pr.name||'').replace(/'/g,'&#39;')}')">+ ${nm[addType]||''}</button>`:''}</div>${items.length?items.map(i=>`<div class="related-item" onclick="openRecord('${dbKey}','${i.id}',true)"><div class="related-item-left"><div class="related-item-name">${i.name||i.title||i.clientName||'—'}</div><div class="related-item-sub">${i.status||''} ${i.amount?fmtMoney(i.amount):''} ${i.date?fmt(i.date):''}</div></div><span class="related-arrow">›</span></div>`).join(''):`<div class="empty-state" style="padding:12px"><div class="es-sub">אין רשומות קשורות</div></div>`}</div>`;}
+function relAdd(type,pid,pname){saveRecord();modalParent={id:pid,name:pname,type:currentRecordType};openAddModal(type);}
+function renderNotes(notes){if(!notes.length)return'<div class="empty-state" style="padding:12px"><div class="es-sub">אין הערות עדיין</div></div>';return notes.slice().reverse().map(n=>`<div class="note-item"><div class="note-text">${n.text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div><div class="note-meta"><span class="creator-badge"><span class="creator-avatar" style="background:${uCol(n.author)}">${uAv(n.author)}</span>${uName(n.author)}</span><span>${fmtDT(n.created)}</span>${perm('delete')?`<span class="note-del" onclick="delNote('${n.id}')">🗑️</span>`:''}</div></div>`).join('');}
+function addNote(){const t=document.getElementById('noteInput').value.trim();if(!t)return;currentRecord.notes=currentRecord.notes||[];currentRecord.notes.push({id:genId(),text:t,author:currentUser.username,created:now()});document.getElementById('noteInput').value='';document.getElementById('notesList').innerHTML=renderNotes(currentRecord.notes);saveRS();showToast('הערה נוספה ✅');}
+function delNote(id){currentRecord.notes=(currentRecord.notes||[]).filter(n=>n.id!==id);document.getElementById('notesList').innerHTML=renderNotes(currentRecord.notes);saveRS();}
+function renderTasks(tasks){if(!tasks.length)return'';return tasks.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div class="task-info"><div class="task-name${t.done?' done':''}">${t.name}</div><div class="task-meta-row">${t.assignee?`<span>👤 ${t.assignee}</span>`:''}${t.dueDate?`<span>📅 ${fmt(t.dueDate)}</span>`:''}${t.reminderDate?`<span>🔔 ${fmt(t.reminderDate)}</span>`:''}</div></div><span class="task-del" onclick="delTask('${t.id}')">🗑️</span></div>`).join('');}
+function addTask(){const name=document.getElementById('nt-name').value.trim();if(!name)return;const task={id:genId(),name,assignee:document.getElementById('nt-assignee').value.trim(),dueDate:document.getElementById('nt-due').value||todayVal(),reminderDate:document.getElementById('nt-reminder').value,done:false,created:now(),createdBy:currentUser.username,relatedId:currentRecord.id,relatedType:currentRecordType};currentRecord.tasks=currentRecord.tasks||[];currentRecord.tasks.push(task);DB.tasks.push({...task});['nt-name','nt-assignee'].forEach(id=>document.getElementById(id).value='');document.getElementById('nt-due').value=todayVal();document.getElementById('nt-reminder').value='';document.getElementById('tasksList').innerHTML=renderTasks(currentRecord.tasks);saveRS();showToast('משימה נוספה ✅');}
+function toggleTask(id,done){(currentRecord.tasks||[]).forEach(t=>{if(t.id===id)t.done=done;});DB.tasks.forEach(t=>{if(t.id===id)t.done=done;});document.getElementById('tasksList').innerHTML=renderTasks(currentRecord.tasks);saveRS();}
+function delTask(id){currentRecord.tasks=(currentRecord.tasks||[]).filter(t=>t.id!==id);DB.tasks=DB.tasks.filter(t=>t.id!==id);document.getElementById('tasksList').innerHTML=renderTasks(currentRecord.tasks);saveRS();}
+function saveRS(){if(!currentRecord||!currentRecordType)return;currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();}}
+function renderFiles(files){if(!files||!files.length)return'';const ic={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',default:'📎'};return files.map(f=>`<div class="file-item"><span class="file-icon">${ic[(f.name||'').split('.').pop().toLowerCase()]||ic.default}</span><span class="file-name">${f.name}</span><span class="file-size">${f.size||''}</span><span class="file-del" onclick="delFile('${f.id}')">✕</span></div>`).join('');}
+function handleFiles(e){Array.from(e.target.files).forEach(f=>{const kb=(f.size/1024).toFixed(1);currentRecord.files=currentRecord.files||[];currentRecord.files.push({id:genId(),name:f.name,size:kb>1024?(kb/1024).toFixed(1)+'MB':kb+'KB',uploaded:now()});});document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();showToast('קובץ הועלה ✅');}
+function delFile(id){currentRecord.files=(currentRecord.files||[]).filter(f=>f.id!==id);document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();}
+function openAddModal(to){const type=to||currentPage;modalType=type;if(!perm('create:'+type)){showToast('אין הרשאה ❌');return;}const tl={leads:'מתעניין חדש',deals:'עסקה חדשה',clients:'לקוח חדש',payments:'תשלום חדש',products:'מוצר חדש',meetings:'פגישה חדשה',tasks:'משימה חדשה'};document.getElementById('modalTitle').textContent='✨ '+(tl[type]||'הוסף');document.getElementById('modalBody').innerHTML=getForm(type);document.getElementById('modalOverlay').classList.add('open');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');modalType=null;modalParent=null;}
 function g(id){const el=document.getElementById(id);return el?el.value:'';}
-function getModalForm(type){
-  const pOpts=DB.products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-  const uOpts=Object.values(USERS).map(v=>`<option>${v.name}</option>`).join('');
-  if(type==='leads')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מלא *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">טלפון</label><input class="form-control" id="f-phone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-email" type="email"></div><div class="form-group"><label class="form-label">עיר</label><input class="form-control" id="f-city"></div></div><div class="form-row"><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>לידים חדשים 🎉</option><option>לידים זהב ⭐</option><option>פולאופ איכותי 😊</option><option>נוצר קשר ראשוני 📞</option><option>לא נסגר 😊</option><option>ליד לא תקין ❌</option></select></div><div class="form-group"><label class="form-label">מקור</label><input class="form-control" id="f-source" placeholder="פייסבוק, חבר..."></div></div>`;
-  if(type==='deals')return`<div class="form-group"><label class="form-label">שם עסקה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">סכום</label><input class="form-control" id="f-amount" type="number"></div><div class="form-group"><label class="form-label">מוצר</label><select class="form-control" id="f-product">${pOpts}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">שם לקוח</label><input class="form-control" id="f-clientName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>חדשה</option><option>בתהליך</option><option>סגורה</option><option>בוטלה</option></select></div></div><div class="form-group"><label class="form-label">תאריך סגירה</label><input class="form-control" id="f-closeDate" type="date"></div>`;
-  if(type==='clients')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מלא *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">טלפון</label><input class="form-control" id="f-phone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-email" type="email"></div><div class="form-group"><label class="form-label">ת.ז</label><input class="form-control" id="f-idNumber"></div></div><div class="form-row"><div class="form-group"><label class="form-label">עיר</label><input class="form-control" id="f-city"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>פעיל</option><option>לא פעיל</option></select></div></div>`;
-  if(type==='payments')return`<div class="form-row"><div class="form-group"><label class="form-label">שם לקוח *</label><input class="form-control" id="f-clientName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">סכום</label><input class="form-control" id="f-amount" type="number"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך גבייה</label><input class="form-control" id="f-date" type="date"></div><div class="form-group"><label class="form-label">בנק</label><input class="form-control" id="f-bank"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אמצעי תשלום</label><select class="form-control" id="f-method"><option>העברה בנקאית</option><option>המחאה</option><option>אשראי</option><option>מזומן</option><option>ביט</option><option>פייבוקס</option></select></div><div class="form-group"><label class="form-label">מוצר</label><select class="form-control" id="f-product">${pOpts}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך המחאה</label><input class="form-control" id="f-checkDate" type="date"></div><div class="form-group"><label class="form-label">גבה אותו</label><input class="form-control" id="f-collector"></div></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>ממתין</option><option>שולם</option><option>בוטל</option></select></div>`;
-  if(type==='products')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מוצר *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">מחיר</label><input class="form-control" id="f-price" type="number"></div></div><div class="form-group"><label class="form-label">תיאור</label><textarea class="form-control" id="f-desc" rows="3"></textarea></div>`;
-  if(type==='meetings')return`<div class="form-group"><label class="form-label">נושא *</label><input class="form-control" id="f-title"></div><div class="form-row"><div class="form-group"><label class="form-label">עם מי</label><input class="form-control" id="f-withName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">מיקום</label><input class="form-control" id="f-location"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך</label><input class="form-control" id="f-date" type="date"></div><div class="form-group"><label class="form-label">שעה</label><input class="form-control" id="f-time" type="time"></div></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>מתוכננת</option><option>בוצעה</option><option>בוטלה</option></select></div>`;
-  if(type==='tasks')return`<div class="form-group"><label class="form-label">משימה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">מבצע</label><select class="form-control" id="f-assignee">${uOpts}</select></div><div class="form-group"><label class="form-label">תאריך ביצוע</label><input class="form-control" id="f-dueDate" type="date"></div></div><div class="form-group"><label class="form-label">תאריך תזכורת</label><input class="form-control" id="f-reminderDate" type="date"></div>`;
-  return'';
+function getForm(type){const po=DB.products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');const uo=Object.values(USERS).map(v=>`<option>${v.name}</option>`).join('');const td=todayVal();
+if(type==='leads')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מלא *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">טלפון</label><input class="form-control" id="f-phone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-email" type="email"></div><div class="form-group"><label class="form-label">עיר</label><input class="form-control" id="f-city"></div></div><div class="form-row"><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>לידים חדשים 🎉</option><option>לידים זהב ⭐</option><option>פולאופ איכותי 😊</option><option>נוצר קשר ראשוני 📞</option><option>לא נסגר 😊</option><option>ליד לא תקין ❌</option></select></div><div class="form-group"><label class="form-label">מקור</label><input class="form-control" id="f-source" placeholder="פייסבוק, חבר..."></div></div>`;
+if(type==='deals')return`<div class="form-group"><label class="form-label">שם עסקה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">סכום</label><input class="form-control" id="f-amount" type="number"></div><div class="form-group"><label class="form-label">מוצר</label><select class="form-control" id="f-product">${po}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">שם לקוח</label><input class="form-control" id="f-clientName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>חדשה</option><option>בתהליך</option><option>סגורה</option><option>בוטלה</option></select></div></div><div class="form-group"><label class="form-label">תאריך סגירה</label><input class="form-control" id="f-closeDate" type="date" value="${td}"></div>`;
+if(type==='clients')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מלא *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">טלפון</label><input class="form-control" id="f-phone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-email" type="email"></div><div class="form-group"><label class="form-label">ת.ז</label><input class="form-control" id="f-idNumber"></div></div><div class="form-row"><div class="form-group"><label class="form-label">עיר</label><input class="form-control" id="f-city"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>פעיל</option><option>לא פעיל</option></select></div></div>`;
+if(type==='payments')return`<div class="form-row"><div class="form-group"><label class="form-label">שם לקוח *</label><input class="form-control" id="f-clientName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">סכום</label><input class="form-control" id="f-amount" type="number"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך גבייה</label><input class="form-control" id="f-date" type="date" value="${td}"></div><div class="form-group"><label class="form-label">בנק</label><input class="form-control" id="f-bank"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אמצעי</label><select class="form-control" id="f-method"><option>העברה בנקאית</option><option>המחאה</option><option>אשראי</option><option>מזומן</option><option>ביט</option><option>פייבוקס</option></select></div><div class="form-group"><label class="form-label">מוצר</label><select class="form-control" id="f-product">${po}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך המחאה</label><input class="form-control" id="f-checkDate" type="date" value="${td}"></div><div class="form-group"><label class="form-label">גבה אותו</label><input class="form-control" id="f-collector"></div></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>ממתין</option><option>שולם</option><option>בוטל</option></select></div>`;
+if(type==='products')return`<div class="form-row"><div class="form-group"><label class="form-label">שם *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">מחיר</label><input class="form-control" id="f-price" type="number"></div></div><div class="form-group"><label class="form-label">תיאור</label><textarea class="form-control" id="f-desc" rows="3"></textarea></div>`;
+if(type==='meetings')return`<div class="form-group"><label class="form-label">נושא *</label><input class="form-control" id="f-title"></div><div class="form-row"><div class="form-group"><label class="form-label">עם מי</label><input class="form-control" id="f-withName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">מיקום</label><input class="form-control" id="f-location"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך</label><input class="form-control" id="f-date" type="date" value="${td}"></div><div class="form-group"><label class="form-label">שעה</label><input class="form-control" id="f-time" type="time"></div></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>מתוכננת</option><option>בוצעה</option><option>בוטלה</option></select></div>`;
+if(type==='tasks')return`<div class="form-group"><label class="form-label">משימה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">מבצע</label><select class="form-control" id="f-assignee">${uo}</select></div><div class="form-group"><label class="form-label">תאריך ביצוע</label><input class="form-control" id="f-dueDate" type="date" value="${td}"></div></div><div class="form-group"><label class="form-label">תזכורת</label><input class="form-control" id="f-reminderDate" type="date"></div>`;
+return'';}
+function saveModal(){const type=modalType;if(!type)return;const id=genId(),ts=now();let item={id,created:ts,updated:ts,createdBy:currentUser.username,notes:[],tasks:[],files:[]};const req=(fid,msg)=>{const v=g(fid).trim();if(!v){showToast(msg+' ❌');return null;}return v;};
+if(type==='leads'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,phone:g('f-phone'),email:g('f-email'),city:g('f-city'),status:g('f-status'),source:g('f-source')};}
+else if(type==='deals'){const n=req('f-name','שם חובה');if(!n)return;const prod=DB.products.find(p=>p.id===g('f-product'));item={...item,name:n,amount:g('f-amount'),clientName:g('f-clientName'),status:g('f-status'),closeDate:g('f-closeDate')||todayVal(),productId:g('f-product'),productName:prod?.name||''};if(modalParent){item.leadId=modalParent.id;item.leadName=modalParent.name;}}
+else if(type==='clients'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,phone:g('f-phone'),email:g('f-email'),city:g('f-city'),status:g('f-status'),idNumber:g('f-idNumber')};if(modalParent){item.dealId=modalParent.id;}}
+else if(type==='payments'){const cn=req('f-clientName','שם לקוח חובה');if(!cn)return;const prod=DB.products.find(p=>p.id===g('f-product'));item={...item,clientName:cn,amount:g('f-amount'),date:g('f-date')||todayVal(),bank:g('f-bank'),method:g('f-method'),status:g('f-status'),checkDate:g('f-checkDate'),collector:g('f-collector'),productId:g('f-product'),productName:prod?.name||''};if(modalParent){item.dealId=modalParent.id;item.clientId=modalParent.id;}}
+else if(type==='products'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,price:g('f-price'),desc:g('f-desc')};}
+else if(type==='meetings'){const t=req('f-title','נושא חובה');if(!t)return;item={...item,title:t,name:t,withName:g('f-withName'),location:g('f-location'),date:g('f-date')||todayVal(),time:g('f-time'),status:g('f-status')};if(modalParent){item[modalParent.type+'Id']=modalParent.id;item[modalParent.type+'Name']=modalParent.name;}}
+else if(type==='tasks'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,assignee:g('f-assignee'),dueDate:g('f-dueDate')||todayVal(),reminderDate:g('f-reminderDate'),done:false};}
+if(!DB[type])DB[type]=[];DB[type].push(item);saveData();closeModal();showToast('נוסף ✅');
+if(currentRecordType&&currentRecord){const rec=DB[currentRecordType].find(r=>r.id===currentRecord.id);if(rec){currentRecord={...rec};document.getElementById('recordLeft').innerHTML=renderLeft();}}else{renderPage(currentPage);}
 }
-function saveModal(){
-  const type=modalType;if(!type)return;
-  const id=genId();let item={id,created:now(),notes:[],tasks:[],files:[]};
-  const req=(fid,msg)=>{const v=g(fid).trim();if(!v){showToast(msg+' ❌');return null;}return v;};
-  if(type==='leads'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;item={...item,name,phone:g('f-phone'),email:g('f-email'),city:g('f-city'),status:g('f-status'),source:g('f-source')};}
-  else if(type==='deals'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;const prod=DB.products.find(p=>p.id===g('f-product'));item={...item,name,amount:g('f-amount'),clientName:g('f-clientName'),status:g('f-status'),closeDate:g('f-closeDate'),productId:g('f-product'),productName:prod?.name||''};if(modalParent){item.leadId=modalParent.id;item.leadName=modalParent.name;}}
-  else if(type==='clients'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;item={...item,name,phone:g('f-phone'),email:g('f-email'),city:g('f-city'),status:g('f-status'),idNumber:g('f-idNumber')};if(modalParent){item.dealId=modalParent.id;}}
-  else if(type==='payments'){const cn=req('f-clientName','שם לקוח הוא שדה חובה');if(!cn)return;const prod=DB.products.find(p=>p.id===g('f-product'));item={...item,clientName:cn,amount:g('f-amount'),date:g('f-date'),bank:g('f-bank'),method:g('f-method'),status:g('f-status'),checkDate:g('f-checkDate'),collector:g('f-collector'),productId:g('f-product'),productName:prod?.name||''};if(modalParent){item.dealId=modalParent.id;item.clientId=modalParent.id;}}
-  else if(type==='products'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;item={...item,name,price:g('f-price'),desc:g('f-desc')};}
-  else if(type==='meetings'){const title=req('f-title','נושא הוא שדה חובה');if(!title)return;item={...item,title,name:title,withName:g('f-withName'),location:g('f-location'),date:g('f-date'),time:g('f-time'),status:g('f-status')};if(modalParent){item[modalParent.type+'Id']=modalParent.id;item[modalParent.type+'Name']=modalParent.name;}}
-  else if(type==='tasks'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;item={...item,name,assignee:g('f-assignee'),dueDate:g('f-dueDate'),reminderDate:g('f-reminderDate'),done:false};}
-  if(!DB[type])DB[type]=[];
-  DB[type].push(item);saveData();closeModal();showToast('נוסף בהצלחה ✅');
-  if(currentRecordType&&currentRecord){const rec=DB[currentRecordType].find(r=>r.id===currentRecord.id);if(rec){currentRecord={...rec};document.getElementById('recordFields').innerHTML=renderRecordFields(currentRecordType,currentRecord);}}else{renderPage(currentPage);}
-}
-function deleteItem(type,id){if(!confirm('למחוק?'))return;DB[type]=DB[type].filter(r=>r.id!==id);saveData();renderPage(currentPage);showToast('נמחק ✅');}
-function exportData(){
-  const data=DB[currentPage]||[];if(!data.length){showToast('אין נתונים לייצוא');return;}
-  const cfg=LIST_CONFIGS[currentPage];if(!cfg)return;
-  const csv='\uFEFF'+cfg.cols.join(',')+'\n'+data.map(r=>cfg.fields(r).map(f=>'"'+f.replace(/<[^>]+>/g,'').replace(/,/g,'')+'"').join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=currentPage+'_export.csv';a.click();showToast('ייצוא הושלם ✅');
-}
-function renderSettings(){
-  return `<div style="max-width:600px"><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><button class="btn btn-primary" onclick="showToast('נשמר ✅')" style="margin-top:8px">שמור</button></div>
-  <div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">🗂️ גיבוי</div><div style="display:flex;gap:10px;margin-top:8px"><button class="btn btn-secondary" onclick="backupData()">⬇️ גיבוי JSON</button><button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">⬆️ שחזור</button><input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)"><button class="btn btn-danger" onclick="clearAll()">🗑️ מחק הכל</button></div></div>
-  <div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>${Object.keys(DB).map(k=>Array.isArray(DB[k])?`<div class="status-row"><span class="status-label">${PAGE_ICONS[k]||'📋'} ${PAGE_TITLES[k]||k}</span><span class="status-count">${DB[k].length}</span></div>`:'').filter(Boolean).join('')}</div></div>`;
-}
+function deleteItem(type,id){if(!perm('delete')){showToast('אין הרשאה ❌');return;}if(!confirm('למחוק?'))return;DB[type]=DB[type].filter(r=>r.id!==id);saveData();renderPage(currentPage);showToast('נמחק ✅');}
+function exportData(){if(!perm('export')){showToast('אין הרשאה ❌');return;}const data=DB[currentPage]||[];if(!data.length){showToast('אין נתונים');return;}const cfg=LIST_CONFIGS[currentPage];if(!cfg)return;const csv='\uFEFF'+cfg.cols.join(',')+'\n'+data.map(r=>cfg.fields(r).map(f=>'"'+String(f).replace(/<[^>]+>/g,'').replace(/,/g,'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=currentPage+'_export.csv';a.click();showToast('ייצוא ✅');}
+function renderSettings(){return `<div style="max-width:600px"><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><button class="btn btn-primary" onclick="showToast('נשמר ✅')" style="margin-top:8px">שמור</button></div><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">🗂️ גיבוי</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-secondary" onclick="backupData()">⬇️ גיבוי JSON</button><button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">⬆️ שחזור</button><input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)">${perm('delete')?`<button class="btn btn-danger" onclick="clearAll()">🗑️ מחק הכל</button>`:''}</div></div><div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>${Object.keys(DB).map(k=>Array.isArray(DB[k])?`<div class="status-row"><span class="status-label">${PAGE_ICONS[k]||'📋'} ${PAGE_TITLES[k]||k}</span><span class="status-count">${DB[k].length}</span></div>`:'').filter(Boolean).join('')}</div></div>`;}
 function backupData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}));a.download='roi_crm_backup.json';a.click();showToast('גיבוי הורד ✅');}
-function restoreData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{DB=JSON.parse(ev.target.result);saveData();showPage(currentPage);showToast('שוחזר ✅');}catch(err){showToast('קובץ שגוי ❌');}};reader.readAsText(file);}
-function clearAll(){if(!confirm('למחוק את כל הנתונים?'))return;DB=defaultData();saveData();showPage(currentPage);showToast('נמחק הכל ✅');}
+function restoreData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{DB=JSON.parse(ev.target.result);saveData();showPage(currentPage);showToast('שוחזר ✅');}catch{showToast('קובץ שגוי ❌');}};r.readAsText(f);}
+function clearAll(){if(!confirm('למחוק הכל?'))return;DB=defaultData();saveData();showPage(currentPage);showToast('נמחק ✅');}
 function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
-// INIT
 updateBadges();
-const savedUser=sessionStorage.getItem('roicrm_user');
-if(savedUser){try{const u=JSON.parse(savedUser);currentUser=u;document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=u.name;document.getElementById('userAvatar').textContent=u.avatar;showPage('dashboard');}catch(e){}}
+const su=sessionStorage.getItem('roicrm_user');
+if(su){try{currentUser=JSON.parse(su);initApp();}catch(e){}}
 </script>
 </body>
 </html>
