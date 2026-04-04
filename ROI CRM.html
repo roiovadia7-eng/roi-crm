@@ -1,1733 +1,459 @@
 <!DOCTYPE html>
-<!-- saved from url=(0048)file:///Users/roiovadia/Downloads/crm-roi_2.html -->
-<html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROI CRM</title>
-<link href="./ROI CRM_files/css2" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f4f5f7;
-    --sidebar-bg: #1a1d2e;
-    --sidebar-text: #a8adc4;
-    --sidebar-active: #ffffff;
-    --sidebar-accent: #4f6ef7;
-    --card: #ffffff;
-    --border: #e8eaed;
-    --text: #1a1d2e;
-    --text-muted: #6b7280;
-    --primary: #4f6ef7;
-    --primary-light: #eef1fe;
-    --success: #10b981;
-    --success-light: #d1fae5;
-    --warning: #f59e0b;
-    --warning-light: #fef3c7;
-    --danger: #ef4444;
-    --danger-light: #fee2e2;
-    --gold: #f59e0b;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
-    --radius: 10px;
-    --radius-sm: 6px;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; font-size: 14px; }
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#f0f2f5; --sidebar:#1a1f2e; --sidebar2:#252b3b; --accent:#4f6ef7;
+  --accent2:#6c8aff; --white:#fff; --border:#e2e8f0; --text:#1e293b;
+  --text2:#64748b; --success:#10b981; --warn:#f59e0b; --danger:#ef4444;
+  --card:#ffffff; --hover:#f8fafc;
+}
+body { font-family:'Segoe UI',Arial,sans-serif; background:var(--bg); color:var(--text); display:flex; height:100vh; overflow:hidden; }
 
-  /* SIDEBAR */
-  .sidebar { width: 220px; background: var(--sidebar-bg); display: flex; flex-direction: column; flex-shrink: 0; }
-  .sidebar-logo { padding: 20px 16px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
-  .sidebar-logo .logo-text { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
-  .sidebar-logo .logo-sub { font-size: 11px; color: var(--sidebar-text); margin-top: 2px; }
-  .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
-  .nav-section { padding: 8px 16px 4px; font-size: 10px; font-weight: 600; color: rgba(168,173,196,0.5); text-transform: uppercase; letter-spacing: 0.8px; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer; color: var(--sidebar-text); font-size: 13.5px; font-weight: 400; border-right: 3px solid transparent; transition: all 0.15s; }
-  .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
-  .nav-item.active { background: rgba(79,110,247,0.15); color: #fff; border-right-color: var(--sidebar-accent); font-weight: 500; }
-  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
-  .nav-badge { margin-right: auto; background: var(--sidebar-accent); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; }
-  .sidebar-user { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 10px; }
-  .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--sidebar-accent); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
-  .user-name { font-size: 13px; font-weight: 500; color: #fff; }
-  .user-role { font-size: 11px; color: var(--sidebar-text); }
-
-  /* MAIN */
-  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
-  .topbar-title { font-size: 17px; font-weight: 700; color: var(--text); }
-  .topbar-count { background: var(--primary-light); color: var(--primary); font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-  .topbar-actions { margin-right: auto; display: flex; align-items: center; gap: 8px; }
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; border: none; font-family: 'Heebo', sans-serif; transition: all 0.15s; }
-  .btn-primary { background: var(--primary); color: #fff; }
-  .btn-primary:hover { background: #3d5ce6; }
-  .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
-  .btn-ghost:hover { background: var(--bg); }
-  .btn-success { background: var(--success); color: #fff; }
-  .btn-danger { background: var(--danger); color: #fff; }
-
-  .content { flex: 1; overflow-y: auto; padding: 20px 24px; }
-
-  /* TABS */
-  .tabs { display: flex; gap: 2px; background: var(--bg); border-radius: var(--radius-sm); padding: 3px; border: 1px solid var(--border); width: fit-content; }
-  .tab { padding: 5px 14px; border-radius: 5px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
-  .tab.active { background: var(--card); color: var(--primary); box-shadow: var(--shadow); }
-
-  /* VIEWS */
-  .view { display: none; }
-  .view.active { display: block; }
-
-  /* DASHBOARD */
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
-  .kpi-card { background: var(--card); border-radius: var(--radius); padding: 16px 18px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-  .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 8px; }
-  .kpi-value { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1; }
-  .kpi-value.green { color: var(--success); }
-  .kpi-value.red { color: var(--danger); }
-  .kpi-value.blue { color: var(--primary); }
-  .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
-
-  .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .chart-card { background: var(--card); border-radius: var(--radius); padding: 18px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-  .chart-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
-  .revenue-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .revenue-table th { text-align: right; padding: 6px 10px; color: var(--text-muted); font-weight: 600; font-size: 11px; border-bottom: 1px solid var(--border); }
-  .revenue-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
-  .revenue-table tr:last-child td { border-bottom: none; font-weight: 700; background: var(--bg); }
-  .revenue-table tr:hover td { background: var(--bg); }
-
-  /* TABLE */
-  .table-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .search-box { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 12px; flex: 1; max-width: 300px; }
-  .search-box input { border: none; outline: none; font-family: 'Heebo', sans-serif; font-size: 13px; background: transparent; width: 100%; color: var(--text); }
-  .data-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
-  .data-table th { text-align: right; padding: 11px 14px; background: var(--bg); font-size: 12px; font-weight: 600; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
-  .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
-  .data-table tr:last-child td { border-bottom: none; }
-  .data-table tbody tr:hover td { background: var(--bg); cursor: pointer; }
-  .data-table tbody tr { transition: background 0.1s; }
-
-  /* BADGES */
-  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-  .badge-new { background: #dbeafe; color: #1d4ed8; }
-  .badge-gold { background: #fef3c7; color: #92400e; }
-  .badge-followup { background: #ede9fe; color: #5b21b6; }
-  .badge-contact { background: #d1fae5; color: #065f46; }
-  .badge-nomatch { background: #fee2e2; color: #991b1b; }
-  .badge-closed { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-  .badge-open { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-  .badge-active { background: var(--success-light); color: #065f46; }
-  .badge-inactive { background: #f1f5f9; color: #475569; }
-  .phone-link { color: var(--primary); text-decoration: none; font-weight: 500; }
-  .phone-link:hover { text-decoration: underline; }
-
-  /* MODAL */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--card); border-radius: var(--radius); width: 560px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-  .modal-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--card); z-index: 1; }
-  .modal-title { font-size: 16px; font-weight: 700; }
-  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; }
-  .modal-close:hover { background: var(--bg); }
-  .modal-body { padding: 20px; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .form-group { display: flex; flex-direction: column; gap: 5px; }
-  .form-group.full { grid-column: 1 / -1; }
-  .form-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
-  .form-input { padding: 8px 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'Heebo', sans-serif; font-size: 13px; color: var(--text); outline: none; transition: border 0.15s; background: var(--card); }
-  .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-  .form-select { padding: 8px 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'Heebo', sans-serif; font-size: 13px; color: var(--text); outline: none; background: var(--card); cursor: pointer; }
-  .form-select:focus { border-color: var(--primary); }
-  .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
-
-  /* DETAIL PANEL */
-  .detail-panel { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
-  .detail-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .detail-name { font-size: 16px; font-weight: 700; }
-  .detail-body { display: grid; grid-template-columns: 1fr 1fr; }
-  .detail-left { padding: 16px 18px; border-left: 1px solid var(--border); }
-  .detail-right { padding: 16px 18px; }
-  .field-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); }
-  .field-row:last-child { border-bottom: none; }
-  .field-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-  .field-value { font-size: 13px; font-weight: 500; color: var(--text); }
-
-  /* STATUS PIPELINE */
-  .pipeline { display: flex; gap: 0; margin-bottom: 20px; overflow-x: auto; }
-  .pipeline-stage { flex: 1; min-width: 120px; padding: 10px 8px; text-align: center; background: var(--card); border: 1px solid var(--border); cursor: pointer; font-size: 12px; font-weight: 500; color: var(--text-muted); transition: all 0.15s; position: relative; }
-  .pipeline-stage:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
-  .pipeline-stage:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
-  .pipeline-stage.active { background: var(--primary); color: #fff; border-color: var(--primary); z-index: 1; }
-  .pipeline-stage:hover:not(.active) { background: var(--primary-light); color: var(--primary); }
-  .pipeline-count { display: block; font-size: 18px; font-weight: 800; margin-bottom: 2px; }
-
-  /* EMPTY STATE */
-  .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-  .empty-icon { font-size: 48px; margin-bottom: 12px; }
-  .empty-text { font-size: 15px; font-weight: 500; }
-
-  /* NOTIFICATIONS */
-  .toast { position: fixed; bottom: 24px; left: 24px; background: var(--text); color: #fff; padding: 12px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; z-index: 9999; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; }
-  .toast.show { opacity: 1; transform: translateY(0); }
-
-  /* RESPONSIVE TWEAKS */
-  .table-wrap { overflow-x: auto; }
-  
-  /* ACTION BUTTONS IN TABLE */
-  .row-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
-  tr:hover .row-actions { opacity: 1; }
-  .action-btn { padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font-size: 12px; color: var(--text-muted); font-family: 'Heebo', sans-serif; transition: all 0.15s; }
-  .action-btn:hover { background: var(--danger-light); color: var(--danger); border-color: var(--danger); }
-  .action-btn.edit:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
-
-  /* SETTINGS VIEW */
-  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .settings-card { background: var(--card); border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); }
-  .settings-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
-  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-  .tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; font-weight: 500; }
-  .tag-remove { cursor: pointer; color: var(--text-muted); font-size: 14px; line-height: 1; }
-  .tag-remove:hover { color: var(--danger); }
-  .tag-input-row { display: flex; gap: 8px; }
-
-  /* LOGIN */
-  .login-overlay { position: fixed; inset: 0; background: #1a1d2e; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-  .login-box { background: #ffffff; border-radius: 16px; padding: 40px 36px; width: 360px; box-shadow: 0 24px 80px rgba(0,0,0,0.35); text-align: center; }
-  .login-logo { font-size: 32px; font-weight: 800; color: var(--primary); letter-spacing: -1px; margin-bottom: 4px; }
-  .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; }
-  .login-group { text-align: right; margin-bottom: 16px; }
-  .login-label { font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 5px; }
-  .login-input { width: 100%; padding: 10px 13px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'Heebo', sans-serif; font-size: 14px; outline: none; transition: border 0.15s; }
-  .login-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-  .login-btn { width: 100%; padding: 11px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-family: 'Heebo', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: background 0.15s; }
-  .login-btn:hover { background: #3d5ce6; }
-  .login-error { color: var(--danger); font-size: 13px; margin-top: 10px; min-height: 20px; }
-  .login-hint { font-size: 11px; color: var(--text-muted); margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.sidebar { width:220px; background:var(--sidebar); display:flex; flex-direction:column; flex-shrink:0; }
+.logo { padding:20px 16px; border-bottom:1px solid #2d3548; }
+.logo-title { font-size:22px; font-weight:800; color:#fff; }
+.logo-sub { font-size:11px; color:#8892b0; }
+.nav { flex:1; padding:8px 0; overflow-y:auto; }
+.nav-section { padding:8px 16px 4px; font-size:10px; color:#4a5568; text-transform:uppercase; letter-spacing:1px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:10px 16px; cursor:pointer; color:#a0aec0; font-size:13.5px; transition:all .15s; border-right:3px solid transparent; }
+.nav-item:hover { background:var(--sidebar2); color:#fff; }
+.nav-item.active { background:var(--sidebar2); color:#fff; border-right-color:var(--accent); }
+.nav-item .icon { font-size:16px; width:20px; text-align:center; }
+.nav-badge { margin-right:auto; background:var(--accent); color:#fff; font-size:10px; padding:1px 6px; border-radius:10px; }
+.user-bar { padding:12px 16px; border-top:1px solid #2d3548; display:flex; align-items:center; gap:10px; }
+.user-avatar { width:34px; height:34px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:14px; flex-shrink:0; }
+.user-name { font-size:13px; color:#e2e8f0; font-weight:600; }
+.user-role { font-size:11px; color:#718096; }
+.main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0 24px; height:56px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.page-title { font-size:18px; font-weight:700; color:var(--text); }
+.topbar-actions { display:flex; gap:10px; align-items:center; }
+.btn { padding:8px 16px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; transition:all .15s; }
+.btn-primary { background:var(--accent); color:#fff; }
+.btn-primary:hover { background:var(--accent2); }
+.btn-secondary { background:var(--hover); color:var(--text2); border:1px solid var(--border); }
+.btn-secondary:hover { background:var(--border); }
+.btn-sm { padding:5px 10px; font-size:12px; }
+.btn-danger { background:#fef2f2; color:var(--danger); border:1px solid #fecaca; }
+.btn-success { background:#f0fdf4; color:var(--success); border:1px solid #bbf7d0; }
+.btn-icon { padding:6px 8px; }
+.content { flex:1; overflow-y:auto; padding:24px; }
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.stat-card { background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--border); }
+.stat-label { font-size:12px; color:var(--text2); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.stat-value { font-size:28px; font-weight:800; color:var(--text); }
+.stat-value.accent { color:var(--accent); }
+.stat-value.success { color:var(--success); }
+.stat-value.warn { color:var(--warn); }
+.stat-value.danger { color:var(--danger); }
+.stat-sub { font-size:11px; color:var(--text2); margin-top:4px; }
+.dash-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.dash-card { background:var(--card); border-radius:12px; border:1px solid var(--border); padding:20px; }
+.dash-card-title { font-size:14px; font-weight:700; margin-bottom:16px; color:var(--text); }
+.status-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--hover); }
+.status-row:last-child { border:none; }
+.status-label { font-size:13px; color:var(--text2); display:flex; align-items:center; gap:8px; }
+.status-count { font-size:14px; font-weight:700; color:var(--accent); }
+.table-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
+.search-box { display:flex; align-items:center; gap:8px; background:var(--white); border:1px solid var(--border); border-radius:8px; padding:8px 12px; min-width:220px; }
+.search-box input { border:none; outline:none; font-size:13px; background:transparent; width:100%; }
+.table-wrap { background:var(--card); border-radius:12px; border:1px solid var(--border); overflow:hidden; }
+table { width:100%; border-collapse:collapse; }
+thead th { background:var(--hover); padding:12px 16px; font-size:12px; font-weight:600; color:var(--text2); text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
+tbody tr { cursor:pointer; transition:background .1s; }
+tbody tr:hover { background:var(--hover); }
+tbody td { padding:12px 16px; font-size:13px; border-bottom:1px solid var(--hover); }
+tbody tr:last-child td { border:none; }
+.badge { display:inline-flex; align-items:center; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-blue { background:#eff6ff; color:#3b82f6; }
+.badge-green { background:#f0fdf4; color:var(--success); }
+.badge-yellow { background:#fffbeb; color:var(--warn); }
+.badge-red { background:#fef2f2; color:var(--danger); }
+.badge-gray { background:var(--hover); color:var(--text2); }
+.record-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:100; display:none; align-items:stretch; }
+.record-overlay.open { display:flex; }
+.record-panel { background:var(--bg); width:100%; max-width:1200px; margin:0 auto; display:flex; flex-direction:column; height:100vh; }
+.record-topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0 24px; height:56px; display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.record-back { cursor:pointer; color:var(--text2); font-size:20px; padding:4px; border-radius:6px; }
+.record-back:hover { background:var(--hover); color:var(--text); }
+.record-title-bar { flex:1; }
+.record-name { font-size:18px; font-weight:700; }
+.record-type { font-size:12px; color:var(--text2); }
+.record-body { flex:1; display:grid; grid-template-columns:1fr 380px; overflow:hidden; }
+.record-fields { padding:24px; overflow-y:auto; border-left:1px solid var(--border); }
+.record-notes-col { padding:24px; overflow-y:auto; background:var(--white); }
+.field-section { margin-bottom:24px; }
+.field-section-title { font-size:13px; font-weight:700; color:var(--text2); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.field-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.field-item { display:flex; flex-direction:column; gap:4px; }
+.field-label { font-size:11px; color:var(--text2); font-weight:600; }
+.field-value { font-size:13.5px; color:var(--text); padding:8px 10px; background:var(--hover); border-radius:6px; border:1px solid var(--border); min-height:34px; cursor:pointer; }
+.field-value:hover { border-color:var(--accent); }
+.field-value.editable:focus { outline:none; border-color:var(--accent); background:#fff; }
+.field-value.full { grid-column:1/-1; }
+.related-section { background:var(--hover); border-radius:10px; padding:16px; margin-bottom:16px; }
+.related-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.related-title { font-size:13px; font-weight:700; color:var(--text); }
+.related-count { background:var(--accent); color:#fff; font-size:10px; padding:1px 7px; border-radius:10px; }
+.related-list { display:flex; flex-direction:column; gap:8px; }
+.related-item { background:var(--white); border-radius:8px; padding:10px 14px; cursor:pointer; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.related-item:hover { border-color:var(--accent); }
+.related-item-name { font-size:13px; font-weight:600; }
+.related-item-sub { font-size:11px; color:var(--text2); }
+.related-empty { font-size:12px; color:var(--text2); text-align:center; padding:12px; }
+.notes-header { font-size:14px; font-weight:700; margin-bottom:16px; }
+.add-note-box { background:var(--hover); border-radius:10px; padding:12px; margin-bottom:16px; border:1px solid var(--border); }
+.add-note-box textarea { width:100%; border:none; background:transparent; font-size:13px; resize:none; outline:none; min-height:70px; font-family:inherit; color:var(--text); }
+.add-note-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:8px; }
+.note-item { background:var(--hover); border-radius:10px; padding:14px; margin-bottom:10px; border-right:3px solid var(--accent); }
+.note-text { font-size:13px; color:var(--text); line-height:1.6; }
+.note-meta { font-size:11px; color:var(--text2); margin-top:6px; display:flex; gap:10px; }
+.note-delete { cursor:pointer; color:var(--danger); }
+.add-task-section { background:#f0f4ff; border-radius:10px; padding:14px; margin-bottom:16px; border:1px solid #c7d2fe; }
+.add-task-title { font-size:12px; font-weight:700; color:var(--accent); margin-bottom:10px; }
+.task-fields { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+.task-field-full { grid-column:1/-1; }
+.task-input { width:100%; padding:7px 10px; border:1px solid var(--border); border-radius:6px; font-size:12px; font-family:inherit; background:#fff; }
+.task-item { background:#fff; border-radius:8px; padding:10px 14px; margin-bottom:8px; border:1px solid var(--border); display:flex; align-items:flex-start; gap:10px; }
+.task-check { width:16px; height:16px; cursor:pointer; margin-top:2px; flex-shrink:0; }
+.task-info { flex:1; }
+.task-name { font-size:13px; font-weight:600; }
+.task-name.done { text-decoration:line-through; color:var(--text2); }
+.task-meta { font-size:11px; color:var(--text2); margin-top:3px; display:flex; gap:10px; flex-wrap:wrap; }
+.files-section { margin-top:8px; }
+.file-drop { border:2px dashed var(--border); border-radius:10px; padding:20px; text-align:center; cursor:pointer; }
+.file-drop:hover { border-color:var(--accent); background:#f0f4ff; }
+.file-drop-text { font-size:12px; color:var(--text2); }
+.file-list { margin-top:10px; display:flex; flex-direction:column; gap:6px; }
+.file-item { display:flex; align-items:center; gap:10px; background:var(--hover); border-radius:8px; padding:8px 12px; border:1px solid var(--border); }
+.file-icon { font-size:18px; }
+.file-name { font-size:12px; font-weight:600; flex:1; }
+.file-size { font-size:11px; color:var(--text2); }
+.file-del { cursor:pointer; color:var(--danger); }
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; display:none; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--white); border-radius:16px; padding:28px; width:500px; max-width:95vw; max-height:90vh; overflow-y:auto; }
+.modal h3 { font-size:18px; font-weight:700; margin-bottom:20px; }
+.form-group { margin-bottom:14px; }
+.form-label { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:5px; display:block; }
+.form-control { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; background:#fff; outline:none; }
+.form-control:focus { border-color:var(--accent); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+.toast { position:fixed; bottom:24px; left:24px; background:#1e293b; color:#fff; padding:12px 20px; border-radius:10px; font-size:13px; z-index:999; transform:translateY(100px); transition:transform .3s; display:flex; align-items:center; gap:10px; }
+.toast.show { transform:translateY(0); }
+.login-wrap { width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#1a1f2e 0%,#252b3b 100%); }
+.login-card { background:#fff; border-radius:20px; padding:40px; width:380px; }
+.login-logo { text-align:center; margin-bottom:30px; }
+.login-logo-text { font-size:36px; font-weight:900; color:var(--accent); }
+.login-logo-sub { font-size:13px; color:var(--text2); }
+.login-title { font-size:22px; font-weight:700; margin-bottom:6px; }
+.login-sub { font-size:13px; color:var(--text2); margin-bottom:24px; }
+.login-error { background:#fef2f2; color:var(--danger); padding:10px 14px; border-radius:8px; font-size:13px; margin-bottom:16px; display:none; }
+.empty-state { text-align:center; padding:60px 20px; color:var(--text2); }
+.empty-state .es-icon { font-size:48px; margin-bottom:16px; }
+.empty-state .es-title { font-size:16px; font-weight:700; color:var(--text); margin-bottom:6px; }
+.empty-state .es-sub { font-size:13px; }
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:3px; }
+@media (max-width:900px) { .record-body { grid-template-columns:1fr; } .stats-grid { grid-template-columns:1fr 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div class="login-overlay" id="login-overlay" style="display: none;">
-  <div class="login-box">
-    <div class="login-logo">ROI</div>
-    <div class="login-sub">מערכת CRM — כניסה מאובטחת</div>
-    <div class="login-group">
-      <label class="login-label">שם משתמש</label>
-      <input class="login-input" id="login-user" type="text" placeholder="הזן שם משתמש" autocomplete="username" onkeydown="if(event.key===&#39;Enter&#39;)document.getElementById(&#39;login-pass&#39;).focus()">
-    </div>
-    <div class="login-group">
-      <label class="login-label">סיסמא</label>
-      <input class="login-input" id="login-pass" type="password" placeholder="הזן סיסמא" autocomplete="current-password" onkeydown="if(event.key===&#39;Enter&#39;)doLogin()">
-    </div>
-    <button class="login-btn" onclick="doLogin()">כניסה למערכת</button>
-    <div class="login-error" id="login-error"></div>
-    <div class="login-hint">לשינוי סיסמא — פנה למנהל המערכת</div>
+<!-- LOGIN -->
+<div id="loginPage" class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo"><div class="login-logo-text">ROI</div><div class="login-logo-sub">מערכת CRM</div></div>
+    <div class="login-title">ברוך הבא 👋</div>
+    <div class="login-sub">התחבר כדי להמשיך</div>
+    <div class="login-error" id="loginError">שם משתמש או סיסמא שגויים</div>
+    <div class="form-group"><label class="form-label">שם משתמש</label><input class="form-control" id="loginUser" type="text" placeholder="roi" dir="ltr"></div>
+    <div class="form-group"><label class="form-label">סיסמא</label><input class="form-control" id="loginPass" type="password" placeholder="••••••••" dir="ltr"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;" onclick="doLogin()">התחבר</button>
   </div>
 </div>
 
-<!-- SIDEBAR -->
+<div id="app" style="display:none;width:100%;flex-direction:row;height:100vh;">
 <div class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-text">ROI</div>
-    <div class="logo-sub">מערכת CRM</div>
-  </div>
-  <nav class="sidebar-nav">
+  <div class="logo"><div class="logo-title">ROI</div><div class="logo-sub">CRM מערכת</div></div>
+  <nav class="nav">
     <div class="nav-section">ראשי</div>
-    <div class="nav-item active" onclick="showView(&#39;dashboard&#39;)">
-      <span class="icon">📊</span> דאשבורד
-    </div>
+    <div class="nav-item active" onclick="showPage('dashboard')"><span class="icon">📊</span> דאשבורד</div>
     <div class="nav-section">ניהול</div>
-    <div class="nav-item" onclick="showView(&#39;leads&#39;)">
-      <span class="icon">⭐</span> מתעניינים
-      <span class="nav-badge" id="leads-badge">0</span>
-    </div>
-    <div class="nav-item" onclick="showView(&#39;deals&#39;)">
-      <span class="icon">💼</span> עסקאות
-      <span class="nav-badge" id="deals-badge">0</span>
-    </div>
-    <div class="nav-item" onclick="showView(&#39;clients&#39;)">
-      <span class="icon">👥</span> לקוחות
-      <span class="nav-badge" id="clients-badge">0</span>
-    </div>
-    <div class="nav-item" onclick="showView(&#39;payments&#39;)">
-      <span class="icon">💰</span> תשלומים
-      <span class="nav-badge" id="payments-badge">0</span>
-    </div>
-    <div class="nav-item" onclick="showView(&#39;products&#39;)">
-      <span class="icon">📦</span> מוצרים
-      <span class="nav-badge" id="products-badge">6</span>
-    </div>
-    <div class="nav-item" onclick="showView(&#39;meetings&#39;)">
-      <span class="icon">📅</span> פגישות
-      <span class="nav-badge" id="meetings-badge">0</span>
-    </div>
-    <div class="nav-item" onclick="showView(&#39;tasks&#39;)">
-      <span class="icon">✅</span> משימות
-      <span class="nav-badge" id="tasks-badge">0</span>
-    </div>
+    <div class="nav-item" onclick="showPage('leads')"><span class="icon">⭐</span> מתעניינים<span class="nav-badge" id="badge-leads">0</span></div>
+    <div class="nav-item" onclick="showPage('deals')"><span class="icon">💼</span> עסקאות<span class="nav-badge" id="badge-deals">0</span></div>
+    <div class="nav-item" onclick="showPage('clients')"><span class="icon">👥</span> לקוחות<span class="nav-badge" id="badge-clients">0</span></div>
+    <div class="nav-item" onclick="showPage('payments')"><span class="icon">💰</span> תשלומים<span class="nav-badge" id="badge-payments">0</span></div>
+    <div class="nav-item" onclick="showPage('products')"><span class="icon">🛍️</span> מוצרים<span class="nav-badge" id="badge-products">0</span></div>
+    <div class="nav-item" onclick="showPage('meetings')"><span class="icon">📅</span> פגישות<span class="nav-badge" id="badge-meetings">0</span></div>
+    <div class="nav-item" onclick="showPage('tasks')"><span class="icon">✅</span> משימות<span class="nav-badge" id="badge-tasks">0</span></div>
     <div class="nav-section">מערכת</div>
-    <div class="nav-item" onclick="showView(&#39;settings&#39;)">
-      <span class="icon">⚙️</span> הגדרות
-    </div>
+    <div class="nav-item" onclick="showPage('settings')"><span class="icon">⚙️</span> הגדרות</div>
   </nav>
-  <div class="sidebar-user">
-    <div class="user-avatar" id="user-avatar">ר</div>
-    <div style="flex:1">
-      <div class="user-name" id="user-display">רועי עובדיה</div>
-      <div class="user-role">מנהל מערכת</div>
-    </div>
-    <span onclick="doLogout()" title="התנתק" style="cursor:pointer;font-size:16px;opacity:0.6" onmouseover="this.style.opacity=&#39;1&#39;" onmouseout="this.style.opacity=&#39;0.6&#39;">🚪</span>
-  </div>
+  <div class="user-bar"><div class="user-avatar" id="userAvatar">ר</div><div><div class="user-name" id="userName">רועי עובדיה</div><div class="user-role">מנהל מערכת</div></div></div>
 </div>
-
-<!-- MAIN CONTENT -->
 <div class="main">
   <div class="topbar">
-    <div class="topbar-title" id="page-title">דאשבורד</div>
-    <span class="topbar-count" id="page-count" style="display:none"></span>
-    <div class="topbar-actions" id="topbar-actions"></div>
+    <div class="page-title" id="pageTitle">דאשבורד</div>
+    <div class="topbar-actions">
+      <button class="btn btn-secondary btn-sm" id="exportBtn" onclick="exportData()" style="display:none">⬇️ ייצוא</button>
+      <button class="btn btn-primary" id="addBtn" onclick="openAddModal()" style="display:none">+ הוסף</button>
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()">🚪 יציאה</button>
+    </div>
   </div>
-  <div class="content">
+  <div class="content" id="mainContent"></div>
+</div>
+</div>
 
-    <!-- DASHBOARD -->
-    <div class="view active" id="view-dashboard">
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">💰 תזרים (כסף בבנק)</div>
-          <div class="kpi-value green" id="kpi-revenue">₪0</div>
-          <div class="kpi-sub">סכום תשלומים שהגיעו</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">🤝 עסקאות פתוחות</div>
-          <div class="kpi-value blue" id="kpi-deals">0</div>
-          <div class="kpi-sub">ממתינות לסגירה</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">⭐ לידים חדשים</div>
-          <div class="kpi-value" id="kpi-leads">0</div>
-          <div class="kpi-sub">ממתינים לטיפול</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">📉 גביה שנותר</div>
-          <div class="kpi-value red" id="kpi-pending">₪0</div>
-          <div class="kpi-sub">יתרת תשלום לגביה</div>
-        </div>
-      </div>
-      <div class="dashboard-grid">
-        <div class="chart-card">
-          <div class="chart-title">מחזור מכירות לפי מוצר</div>
-          <table class="revenue-table" id="revenue-table">
-            <thead><tr><th>מוצר</th><th>סכום</th></tr></thead>
-            <tbody id="revenue-tbody"><tr><td>סה"כ</td><td>₪0</td></tr></tbody>
-          </table>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">סטטוס לידים</div>
-          <div id="leads-summary"><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">🎉 לידים חדשים</span><strong style="color:var(--primary)">0</strong></div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">⭐ 1.5 לידים זהב</span><strong style="color:var(--primary)">0</strong></div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">🤝 פולואפ איכותי</span><strong style="color:var(--primary)">0</strong></div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">📞 נוצר קשר ראשוני</span><strong style="color:var(--primary)">0</strong></div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">😊 לא נסגר</span><strong style="color:var(--primary)">0</strong></div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">❌ ליד לא תקין</span><strong style="color:var(--primary)">0</strong></div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">🔍 חיפוש חופשי</span><strong style="color:var(--primary)">0</strong></div></div>
-        </div>
-      </div>
+<div class="record-overlay" id="recordOverlay">
+  <div class="record-panel">
+    <div class="record-topbar">
+      <span class="record-back" onclick="closeRecord()">✕</span>
+      <div class="record-title-bar"><div class="record-name" id="recordName">—</div><div class="record-type" id="recordType">—</div></div>
+      <div style="display:flex;gap:8px;"><button class="btn btn-success btn-sm" onclick="saveRecord()">💾 שמור</button><button class="btn btn-danger btn-sm" onclick="deleteRecord()">🗑️ מחק</button></div>
     </div>
-
-    <!-- LEADS -->
-    <div class="view" id="view-leads">
-      <div class="pipeline" id="leads-pipeline"></div>
-      <div class="table-toolbar">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" placeholder="חיפוש לפי שם, טלפון..." id="leads-search" oninput="renderLeads()">
-        </div>
-        <select class="form-select" id="leads-filter-status" onchange="renderLeads()" style="width:160px">
-          <option value="">כל הסטטוסים</option>
-        </select>
-        <select class="form-select" id="leads-filter-source" onchange="renderLeads()" style="width:160px">
-          <option value="">כל המקורות</option>
-        </select>
-      </div>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>שם מתעניין</th>
-              <th>טלפון</th>
-              <th>סטטוס</th>
-              <th>מקור הגעה</th>
-              <th>למה השאיר פרטים</th>
-              <th>נציג</th>
-              <th>תאריך</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="leads-tbody"></tbody>
-        </table>
-      </div>
+    <div class="record-body">
+      <div class="record-fields" id="recordFields"></div>
+      <div class="record-notes-col" id="recordNotesCol"></div>
     </div>
-
-    <!-- DEALS -->
-    <div class="view" id="view-deals">
-      <div class="table-toolbar">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" placeholder="חיפוש עסקה..." id="deals-search" oninput="renderDeals()">
-        </div>
-        <select class="form-select" id="deals-filter-status" onchange="renderDeals()" style="width:160px">
-          <option value="">כל הסטטוסים</option>
-        </select>
-      </div>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>שם עסקה</th>
-              <th>לקוח</th>
-              <th>מוצר</th>
-              <th>שווי עסקה</th>
-              <th>מספר תשלומים</th>
-              <th>סטטוס</th>
-              <th>נציג</th>
-              <th>תאריך</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="deals-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- CLIENTS -->
-    <div class="view" id="view-clients">
-      <div class="table-toolbar">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" placeholder="חיפוש לקוח..." id="clients-search" oninput="renderClients()">
-        </div>
-        <select class="form-select" id="clients-filter-status" onchange="renderClients()" style="width:160px">
-          <option value="">כל הסטטוסים</option>
-        </select>
-      </div>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>שם לקוח</th>
-              <th>טלפון</th>
-              <th>אימייל</th>
-              <th>עסקה משויכת</th>
-              <th>סטטוס לקוח</th>
-              <th>יועץ</th>
-              <th>תאריך התחלה</th>
-              <th>פגישות</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="clients-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- PAYMENTS -->
-    <div class="view" id="view-payments">
-      <div class="table-toolbar">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" placeholder="חיפוש תשלום..." id="payments-search" oninput="renderPayments()">
-        </div>
-        <select class="form-select" id="payments-filter-status" onchange="renderPayments()" style="width:180px">
-          <option value="">כל הסטטוסים</option>
-          <option value="שולם">שולם</option>
-          <option value="ממתין">ממתין</option>
-          <option value="באיחור">באיחור</option>
-        </select>
-      </div>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>לקוח</th>
-              <th>עסקה</th>
-              <th>סכום</th>
-              <th>תאריך גביה</th>
-              <th>צורת תשלום</th>
-              <th>סטטוס</th>
-              <th>הגיע לבנק</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="payments-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- PRODUCTS -->
-    <div class="view" id="view-products">
-      <div class="table-toolbar">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" placeholder="חיפוש מוצר..." id="products-search" oninput="renderProducts()">
-        </div>
-        <select class="form-select" id="products-filter-status" onchange="renderProducts()" style="width:160px">
-          <option value="">כל הסטטוסים</option>
-          <option value="פעיל">פעיל</option>
-          <option value="לא פעיל">לא פעיל</option>
-        </select>
-      </div>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>שם מוצר</th>
-              <th>עלות יחידה (₪)</th>
-              <th>קטגוריה</th>
-              <th>סטטוס</th>
-              <th>תאריך הוספה</th>
-              <th>הערות</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="products-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- MEETINGS -->
-    <div class="view" id="view-meetings">
-      <div class="table-toolbar">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" placeholder="חיפוש פגישה..." id="meetings-search" oninput="renderMeetings()">
-        </div>
-        <select class="form-select" id="meetings-filter-status" onchange="renderMeetings()" style="width:160px">
-          <option value="">כל הסטטוסים</option>
-          <option value="נקבעה">נקבעה</option>
-          <option value="הושלם">הושלם</option>
-          <option value="בוטל">בוטל</option>
-        </select>
-        <select class="form-select" id="meetings-filter-agent" onchange="renderMeetings()" style="width:160px">
-          <option value="">כל הנציגים</option>
-        </select>
-      </div>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>נושא</th>
-              <th>משויך ל</th>
-              <th>תאריך התחלה</th>
-              <th>תאריך סיום</th>
-              <th>מספר פגישה</th>
-              <th>סטטוס</th>
-              <th>נציג</th>
-              <th>מקום</th>
-              <th>עדיפות</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="meetings-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- TASKS -->
-    <div class="view" id="view-tasks">
-      <div class="table-toolbar">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" placeholder="חיפוש משימה..." id="tasks-search" oninput="renderTasks()">
-        </div>
-        <select class="form-select" id="tasks-filter-status" onchange="renderTasks()" style="width:160px">
-          <option value="">כל הסטטוסים</option>
-          <option value="פתוח">פתוח</option>
-          <option value="הושלם">הושלם</option>
-          <option value="בטיפול">בטיפול</option>
-        </select>
-        <select class="form-select" id="tasks-filter-priority" onchange="renderTasks()" style="width:140px">
-          <option value="">כל העדיפויות</option>
-          <option value="גבוה">🔴 גבוה</option>
-          <option value="בינוני">🟡 בינוני</option>
-          <option value="נמוך">🟢 נמוך</option>
-        </select>
-      </div>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>נושא</th>
-              <th>סוג משימה</th>
-              <th>משויך ל</th>
-              <th>תאריך יעד</th>
-              <th>סטטוס</th>
-              <th>עדיפות</th>
-              <th>מבצע</th>
-              <th>תיאור</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="tasks-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div class="view" id="view-settings">
-      <div class="settings-grid">
-        <div class="settings-card">
-          <h3>⭐ סטטוסי לידים</h3>
-          <div class="tag-list" id="lead-statuses-list"></div>
-          <div class="tag-input-row">
-            <input class="form-input" id="new-lead-status" placeholder="סטטוס חדש..." style="flex:1">
-            <button class="btn btn-primary" onclick="addTag(&#39;lead-statuses&#39;,&#39;new-lead-status&#39;)">הוסף</button>
-          </div>
-        </div>
-        <div class="settings-card">
-          <h3>💼 סטטוסי עסקאות</h3>
-          <div class="tag-list" id="deal-statuses-list"></div>
-          <div class="tag-input-row">
-            <input class="form-input" id="new-deal-status" placeholder="סטטוס חדש..." style="flex:1">
-            <button class="btn btn-primary" onclick="addTag(&#39;deal-statuses&#39;,&#39;new-deal-status&#39;)">הוסף</button>
-          </div>
-        </div>
-        <div class="settings-card">
-          <h3>📦 מוצרים / קורסים</h3>
-          <div class="tag-list" id="products-list"></div>
-          <div class="tag-input-row">
-            <input class="form-input" id="new-product" placeholder="מוצר חדש..." style="flex:1">
-            <button class="btn btn-primary" onclick="addTag(&#39;products&#39;,&#39;new-product&#39;)">הוסף</button>
-          </div>
-        </div>
-        <div class="settings-card">
-          <h3>📣 מקורות הגעה</h3>
-          <div class="tag-list" id="sources-list"></div>
-          <div class="tag-input-row">
-            <input class="form-input" id="new-source" placeholder="מקור חדש..." style="flex:1">
-            <button class="btn btn-primary" onclick="addTag(&#39;sources&#39;,&#39;new-source&#39;)">הוסף</button>
-          </div>
-        </div>
-        <div class="settings-card">
-          <h3>👤 נציגים</h3>
-          <div class="tag-list" id="agents-list"></div>
-          <div class="tag-input-row">
-            <input class="form-input" id="new-agent" placeholder="נציג חדש..." style="flex:1">
-            <button class="btn btn-primary" onclick="addTag(&#39;agents&#39;,&#39;new-agent&#39;)">הוסף</button>
-          </div>
-        </div>
-        <div class="settings-card">
-          <h3>💳 צורות תשלום</h3>
-          <div class="tag-list" id="payment-methods-list"></div>
-          <div class="tag-input-row">
-            <input class="form-input" id="new-payment-method" placeholder="צורת תשלום..." style="flex:1">
-            <button class="btn btn-primary" onclick="addTag(&#39;payment-methods&#39;,&#39;new-payment-method&#39;)">הוסף</button>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:20px;display:flex;gap:10px">
-        <button class="btn btn-danger" onclick="if(confirm(&#39;למחוק את כל הנתונים?&#39;)){localStorage.clear();location.reload()}">🗑️ איפוס מלא</button>
-        <button class="btn btn-ghost" onclick="exportData()">📤 ייצוא JSON</button>
-      </div>
-    </div>
-
   </div>
 </div>
 
-<!-- MODAL LEAD -->
-<div class="modal-overlay" id="modal-lead">
+<div class="modal-overlay" id="modalOverlay">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-lead-title">ליד חדש</div>
-      <button class="modal-close" onclick="closeModal(&#39;modal-lead&#39;)">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">שם מתעניין *</label><input class="form-input" id="l-name" placeholder="שם מלא"></div>
-        <div class="form-group"><label class="form-label">טלפון *</label><input class="form-input" id="l-phone" placeholder="05X-XXXXXXX"></div>
-        <div class="form-group"><label class="form-label">סטטוס</label><select class="form-select" id="l-status"></select></div>
-        <div class="form-group"><label class="form-label">מקור הגעה</label><select class="form-select" id="l-source"></select></div>
-        <div class="form-group"><label class="form-label">למה השאיר פרטים</label><select class="form-select" id="l-product"></select></div>
-        <div class="form-group"><label class="form-label">נציג</label><select class="form-select" id="l-agent"></select></div>
-        <div class="form-group"><label class="form-label">דואר אלקטרוני</label><input class="form-input" id="l-email" placeholder="email@example.com"></div>
-        <div class="form-group"><label class="form-label">ליד זהב?</label><select class="form-select" id="l-gold"><option value="">לא</option><option value="זהב">⭐ כן</option></select></div>
-        <div class="form-group full"><label class="form-label">הערות</label><textarea class="form-input" id="l-notes" rows="3" placeholder="הערות על הליד..."></textarea></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal(&#39;modal-lead&#39;)">ביטול</button>
-      <button class="btn btn-primary" onclick="saveLead()">שמור</button>
-    </div>
+    <h3 id="modalTitle">הוסף</h3>
+    <div id="modalBody"></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">ביטול</button><button class="btn btn-primary" onclick="saveModal()">שמור</button></div>
   </div>
 </div>
 
-<!-- MODAL DEAL -->
-<div class="modal-overlay" id="modal-deal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-deal-title">עסקה חדשה</div>
-      <button class="modal-close" onclick="closeModal(&#39;modal-deal&#39;)">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">שם עסקה *</label><input class="form-input" id="d-name" placeholder="שם העסקה"></div>
-        <div class="form-group"><label class="form-label">שם לקוח *</label><input class="form-input" id="d-client" placeholder="שם הלקוח"></div>
-        <div class="form-group"><label class="form-label">מוצר</label><select class="form-select" id="d-product"></select></div>
-        <div class="form-group"><label class="form-label">שווי עסקה כולל (₪)</label><input class="form-input" id="d-value" type="number" placeholder="0"></div>
-        <div class="form-group"><label class="form-label">מספר תשלומים</label><input class="form-input" id="d-installments" type="number" placeholder="1"></div>
-        <div class="form-group"><label class="form-label">סטטוס</label><select class="form-select" id="d-status"></select></div>
-        <div class="form-group"><label class="form-label">נציג מבצע</label><select class="form-select" id="d-agent"></select></div>
-        <div class="form-group"><label class="form-label">מקור הגעה</label><select class="form-select" id="d-source"></select></div>
-        <div class="form-group full"><label class="form-label">הערות</label><textarea class="form-input" id="d-notes" rows="2" placeholder="הערות..."></textarea></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal(&#39;modal-deal&#39;)">ביטול</button>
-      <button class="btn btn-primary" onclick="saveDeal()">שמור</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL CLIENT -->
-<div class="modal-overlay" id="modal-client">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-client-title">לקוח חדש</div>
-      <button class="modal-close" onclick="closeModal(&#39;modal-client&#39;)">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">שם לקוח *</label><input class="form-input" id="c-name" placeholder="שם מלא"></div>
-        <div class="form-group"><label class="form-label">טלפון *</label><input class="form-input" id="c-phone" placeholder="05X-XXXXXXX"></div>
-        <div class="form-group"><label class="form-label">אימייל</label><input class="form-input" id="c-email" placeholder="email@example.com"></div>
-        <div class="form-group"><label class="form-label">עסקה משויכת</label><select class="form-select" id="c-deal"></select></div>
-        <div class="form-group"><label class="form-label">סטטוס לקוח</label><select class="form-select" id="c-status"><option>לקוח פעיל</option><option>לקוח לא פעיל</option><option>סיים תהליך</option></select></div>
-        <div class="form-group"><label class="form-label">יועץ מלווה</label><select class="form-select" id="c-agent"></select></div>
-        <div class="form-group"><label class="form-label">תאריך התחלה</label><input class="form-input" id="c-start" type="date"></div>
-        <div class="form-group"><label class="form-label">מספר פגישות לתהליך</label><input class="form-input" id="c-meetings-total" type="number" placeholder="12"></div>
-        <div class="form-group"><label class="form-label">פגישות שבוצעו</label><input class="form-input" id="c-meetings-done" type="number" placeholder="0"></div>
-        <div class="form-group"><label class="form-label">תאריך סיום תהליך</label><input class="form-input" id="c-end" type="date"></div>
-        <div class="form-group full"><label class="form-label">הערות</label><textarea class="form-input" id="c-notes" rows="2" placeholder="הערות..."></textarea></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal(&#39;modal-client&#39;)">ביטול</button>
-      <button class="btn btn-primary" onclick="saveClient()">שמור</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL PAYMENT -->
-<div class="modal-overlay" id="modal-payment">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-payment-title">תשלום חדש</div>
-      <button class="modal-close" onclick="closeModal(&#39;modal-payment&#39;)">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">שם לקוח *</label><input class="form-input" id="p-client" placeholder="שם הלקוח"></div>
-        <div class="form-group"><label class="form-label">עסקה</label><select class="form-select" id="p-deal"></select></div>
-        <div class="form-group"><label class="form-label">סכום (₪) *</label><input class="form-input" id="p-amount" type="number" placeholder="0"></div>
-        <div class="form-group"><label class="form-label">תאריך גביה</label><input class="form-input" id="p-date" type="date"></div>
-        <div class="form-group"><label class="form-label">צורת תשלום</label><select class="form-select" id="p-method"></select></div>
-        <div class="form-group"><label class="form-label">סטטוס</label><select class="form-select" id="p-status"><option>ממתין</option><option>שולם</option><option>באיחור</option></select></div>
-        <div class="form-group"><label class="form-label">הגיע לבנק?</label><select class="form-select" id="p-bank"><option value="לא">❌ לא</option><option value="כן">✅ כן</option></select></div>
-        <div class="form-group"><label class="form-label">הוצאתי חשבונית?</label><select class="form-select" id="p-invoice"><option value="לא">❌ לא</option><option value="כן">✅ כן</option></select></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal(&#39;modal-payment&#39;)">ביטול</button>
-      <button class="btn btn-primary" onclick="savePayment()">שמור</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL MEETING -->
-<div class="modal-overlay" id="modal-meeting">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-meeting-title">פגישה חדשה</div>
-      <button class="modal-close" onclick="closeModal(&#39;modal-meeting&#39;)">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group full"><label class="form-label">נושא הפגישה *</label><input class="form-input" id="mt-subject" placeholder="נושא הפגישה"></div>
-        <div class="form-group"><label class="form-label">משויך ל (לקוח)</label><select class="form-select" id="mt-client"></select></div>
-        <div class="form-group"><label class="form-label">נציג</label><select class="form-select" id="mt-agent"></select></div>
-        <div class="form-group"><label class="form-label">תאריך התחלה</label><input class="form-input" id="mt-start" type="datetime-local"></div>
-        <div class="form-group"><label class="form-label">תאריך סיום</label><input class="form-input" id="mt-end" type="datetime-local"></div>
-        <div class="form-group"><label class="form-label">סטטוס</label><select class="form-select" id="mt-status"><option value="נקבעה">נקבעה</option><option value="הושלם">הושלם</option><option value="בוטל">בוטל</option></select></div>
-        <div class="form-group"><label class="form-label">מספר פגישה</label><input class="form-input" id="mt-number" type="number" placeholder="1"></div>
-        <div class="form-group"><label class="form-label">מקום</label><input class="form-input" id="mt-location" placeholder="זום / פיזי / טלפון"></div>
-        <div class="form-group"><label class="form-label">עדיפות</label><select class="form-select" id="mt-priority"><option value="">רגיל</option><option value="גבוה">🔴 גבוה</option><option value="בינוני">🟡 בינוני</option><option value="נמוך">🟢 נמוך</option></select></div>
-        <div class="form-group full"><label class="form-label">עדיפות / תיאור</label><textarea class="form-input" id="mt-notes" rows="2" placeholder="תיאור הפגישה..."></textarea></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal(&#39;modal-meeting&#39;)">ביטול</button>
-      <button class="btn btn-primary" onclick="saveMeeting()">שמור</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL TASK -->
-<div class="modal-overlay" id="modal-task">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-task-title">משימה חדשה</div>
-      <button class="modal-close" onclick="closeModal(&#39;modal-task&#39;)">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group full"><label class="form-label">נושא המשימה *</label><input class="form-input" id="tk-subject" placeholder="נושא המשימה"></div>
-        <div class="form-group"><label class="form-label">סוג משימה</label><select class="form-select" id="tk-type"><option value="">בחר סוג</option><option>מייל</option><option>שיחה</option><option>WhatsApp</option><option>פגישה</option><option>מסמך</option><option>אחר</option></select></div>
-        <div class="form-group"><label class="form-label">משויך ל</label><select class="form-select" id="tk-client"></select></div>
-        <div class="form-group"><label class="form-label">תאריך יעד</label><input class="form-input" id="tk-due" type="date"></div>
-        <div class="form-group"><label class="form-label">סטטוס</label><select class="form-select" id="tk-status"><option value="פתוח">פתוח</option><option value="בטיפול">בטיפול</option><option value="הושלם">הושלם</option></select></div>
-        <div class="form-group"><label class="form-label">עדיפות</label><select class="form-select" id="tk-priority"><option value="בינוני">🟡 בינוני</option><option value="גבוה">🔴 גבוה</option><option value="נמוך">🟢 נמוך</option></select></div>
-        <div class="form-group"><label class="form-label">מבצע</label><select class="form-select" id="tk-agent"></select></div>
-        <div class="form-group full"><label class="form-label">תיאור</label><textarea class="form-input" id="tk-notes" rows="2" placeholder="פירוט המשימה..."></textarea></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal(&#39;modal-task&#39;)">ביטול</button>
-      <button class="btn btn-primary" onclick="saveTask()">שמור</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL PRODUCT -->
-<div class="modal-overlay" id="modal-product">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-product-title">מוצר חדש</div>
-      <button class="modal-close" onclick="closeModal(&#39;modal-product&#39;)">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">שם מוצר *</label><input class="form-input" id="pr-name" placeholder="שם המוצר"></div>
-        <div class="form-group"><label class="form-label">עלות יחידה (₪)</label><input class="form-input" id="pr-price" type="number" placeholder="0"></div>
-        <div class="form-group"><label class="form-label">קטגוריה</label><select class="form-select" id="pr-category"><option value="">בחר קטגוריה</option><option>קורס דיגיטלי</option><option>קורס פרונטלי</option><option>ליווי</option><option>ייעוץ</option><option>פגישה</option><option>אחר</option></select></div>
-        <div class="form-group"><label class="form-label">סטטוס</label><select class="form-select" id="pr-status"><option value="פעיל">פעיל</option><option value="לא פעיל">לא פעיל</option></select></div>
-        <div class="form-group full"><label class="form-label">הערות</label><textarea class="form-input" id="pr-notes" rows="2" placeholder="תיאור קצר על המוצר..."></textarea></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal(&#39;modal-product&#39;)">ביטול</button>
-      <button class="btn btn-primary" onclick="saveProduct()">שמור</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast"><span class="toast-icon">✅</span><span id="toastMsg">נשמר בהצלחה</span></div>
 
 <script>
-// ===== MEETINGS =====
-function openMeetingModal(id) {
-  editingId = id || null;
-  document.getElementById('modal-meeting-title').textContent = id ? 'עריכת פגישה' : 'פגישה חדשה';
-  populateSelect('mt-agent','agents','בחר נציג');
-  const clients = loadRec('clients');
-  const cc = document.getElementById('mt-client');
-  cc.innerHTML = '<option value="">ללא שיוך</option>' + clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  if(id) {
-    const rec = loadRec('meetings').find(r=>r.id===id);
-    if(rec) {
-      document.getElementById('mt-subject').value = rec.subject||'';
-      document.getElementById('mt-client').value = rec.client||'';
-      document.getElementById('mt-agent').value = rec.agent||'';
-      document.getElementById('mt-start').value = rec.start||'';
-      document.getElementById('mt-end').value = rec.end||'';
-      document.getElementById('mt-status').value = rec.status||'נקבעה';
-      document.getElementById('mt-number').value = rec.number||'';
-      document.getElementById('mt-location').value = rec.location||'';
-      document.getElementById('mt-priority').value = rec.priority||'';
-      document.getElementById('mt-notes').value = rec.notes||'';
-    }
-  } else {
-    ['subject','number','location','notes'].forEach(f=>document.getElementById('mt-'+f).value='');
-    document.getElementById('mt-status').value='נקבעה';
-    document.getElementById('mt-priority').value='';
-    const now = new Date(); now.setMinutes(0,0,0);
-    document.getElementById('mt-start').value = now.toISOString().slice(0,16);
-    const end = new Date(now.getTime()+3600000);
-    document.getElementById('mt-end').value = end.toISOString().slice(0,16);
-  }
-  openModal('modal-meeting');
+const USERS = {'roi':{pass:'Roi2024!',name:'רועי עובדיה',role:'מנהל מערכת',avatar:'ר'},'natan':{pass:'Natan2024!',name:'נתן',role:'נציג מכירות',avatar:'נ'},'ben':{pass:'Ben2024!',name:'בן',role:'נציג מכירות',avatar:'ב'}};
+function loadData(){try{return JSON.parse(localStorage.getItem('roicrm_v3')||'null')||defaultData();}catch(e){return defaultData();}}
+function saveData(){localStorage.setItem('roicrm_v3',JSON.stringify(DB));updateBadges();}
+function defaultData(){return{leads:[],deals:[],clients:[],payments:[],products:[{id:genId(),name:'ליווי מחירות',price:5000,desc:'ליווי מחירות מלא',notes:[],tasks:[],files:[],created:new Date().toISOString()},{id:genId(),name:'קורס דיגיטל',price:2000,desc:'קורס שיווק דיגיטלי',notes:[],tasks:[],files:[],created:new Date().toISOString()}],meetings:[],tasks:[]};}
+let DB=loadData(),currentUser=null,currentPage='dashboard',currentRecord=null,currentRecordType=null,modalMode=null,modalType=null,modalParent=null;
+function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
+function fmt(d){if(!d)return'—';const dt=new Date(d);return isNaN(dt)?d:dt.toLocaleDateString('he-IL');}
+function fmtMoney(n){return'₪'+(Number(n)||0).toLocaleString();}
+function now(){return new Date().toISOString();}
+function userName(){return currentUser?.name||'משתמש';}
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim().toLowerCase();
+  const p=document.getElementById('loginPass').value;
+  const user=USERS[u];
+  if(user&&user.pass===p){currentUser={...user,username:u};document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=user.name;document.getElementById('userAvatar').textContent=user.avatar;document.getElementById('loginError').style.display='none';sessionStorage.setItem('roicrm_user',JSON.stringify({...user,username:u}));showPage('dashboard');}else{document.getElementById('loginError').style.display='block';}
 }
-
-function saveMeeting() {
-  const subject = document.getElementById('mt-subject').value.trim();
-  if(!subject) { toast('יש להזין נושא פגישה'); return; }
-  const rec = { id: editingId||uid(), subject, client: document.getElementById('mt-client').value, agent: document.getElementById('mt-agent').value, start: document.getElementById('mt-start').value, end: document.getElementById('mt-end').value, status: document.getElementById('mt-status').value, number: document.getElementById('mt-number').value, location: document.getElementById('mt-location').value, priority: document.getElementById('mt-priority').value, notes: document.getElementById('mt-notes').value, created: editingId?undefined:new Date().toISOString() };
-  const meetings = loadRec('meetings');
-  if(editingId) { const i=meetings.findIndex(r=>r.id===editingId); if(i>=0){rec.created=meetings[i].created;meetings[i]=rec;} } else { meetings.unshift(rec); }
-  saveRec('meetings',meetings);
-  closeModal('modal-meeting');
-  renderMeetings();
-  updateBadges();
-  toast(editingId?'פגישה עודכנה ✓':'פגישה נוספה ✓');
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginPage').style.display!=='none')doLogin();});
+function doLogout(){sessionStorage.removeItem('roicrm_user');currentUser=null;document.getElementById('loginPage').style.display='flex';document.getElementById('app').style.display='none';}
+const PAGE_TITLES={dashboard:'דאשבורד',leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',products:'מוצרים',meetings:'פגישות',tasks:'משימות',settings:'הגדרות'};
+const PAGE_ICONS={leads:'⭐',deals:'💼',clients:'👥',payments:'💰',products:'🛍️',meetings:'📅',tasks:'✅'};
+const ADD_LABELS={leads:'מתעניין חדש',deals:'עסקה חדשה',clients:'לקוח חדש',payments:'תשלום חדש',products:'מוצר חדש',meetings:'פגישה חדשה',tasks:'משימה חדשה'};
+function showPage(page){
+  currentPage=page;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el=>{if(el.textContent.includes(PAGE_TITLES[page]))el.classList.add('active');});
+  document.getElementById('pageTitle').textContent=PAGE_TITLES[page]||page;
+  const hasList=['leads','deals','clients','payments','products','meetings','tasks'].includes(page);
+  document.getElementById('addBtn').style.display=hasList?'flex':'none';
+  document.getElementById('addBtn').textContent='+ '+(ADD_LABELS[page]||'הוסף');
+  document.getElementById('exportBtn').style.display=hasList?'flex':'none';
+  renderPage(page);updateBadges();
 }
-
-function renderMeetings() {
-  const search = (document.getElementById('meetings-search')||{}).value||'';
-  const filterStatus = (document.getElementById('meetings-filter-status')||{}).value||'';
-  const filterAgent = (document.getElementById('meetings-filter-agent')||{}).value||'';
-  let data = loadRec('meetings');
-
-  const agents = [...new Set(data.map(r=>r.agent).filter(Boolean))];
-  const agentEl = document.getElementById('meetings-filter-agent');
-  const curAgent = agentEl.value;
-  agentEl.innerHTML = '<option value="">כל הנציגים</option>' + agents.map(a=>`<option value="${a}" ${a===curAgent?'selected':''}>${a}</option>`).join('');
-
-  if(search) data = data.filter(r=>(r.subject||'').toLowerCase().includes(search.toLowerCase()));
-  if(filterStatus) data = data.filter(r=>r.status===filterStatus);
-  if(filterAgent) data = data.filter(r=>r.agent===filterAgent);
-
-  document.getElementById('page-count').textContent = data.length + ' פגישות';
-  const clients = loadRec('clients');
-  const tbody = document.getElementById('meetings-tbody');
-  if(!data.length) { tbody.innerHTML=`<tr><td colspan="10"><div class="empty"><div class="empty-icon">📅</div><div class="empty-text">אין פגישות עדיין</div></div></td></tr>`; return; }
-
-  function meetingBadge(s) {
-    if(s==='הושלם') return `<span class="badge badge-closed">✅ הושלם</span>`;
-    if(s==='בוטל') return `<span class="badge badge-nomatch">❌ בוטל</span>`;
-    return `<span class="badge badge-open">📅 נקבעה</span>`;
-  }
-  function priorityBadge(p) {
-    if(p==='גבוה') return `<span class="badge" style="background:#fee2e2;color:#991b1b">🔴 גבוה</span>`;
-    if(p==='נמוך') return `<span class="badge" style="background:#d1fae5;color:#065f46">🟢 נמוך</span>`;
-    if(p==='בינוני') return `<span class="badge" style="background:#fef3c7;color:#92400e">🟡 בינוני</span>`;
-    return '-';
-  }
-
-  tbody.innerHTML = data.map(r => {
-    const client = clients.find(c=>c.id===r.client);
-    const startFmt = r.start ? new Date(r.start).toLocaleString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '-';
-    const endFmt = r.end ? new Date(r.end).toLocaleString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '-';
-    return `<tr onclick="openMeetingModal('${r.id}')">
-      <td><strong>${r.subject}</strong></td>
-      <td>${client?client.name:(r.client||'-')}</td>
-      <td>${startFmt}</td>
-      <td>${endFmt}</td>
-      <td style="text-align:center">${r.number||'-'}</td>
-      <td>${meetingBadge(r.status)}</td>
-      <td>${r.agent||'-'}</td>
-      <td>${r.location||'-'}</td>
-      <td>${priorityBadge(r.priority)}</td>
-      <td><div class="row-actions"><button class="action-btn edit" onclick="event.stopPropagation();openMeetingModal('${r.id}')">✏️</button><button class="action-btn" onclick="event.stopPropagation();deleteRecord('meetings','${r.id}')">🗑️</button></div></td>
-    </tr>`;
-  }).join('');
+function updateBadges(){
+  ['leads','deals','clients','payments','products','meetings','tasks'].forEach(k=>{const el=document.getElementById('badge-'+k);if(el)el.textContent=(DB[k]||[]).length;});
 }
-
-// ===== TASKS =====
-function openTaskModal(id) {
-  editingId = id || null;
-  document.getElementById('modal-task-title').textContent = id ? 'עריכת משימה' : 'משימה חדשה';
-  populateSelect('tk-agent','agents','בחר מבצע');
-  const clients = loadRec('clients');
-  const cc = document.getElementById('tk-client');
-  cc.innerHTML = '<option value="">ללא שיוך</option>' + clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  if(id) {
-    const rec = loadRec('tasks').find(r=>r.id===id);
-    if(rec) {
-      document.getElementById('tk-subject').value = rec.subject||'';
-      document.getElementById('tk-type').value = rec.type||'';
-      document.getElementById('tk-client').value = rec.client||'';
-      document.getElementById('tk-due').value = rec.due||'';
-      document.getElementById('tk-status').value = rec.status||'פתוח';
-      document.getElementById('tk-priority').value = rec.priority||'בינוני';
-      document.getElementById('tk-agent').value = rec.agent||'';
-      document.getElementById('tk-notes').value = rec.notes||'';
-    }
-  } else {
-    ['subject','notes'].forEach(f=>document.getElementById('tk-'+f).value='');
-    document.getElementById('tk-status').value='פתוח';
-    document.getElementById('tk-priority').value='בינוני';
-    document.getElementById('tk-due').value = new Date(Date.now()+86400000).toISOString().slice(0,10);
-  }
-  openModal('modal-task');
+function renderPage(page){
+  const c=document.getElementById('mainContent');
+  if(page==='dashboard'){c.innerHTML=renderDashboard();return;}
+  if(page==='settings'){c.innerHTML=renderSettings();return;}
+  if(DB[page]!==undefined){c.innerHTML=renderList(page);return;}
+  c.innerHTML='<div class="empty-state"><div class="es-icon">🚧</div><div class="es-title">בקרוב</div></div>';
 }
-
-function saveTask() {
-  const subject = document.getElementById('tk-subject').value.trim();
-  if(!subject) { toast('יש להזין נושא משימה'); return; }
-  const rec = { id: editingId||uid(), subject, type: document.getElementById('tk-type').value, client: document.getElementById('tk-client').value, due: document.getElementById('tk-due').value, status: document.getElementById('tk-status').value, priority: document.getElementById('tk-priority').value, agent: document.getElementById('tk-agent').value, notes: document.getElementById('tk-notes').value, created: editingId?undefined:new Date().toISOString() };
-  const tasks = loadRec('tasks');
-  if(editingId) { const i=tasks.findIndex(r=>r.id===editingId); if(i>=0){rec.created=tasks[i].created;tasks[i]=rec;} } else { tasks.unshift(rec); }
-  saveRec('tasks',tasks);
-  closeModal('modal-task');
-  renderTasks();
-  updateBadges();
-  toast(editingId?'משימה עודכנה ✓':'משימה נוספה ✓');
+function renderDashboard(){
+  const totalLeads=DB.leads.length;
+  const openDeals=DB.deals.filter(d=>d.status!=='סגורה').length;
+  const totalRevenue=DB.payments.filter(p=>p.status==='שולם').reduce((s,p)=>s+(Number(p.amount)||0),0);
+  const pendingTasks=DB.tasks.filter(t=>!t.done).length+DB.leads.flatMap(l=>l.tasks||[]).filter(t=>!t.done).length+DB.deals.flatMap(d=>d.tasks||[]).filter(t=>!t.done).length;
+  return `<div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">⭐ מתעניינים</div><div class="stat-value accent">${totalLeads}</div><div class="stat-sub">ממתינים לטיפול</div></div>
+    <div class="stat-card"><div class="stat-label">💼 עסקאות פתוחות</div><div class="stat-value warn">${openDeals}</div><div class="stat-sub">ממתינות לסגירה</div></div>
+    <div class="stat-card"><div class="stat-label">💰 גביה שנתית</div><div class="stat-value success">${fmtMoney(totalRevenue)}</div><div class="stat-sub">יתרת תשלום</div></div>
+    <div class="stat-card"><div class="stat-label">✅ משימות פתוחות</div><div class="stat-value danger">${pendingTasks}</div><div class="stat-sub">מחכות לביצוע</div></div>
+  </div>
+  <div class="dash-grid">
+    <div class="dash-card"><div class="dash-card-title">סטטוס לידים</div>${renderLeadStatusChart()}</div>
+    <div class="dash-card"><div class="dash-card-title">מחזור מכירות לפי מוצר</div>${renderProductChart()}</div>
+  </div>`;
 }
-
-function renderTasks() {
-  const search = (document.getElementById('tasks-search')||{}).value||'';
-  const filterStatus = (document.getElementById('tasks-filter-status')||{}).value||'';
-  const filterPriority = (document.getElementById('tasks-filter-priority')||{}).value||'';
-  let data = loadRec('tasks');
-
-  if(search) data = data.filter(r=>(r.subject||'').toLowerCase().includes(search.toLowerCase()));
-  if(filterStatus) data = data.filter(r=>r.status===filterStatus);
-  if(filterPriority) data = data.filter(r=>r.priority===filterPriority);
-
-  // Sort: open first, then by due date
-  data.sort((a,b) => {
-    if(a.status==='הושלם' && b.status!=='הושלם') return 1;
-    if(a.status!=='הושלם' && b.status==='הושלם') return -1;
-    return (a.due||'') < (b.due||'') ? -1 : 1;
-  });
-
-  document.getElementById('page-count').textContent = data.length + ' משימות';
-  const clients = loadRec('clients');
-  const today = new Date().toISOString().slice(0,10);
-  const tbody = document.getElementById('tasks-tbody');
-  if(!data.length) { tbody.innerHTML=`<tr><td colspan="9"><div class="empty"><div class="empty-icon">✅</div><div class="empty-text">אין משימות עדיין</div></div></td></tr>`; return; }
-
-  function taskStatusBadge(s) {
-    if(s==='הושלם') return `<span class="badge badge-closed">✅ הושלם</span>`;
-    if(s==='בטיפול') return `<span class="badge badge-followup">🔄 בטיפול</span>`;
-    return `<span class="badge badge-open">📋 פתוח</span>`;
-  }
-  function priorityBadge(p) {
-    if(p==='גבוה') return `<span class="badge" style="background:#fee2e2;color:#991b1b">🔴 גבוה</span>`;
-    if(p==='נמוך') return `<span class="badge" style="background:#d1fae5;color:#065f46">🟢 נמוך</span>`;
-    return `<span class="badge" style="background:#fef3c7;color:#92400e">🟡 בינוני</span>`;
-  }
-
-  tbody.innerHTML = data.map(r => {
-    const client = clients.find(c=>c.id===r.client);
-    const isOverdue = r.due && r.due < today && r.status !== 'הושלם';
-    const dueFmt = r.due ? `<span style="${isOverdue?'color:var(--danger);font-weight:600':''}">${fmtDate(r.due)}${isOverdue?' ⚠️':''}</span>` : '-';
-    return `<tr onclick="openTaskModal('${r.id}')" style="${r.status==='הושלם'?'opacity:0.55':''}">
-      <td><strong>${r.subject}</strong></td>
-      <td>${r.type||'-'}</td>
-      <td>${client?client.name:(r.client||'-')}</td>
-      <td>${dueFmt}</td>
-      <td>${taskStatusBadge(r.status)}</td>
-      <td>${priorityBadge(r.priority)}</td>
-      <td>${r.agent||'-'}</td>
-      <td style="max-width:180px;color:var(--text-muted);font-size:12px">${r.notes||'-'}</td>
-      <td><div class="row-actions"><button class="action-btn edit" onclick="event.stopPropagation();openTaskModal('${r.id}')">✏️</button><button class="action-btn" onclick="event.stopPropagation();deleteRecord('tasks','${r.id}')">🗑️</button></div></td>
-    </tr>`;
-  }).join('');
+function renderLeadStatusChart(){
+  const statuses=['לידים חדשים 🎉','לידים זהב ⭐','פולאופ איכותי 😊','נוצר קשר ראשוני 📞','לא נסגר 😊','ליד לא תקין ❌','חיפוש חופשי 🔍'];
+  return statuses.map(s=>{const count=DB.leads.filter(l=>l.status===s).length;return `<div class="status-row"><span class="status-label">${s}</span><span class="status-count">${count}</span></div>`;}).join('');
 }
-
-// ===== PRODUCTS =====
-const DEFAULT_PRODUCTS_DATA = [
-  { id: uid(), name: 'קורס דיגיטלי בלבד', price: 2900, category: 'קורס דיגיטלי', status: 'פעיל', notes: '', date: '2024-05-17' },
-  { id: uid(), name: 'קורס עסקים- פרונטלי', price: 9600, category: 'קורס פרונטלי', status: 'פעיל', notes: '', date: '2024-01-01' },
-  { id: uid(), name: 'מאסטר מייnd עסקי', price: 8850, category: 'ליווי', status: 'פעיל', notes: '', date: '2024-12-24' },
-  { id: uid(), name: 'ייעוץ עסקי', price: 0, category: 'ייעוץ', status: 'פעיל', notes: '', date: '2024-08-06' },
-  { id: uid(), name: 'פגישה', price: 2360, category: 'פגישה', status: 'פעיל', notes: '', date: '2024-07-18' },
-  { id: uid(), name: 'ליווי מוקדים', price: 0, category: 'ליווי', status: 'פעיל', notes: '', date: '2025-02-01' },
-];
-
-function initProductsData() {
-  if(!localStorage.getItem('products-data')) saveRec('products-data', DEFAULT_PRODUCTS_DATA);
+function renderProductChart(){
+  const products=DB.products;
+  if(!products.length)return '<div class="empty-state" style="padding:20px"><div class="es-sub">אין מוצרים</div></div>';
+  return products.map(p=>{const revenue=DB.payments.filter(pay=>pay.productId===p.id&&pay.status==='שולם').reduce((s,pay)=>s+(Number(pay.amount)||0),0);return `<div class="status-row"><span class="status-label">${p.name}</span><span class="status-count">${fmtMoney(revenue)}</span></div>`;}).join('');
 }
-
-function openProductModal(id) {
-  editingId = id || null;
-  document.getElementById('modal-product-title').textContent = id ? 'עריכת מוצר' : 'מוצר חדש';
-  if(id) {
-    const rec = loadRec('products-data').find(r => r.id === id);
-    if(rec) {
-      document.getElementById('pr-name').value = rec.name||'';
-      document.getElementById('pr-price').value = rec.price||'';
-      document.getElementById('pr-category').value = rec.category||'';
-      document.getElementById('pr-status').value = rec.status||'פעיל';
-      document.getElementById('pr-notes').value = rec.notes||'';
-    }
-  } else {
-    ['name','price','notes'].forEach(f => document.getElementById('pr-'+f).value = '');
-    document.getElementById('pr-status').value = 'פעיל';
-  }
-  openModal('modal-product');
-}
-
-function saveProduct() {
-  const name = document.getElementById('pr-name').value.trim();
-  if(!name) { toast('יש להזין שם מוצר'); return; }
-  const rec = {
-    id: editingId || uid(),
-    name,
-    price: document.getElementById('pr-price').value,
-    category: document.getElementById('pr-category').value,
-    status: document.getElementById('pr-status').value,
-    notes: document.getElementById('pr-notes').value,
-    date: editingId ? undefined : new Date().toISOString().slice(0,10)
-  };
-  const items = loadRec('products-data');
-  if(editingId) { const i = items.findIndex(r => r.id === editingId); if(i>=0) { rec.date = items[i].date; items[i] = rec; } } else { items.unshift(rec); }
-  saveRec('products-data', items);
-  closeModal('modal-product');
-  renderProducts();
-  updateBadges();
-  toast(editingId ? 'מוצר עודכן ✓' : 'מוצר נוסף ✓');
-}
-
-function renderProducts() {
-  const search = (document.getElementById('products-search')||{}).value||'';
-  const filterStatus = (document.getElementById('products-filter-status')||{}).value||'';
-  let data = loadRec('products-data');
-  if(search) data = data.filter(r => r.name.toLowerCase().includes(search.toLowerCase()));
-  if(filterStatus) data = data.filter(r => r.status === filterStatus);
-
-  document.getElementById('page-count').textContent = data.length + ' מוצרים';
-  const tbody = document.getElementById('products-tbody');
-  if(!data.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="empty-icon">📦</div><div class="empty-text">אין מוצרים עדיין</div></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => `
-    <tr onclick="openProductModal('${r.id}')">
-      <td><strong>${r.name}</strong></td>
-      <td>${r.price ? fmt(r.price) : '-'}</td>
-      <td>${r.category||'-'}</td>
-      <td>${r.status==='פעיל' ? '<span class="badge badge-active">✅ פעיל</span>' : '<span class="badge badge-inactive">לא פעיל</span>'}</td>
-      <td>${fmtDate(r.date)}</td>
-      <td style="max-width:200px;color:var(--text-muted);font-size:12px">${r.notes||'-'}</td>
-      <td><div class="row-actions"><button class="action-btn edit" onclick="event.stopPropagation();openProductModal('${r.id}')">✏️</button><button class="action-btn" onclick="event.stopPropagation();deleteRecord('products-data','${r.id}')">🗑️</button></div></td>
-    </tr>`).join('');
-}
-
-// ===== FIREBERRY IMPORT =====
-function openImportModal() {
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay open';
-  overlay.id = 'modal-import';
-  overlay.innerHTML = `
-    <div class="modal" style="width:600px">
-      <div class="modal-header">
-        <div class="modal-title">📥 ייבוא נתונים מפיירברי</div>
-        <button class="modal-close" onclick="document.getElementById('modal-import').remove()">✕</button>
-      </div>
-      <div class="modal-body">
-        <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">העלה קובץ CSV שייצאת מפיירברי. המערכת תזהה אוטומטית את סוג הנתונים (לידים / עסקאות / לקוחות / תשלומים).</p>
-        <div style="border:2px dashed var(--border);border-radius:var(--radius);padding:30px;text-align:center;margin-bottom:16px;cursor:pointer;transition:all 0.2s" 
-             id="drop-zone"
-             ondragover="event.preventDefault();this.style.borderColor='var(--primary)'"
-             ondragleave="this.style.borderColor='var(--border)'"
-             ondrop="handleFileDrop(event)">
-          <div style="font-size:32px;margin-bottom:8px">📂</div>
-          <div style="font-weight:600;margin-bottom:4px">גרור קובץ CSV לכאן</div>
-          <div style="color:var(--text-muted);font-size:12px;margin-bottom:12px">או לחץ לבחירת קובץ</div>
-          <input type="file" id="import-file" accept=".csv,.json" style="display:none" onchange="handleFileSelect(this)">
-          <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">בחר קובץ</button>
-        </div>
-        <div id="import-preview" style="display:none">
-          <div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px;font-size:13px;margin-bottom:12px">
-            <strong id="import-summary"></strong>
-          </div>
-          <div style="display:flex;gap:8px;margin-bottom:8px">
-            <label class="form-label" style="align-self:center">ייבא כ:</label>
-            <select class="form-select" id="import-type" style="width:160px">
-              <option value="leads">מתעניינים</option>
-              <option value="deals">עסקאות</option>
-              <option value="clients">לקוחות</option>
-              <option value="payments">תשלומים</option>
-            </select>
-          </div>
-        </div>
-        <div id="import-result" style="color:var(--success);font-weight:500;font-size:13px"></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="document.getElementById('modal-import').remove()">סגור</button>
-        <button class="btn btn-primary" id="import-btn" style="display:none" onclick="executeImport()">ייבא נתונים</button>
-      </div>
-    </div>`;
-  document.body.appendChild(overlay);
-  overlay.addEventListener('click', e => { if(e.target === overlay) overlay.remove(); });
-}
-
-let importData = [];
-function handleFileDrop(e) {
-  e.preventDefault();
-  const file = e.dataTransfer.files[0];
-  if(file) processImportFile(file);
-}
-function handleFileSelect(input) {
-  const file = input.files[0];
-  if(file) processImportFile(file);
-}
-function processImportFile(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    const text = e.target.result;
-    try {
-      if(file.name.endsWith('.json')) {
-        const json = JSON.parse(text);
-        if(json.leads || json.deals || json.clients || json.payments) {
-          // Full export JSON
-          importData = json;
-          document.getElementById('import-summary').textContent = `קובץ JSON מלא זוהה — לידים: ${(json.leads||[]).length}, עסקאות: ${(json.deals||[]).length}, לקוחות: ${(json.clients||[]).length}, תשלומים: ${(json.payments||[]).length}`;
-          document.getElementById('import-type').parentElement.style.display = 'none';
-          document.getElementById('import-preview').style.display = 'block';
-          document.getElementById('import-btn').style.display = '';
-          document.getElementById('import-btn').textContent = 'ייבא הכל';
-          return;
-        }
-        importData = Array.isArray(json) ? json : [json];
-      } else {
-        // CSV parsing
-        const lines = text.split('\n').filter(l=>l.trim());
-        const headers = lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
-        importData = lines.slice(1).map(line => {
-          const vals = line.split(',').map(v=>v.trim().replace(/"/g,''));
-          const obj = {};
-          headers.forEach((h,i) => obj[h] = vals[i]||'');
-          return obj;
-        }).filter(r => Object.values(r).some(v=>v));
-      }
-      document.getElementById('import-summary').textContent = `נמצאו ${importData.length} רשומות`;
-      document.getElementById('import-type').parentElement.style.display = 'flex';
-      document.getElementById('import-preview').style.display = 'block';
-      document.getElementById('import-btn').style.display = '';
-      document.getElementById('import-btn').textContent = 'ייבא נתונים';
-    } catch(err) {
-      document.getElementById('import-result').textContent = 'שגיאה בקריאת הקובץ. נסה שוב.';
-      document.getElementById('import-result').style.color = 'var(--danger)';
-    }
-  };
-  reader.readAsText(file, 'UTF-8');
-}
-
-function executeImport() {
-  // Full JSON export (from our own system)
-  if(importData && (importData.leads || importData.deals || importData.clients || importData.payments)) {
-    if(importData.leads?.length) saveRec('leads', [...importData.leads, ...loadRec('leads')]);
-    if(importData.deals?.length) saveRec('deals', [...importData.deals, ...loadRec('deals')]);
-    if(importData.clients?.length) saveRec('clients', [...importData.clients, ...loadRec('clients')]);
-    if(importData.payments?.length) saveRec('payments', [...importData.payments, ...loadRec('payments')]);
-    updateBadges();
-    document.getElementById('import-result').textContent = '✅ הנתונים יובאו בהצלחה!';
-    document.getElementById('import-result').style.color = 'var(--success)';
-    setTimeout(() => { document.getElementById('modal-import')?.remove(); showView(currentView); }, 1500);
-    return;
-  }
-
-  const type = document.getElementById('import-type').value;
-  const existing = loadRec(type);
-  const fieldMap = {
-    leads: r => ({ id: uid(), name: r['שם מתעניין']||r['name']||r['שם']||'', phone: r['טלפון ראשי']||r['phone']||r['טלפון']||'', status: r['סטטוס']||r['status']||'🎉 לידים חדשים', source: r['מקור הגעה']||r['source']||'', product: r['למה השאיר פרטים']||r['product']||'', agent: r['נציג']||r['agent']||'', email: r['דואר אלקטרוני']||r['email']||'', notes: r['הערות']||'', date: r['נוצר בתאריך']||r['date']||new Date().toISOString() }),
-    deals: r => ({ id: uid(), name: r['שם העסקה']||r['name']||'', client: r['מתעניין שסגר']||r['client']||'', product: r['מוצר']||r['product']||'', value: r['שווי עסקה כולל מע"מ']||r['שווי עסקה']||r['value']||'', installments: r['מספר תשלומים']||r['installments']||'', status: r['לקוח סגר']||r['status']||'', agent: r['מבצע העסקה']||r['agent']||'', source: r['מקור הגעה לגביה']||r['source']||'', notes: '', date: r['נוצר בתאריך']||r['date']||new Date().toISOString() }),
-    clients: r => ({ id: uid(), name: r['שם']||r['name']||'', phone: r['טלפון ראשי']||r['phone']||'', email: r['דואר אלקטרוני']||r['email']||'', status: r['סטטוס לקוח']||r['status']||'לקוח פעיל', agent: r['שיוך ליועץ']||r['agent']||'', start: r['תאריך תחילת תהליך']||r['start']||'', meetingsTotal: r['סה"כ פגישות לתהליך']||r['meetingsTotal']||'12', meetingsDone: r['מספר פגישות שבוצעו']||r['meetingsDone']||'0', notes: '', date: new Date().toISOString() }),
-    payments: r => ({ id: uid(), client: r['שם']||r['client']||'', amount: r['סכום לתשלום']||r['סכום']||r['amount']||'', date: r['תאריך גביה']||r['date']||'', method: r['צורת תשלום']||r['method']||'', status: r['סטטוס']||r['status']||'ממתין', bank: r['התשלום עבר ובדק (אחרי בריקה בו upay בו בחשבון בנק)']||r['bank']||'לא', invoice: r['האם הוצאתי חשבונית?']||r['invoice']||'לא' })
-  };
-  const mapped = importData.map(fieldMap[type]).filter(r => r.name || r.client);
-  saveRec(type, [...mapped, ...existing]);
-  updateBadges();
-  document.getElementById('import-result').textContent = `✅ יובאו ${mapped.length} רשומות בהצלחה!`;
-  document.getElementById('import-result').style.color = 'var(--success)';
-  setTimeout(() => { document.getElementById('modal-import')?.remove(); showView(type); }, 1500);
-}
-
-// ===== STATE =====
-let editingId = null;
-let currentView = 'dashboard';
-
-const DEFAULT = {
-  'lead-statuses': ['🎉 לידים חדשים','⭐ 1.5 לידים זהב','🤝 פולואפ איכותי','📞 נוצר קשר ראשוני','😊 לא נסגר','❌ ליד לא תקין','🔍 חיפוש חופשי'],
-  'deal-statuses': ['לקוח סגר','לא נסגר','ממתין לאישור'],
-  'products': ['קורס דיגיטלי בלבד','קורס עסקים- פרונטלי','מאסטר מייnd עסקי','ייעוץ עסקי','פגישה','ליווי מוקדים','ליווי מכירות -נתנאל'],
-  'sources': ['אינסטגרם DM','אינסטגרם סטורי','פייסבוק','אורגני','המלצה','אחר'],
-  'agents': ['רועי עובדיה','נתנאל אסרף','בן אברגל'],
-  'payment-methods': ['הוראת קבע באשראי','אשראי תופס מסגרת','העברה בנקאית','ביט/PAYBOX']
+const LIST_CONFIGS={
+  leads:{title:'מתעניינים',cols:['שם','טלפון','אימייל','סטטוס','תאריך'],fields:r=>[r.name,r.phone||'—',r.email||'—',`<span class="badge badge-blue">${r.status||'חדש'}</span>`,fmt(r.created)]},
+  deals:{title:'עסקאות',cols:['שם עסקה','לקוח/ליד','סכום','סטטוס','מוצר','תאריך'],fields:r=>[r.name,r.clientName||r.leadName||'—',fmtMoney(r.amount),`<span class="badge badge-${r.status==='סגורה'?'green':r.status==='בתהליך'?'yellow':'blue'}">${r.status||'חדשה'}</span>`,r.productName||'—',fmt(r.created)]},
+  clients:{title:'לקוחות',cols:['שם','טלפון','אימייל','סטטוס','תאריך'],fields:r=>[r.name,r.phone||'—',r.email||'—',`<span class="badge badge-green">${r.status||'פעיל'}</span>`,fmt(r.created)]},
+  payments:{title:'תשלומים',cols:['שם לקוח','סכום','תאריך','בנק','אמצעי','מוצר','סטטוס'],fields:r=>[r.clientName||'—',fmtMoney(r.amount),fmt(r.date),r.bank||'—',r.method||'—',r.productName||'—',`<span class="badge badge-${r.status==='שולם'?'green':r.status==='ממתין'?'yellow':'red'}">${r.status||'ממתין'}</span>`]},
+  products:{title:'מוצרים',cols:['שם מוצר','מחיר','תיאור'],fields:r=>[r.name,fmtMoney(r.price),r.desc||'—']},
+  meetings:{title:'פגישות',cols:['נושא','עם מי','תאריך','שעה','סטטוס'],fields:r=>[r.title||r.name,r.withName||'—',fmt(r.date),r.time||'—',`<span class="badge badge-${r.status==='בוצעה'?'green':'blue'}">${r.status||'מתוכננת'}</span>`]},
+  tasks:{title:'משימות',cols:['משימה','מבצע','תאריך ביצוע','תזכורת','סטטוס'],fields:r=>[r.name,r.assignee||'—',fmt(r.dueDate),fmt(r.reminderDate),`<span class="badge badge-${r.done?'green':'yellow'}">${r.done?'בוצע':'בתהליך'}</span>`]}
 };
-
-function load(key) { try { return JSON.parse(localStorage.getItem(key)) || DEFAULT[key] || []; } catch(e) { return DEFAULT[key] || []; } }
-function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
-function loadRec(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch(e) { return []; } }
-function saveRec(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
-
-function uid() { return Date.now() + Math.random().toString(36).slice(2); }
-function fmt(n) { return '₪' + Number(n||0).toLocaleString('he-IL'); }
-function fmtDate(d) { if(!d) return '-'; return new Date(d).toLocaleDateString('he-IL'); }
-
-// ===== TOAST =====
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+function renderList(page){
+  const cfg=LIST_CONFIGS[page];const items=DB[page]||[];
+  return `<div class="table-header"><div class="search-box"><span>🔍</span><input placeholder="חיפוש..." oninput="filterTable(this.value,'${page}')" id="search-${page}"></div><div style="font-size:13px;color:var(--text2)">${items.length} רשומות</div></div>
+  <div class="table-wrap"><table id="tbl-${page}"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}<th>פעולות</th></tr></thead>
+  <tbody>${items.length?items.map(r=>`<tr onclick="openRecord('${page}','${r.id}')">${cfg.fields(r).map(f=>`<td>${f}</td>`).join('')}<td onclick="event.stopPropagation()"><button class="btn btn-secondary btn-sm btn-icon" onclick="openRecord('${page}','${r.id}')">📂</button><button class="btn btn-danger btn-sm btn-icon" onclick="deleteItem('${page}','${r.id}')">🗑️</button></td></tr>`).join(''):`<tr><td colspan="${cfg.cols.length+1}"><div class="empty-state"><div class="es-icon">${PAGE_ICONS[page]||'📋'}</div><div class="es-title">אין רשומות</div><div class="es-sub">לחץ "+ הוסף" להוספה</div></div></td></tr>`}
+  </tbody></table></div>`;
 }
-
-// ===== NAVIGATION =====
-function showView(v) {
-  currentView = v;
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-' + v).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(el => { if(el.getAttribute('onclick') && el.getAttribute('onclick').includes("'"+v+"'")) el.classList.add('active'); });
-  
-  const titles = {dashboard:'דאשבורד',leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',settings:'הגדרות'};
-  document.getElementById('page-title').textContent = titles[v] || v;
-  
-  const actionsEl = document.getElementById('topbar-actions');
-  const countEl = document.getElementById('page-count');
-  actionsEl.innerHTML = '';
-  countEl.style.display = 'none';
-
-  if(v === 'leads') {
-    actionsEl.innerHTML = '<button class="btn btn-primary" onclick="openLeadModal()">+ ליד חדש</button><button class="btn btn-ghost" onclick="openImportModal()" style="margin-right:8px">📥 ייבוא</button>';
-    countEl.style.display = '';
-  } else if(v === 'deals') {
-    actionsEl.innerHTML = '<button class="btn btn-primary" onclick="openDealModal()">+ עסקה חדשה</button><button class="btn btn-ghost" onclick="openImportModal()" style="margin-right:8px">📥 ייבוא</button>';
-    countEl.style.display = '';
-  } else if(v === 'clients') {
-    actionsEl.innerHTML = '<button class="btn btn-primary" onclick="openClientModal()">+ לקוח חדש</button><button class="btn btn-ghost" onclick="openImportModal()" style="margin-right:8px">📥 ייבוא</button>';
-    countEl.style.display = '';
-  } else if(v === 'payments') {
-    actionsEl.innerHTML = '<button class="btn btn-primary" onclick="openPaymentModal()">+ תשלום חדש</button><button class="btn btn-ghost" onclick="openImportModal()" style="margin-right:8px">📥 ייבוא</button>';
-    countEl.style.display = '';
-  } else if(v === 'products') {
-    actionsEl.innerHTML = '<button class="btn btn-primary" onclick="openProductModal()">+ מוצר חדש</button>';
-    countEl.style.display = '';
-  } else if(v === 'meetings') {
-    actionsEl.innerHTML = '<button class="btn btn-primary" onclick="openMeetingModal()">+ פגישה חדשה</button>';
-    countEl.style.display = '';
-  } else if(v === 'tasks') {
-    actionsEl.innerHTML = '<button class="btn btn-primary" onclick="openTaskModal()">+ משימה חדשה</button>';
-    countEl.style.display = '';
-  }
-
-  const renders = {leads: renderLeads, deals: renderDeals, clients: renderClients, payments: renderPayments, settings: renderSettings, dashboard: renderDashboard, products: renderProducts, meetings: renderMeetings, tasks: renderTasks};
-  if(renders[v]) renders[v]();
+function filterTable(q,page){document.querySelectorAll(`#tbl-${page} tbody tr`).forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});}
+function openRecord(type,id){
+  const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;
+  currentRecord={...item};currentRecord.notes=currentRecord.notes||[];currentRecord.tasks=currentRecord.tasks||[];currentRecord.files=currentRecord.files||[];
+  currentRecordType=type;
+  document.getElementById('recordName').textContent=item.name||item.title||'—';
+  document.getElementById('recordType').textContent={leads:'מתעניין',deals:'עסקה',clients:'לקוח',payments:'תשלום',products:'מוצר',meetings:'פגישה',tasks:'משימה'}[type]||type;
+  document.getElementById('recordFields').innerHTML=renderRecordFields(type,currentRecord);
+  document.getElementById('recordNotesCol').innerHTML=renderNotesCol(currentRecord);
+  document.getElementById('recordOverlay').classList.add('open');
 }
-
-// ===== MODALS =====
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); editingId = null; }
-
-function populateSelect(id, key, placeholder) {
-  const el = document.getElementById(id);
-  if(!el) return;
-  const items = load(key);
-  el.innerHTML = (placeholder ? `<option value="">${placeholder}</option>` : '') + items.map(i => `<option value="${i}">${i}</option>`).join('');
+function closeRecord(){document.getElementById('recordOverlay').classList.remove('open');currentRecord=null;currentRecordType=null;renderPage(currentPage);}
+function renderRecordFields(type,r){
+  let html='';
+  const defs={leads:[{k:'name',l:'שם מלא'},{k:'phone',l:'טלפון'},{k:'email',l:'אימייל'},{k:'status',l:'סטטוס'},{k:'source',l:'מקור'},{k:'city',l:'עיר'},{k:'notes_field',l:'הערות',full:true}],
+    deals:[{k:'name',l:'שם עסקה'},{k:'amount',l:'סכום'},{k:'status',l:'סטטוס'},{k:'productName',l:'מוצר'},{k:'closeDate',l:'תאריך סגירה'},{k:'clientName',l:'שם לקוח'},{k:'notes_field',l:'הערות',full:true}],
+    clients:[{k:'name',l:'שם מלא'},{k:'phone',l:'טלפון'},{k:'email',l:'אימייל'},{k:'status',l:'סטטוס'},{k:'city',l:'עיר'},{k:'idNumber',l:'ת.ז'},{k:'notes_field',l:'הערות',full:true}],
+    payments:[{k:'clientName',l:'שם לקוח'},{k:'amount',l:'סכום'},{k:'date',l:'תאריך גבייה'},{k:'bank',l:'בנק'},{k:'method',l:'אמצעי תשלום'},{k:'status',l:'סטטוס'},{k:'checkDate',l:'תאריך המחאה'},{k:'collector',l:'גבה אותו'}],
+    products:[{k:'name',l:'שם מוצר'},{k:'price',l:'מחיר'},{k:'desc',l:'תיאור',full:true}],
+    meetings:[{k:'title',l:'נושא'},{k:'withName',l:'עם מי'},{k:'date',l:'תאריך'},{k:'time',l:'שעה'},{k:'location',l:'מיקום'},{k:'status',l:'סטטוס'},{k:'notes_field',l:'הערות',full:true}],
+    tasks:[{k:'name',l:'משימה'},{k:'assignee',l:'מבצע'},{k:'dueDate',l:'תאריך ביצוע'},{k:'reminderDate',l:'תאריך תזכורת'},{k:'notes_field',l:'הערות',full:true}]
+  };
+  const fields=defs[type]||[{k:'name',l:'שם'}];
+  html+=`<div class="field-section"><div class="field-section-title">📋 פרטים</div><div class="field-grid">`;
+  fields.forEach(f=>{html+=`<div class="field-item${f.full?' style=grid-column:1/-1':''}">
+    <div class="field-label">${f.l}</div>
+    <div class="field-value editable" contenteditable="true" data-field="${f.k}" onblur="updateField('${f.k}',this.textContent)">${r[f.k]||''}</div>
+  </div>`;});
+  html+=`</div></div>`;
+  html+=renderRelatedObjects(type,r);
+  html+=`<div class="field-section"><div class="field-section-title">📎 קבצים</div><div class="files-section"><div class="file-drop" onclick="document.getElementById('fileInput').click()"><input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(event)"><div class="file-drop-text">📎 לחץ להוספת קובץ</div></div><div class="file-list" id="fileList">${renderFileList(r.files||[])}</div></div></div>`;
+  return html;
 }
-
-function openLeadModal(id) {
-  editingId = id || null;
-  document.getElementById('modal-lead-title').textContent = id ? 'עריכת ליד' : 'ליד חדש';
-  populateSelect('l-status','lead-statuses','בחר סטטוס');
-  populateSelect('l-source','sources','בחר מקור');
-  populateSelect('l-product','products','בחר מוצר');
-  populateSelect('l-agent','agents','בחר נציג');
-  if(id) {
-    const rec = loadRec('leads').find(r => r.id === id);
-    if(rec) { ['name','phone','email','notes'].forEach(f => document.getElementById('l-'+f).value = rec[f]||''); document.getElementById('l-status').value = rec.status||''; document.getElementById('l-source').value = rec.source||''; document.getElementById('l-product').value = rec.product||''; document.getElementById('l-agent').value = rec.agent||''; document.getElementById('l-gold').value = rec.gold||''; }
-  } else {
-    ['name','phone','email','notes'].forEach(f => document.getElementById('l-'+f).value = '');
-  }
-  openModal('modal-lead');
+function updateField(key,val){if(currentRecord)currentRecord[key]=val.trim();}
+function saveRecord(){
+  if(!currentRecord||!currentRecordType)return;
+  const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);
+  if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();showToast('נשמר ✅');}
+  document.getElementById('recordName').textContent=currentRecord.name||currentRecord.title||'—';
 }
-
-function saveLead() {
-  const name = document.getElementById('l-name').value.trim();
-  const phone = document.getElementById('l-phone').value.trim();
-  if(!name) { toast('יש להזין שם'); return; }
-  const rec = { id: editingId || uid(), name, phone, email: document.getElementById('l-email').value, status: document.getElementById('l-status').value, source: document.getElementById('l-source').value, product: document.getElementById('l-product').value, agent: document.getElementById('l-agent').value, gold: document.getElementById('l-gold').value, notes: document.getElementById('l-notes').value, date: editingId ? undefined : new Date().toISOString() };
-  const leads = loadRec('leads');
-  if(editingId) { const i = leads.findIndex(r => r.id === editingId); if(i>=0) { rec.date = leads[i].date; leads[i] = rec; } } else { leads.unshift(rec); }
-  saveRec('leads', leads);
-  closeModal('modal-lead');
-  renderLeads();
-  updateBadges();
-  toast(editingId ? 'ליד עודכן ✓' : 'ליד נוסף ✓');
+function deleteRecord(){
+  if(!currentRecord||!currentRecordType)return;
+  if(!confirm('למחוק?'))return;
+  DB[currentRecordType]=DB[currentRecordType].filter(r=>r.id!==currentRecord.id);
+  saveData();closeRecord();showToast('נמחק ✅');
 }
-
-function openDealModal(id) {
-  editingId = id || null;
-  document.getElementById('modal-deal-title').textContent = id ? 'עריכת עסקה' : 'עסקה חדשה';
-  populateSelect('d-product','products','בחר מוצר');
-  populateSelect('d-status','deal-statuses','בחר סטטוס');
-  populateSelect('d-agent','agents','בחר נציג');
-  populateSelect('d-source','sources','בחר מקור');
-  if(id) {
-    const rec = loadRec('deals').find(r => r.id === id);
-    if(rec) { ['name','client','value','installments','notes'].forEach(f => document.getElementById('d-'+f).value = rec[f]||''); document.getElementById('d-product').value = rec.product||''; document.getElementById('d-status').value = rec.status||''; document.getElementById('d-agent').value = rec.agent||''; document.getElementById('d-source').value = rec.source||''; }
-  } else {
-    ['name','client','value','installments','notes'].forEach(f => document.getElementById('d-'+f).value = '');
-  }
-  openModal('modal-deal');
+function renderRelatedObjects(type,r){
+  let html='';
+  if(type==='leads'){html+=renderRelatedSection('💼 עסקאות','deals',r.id,'leadId','deals',r);html+=renderRelatedSection('📅 פגישות','meetings',r.id,'leadId','meetings',r);}
+  if(type==='deals'){html+=renderRelatedSection('👥 לקוח','clients',r.id,'dealId','clients',r);html+=renderRelatedSection('💰 תשלומים','payments',r.id,'dealId','payments',r);}
+  if(type==='clients'){html+=renderRelatedSection('📅 פגישות','meetings',r.id,'clientId','meetings',r);html+=renderRelatedSection('💰 תשלומים','payments',r.id,'clientId','payments',r);}
+  return html;
 }
-
-function saveDeal() {
-  const name = document.getElementById('d-name').value.trim();
-  const client = document.getElementById('d-client').value.trim();
-  if(!name || !client) { toast('יש להזין שם עסקה ולקוח'); return; }
-  const rec = { id: editingId || uid(), name, client, product: document.getElementById('d-product').value, value: document.getElementById('d-value').value, installments: document.getElementById('d-installments').value, status: document.getElementById('d-status').value, agent: document.getElementById('d-agent').value, source: document.getElementById('d-source').value, notes: document.getElementById('d-notes').value, date: editingId ? undefined : new Date().toISOString() };
-  const deals = loadRec('deals');
-  if(editingId) { const i = deals.findIndex(r => r.id === editingId); if(i>=0) { rec.date = deals[i].date; deals[i] = rec; } } else { deals.unshift(rec); }
-  saveRec('deals', deals);
-  closeModal('modal-deal');
-  renderDeals();
-  updateBadges();
-  toast(editingId ? 'עסקה עודכנה ✓' : 'עסקה נוספה ✓');
+function renderRelatedSection(title,dbKey,parentId,fkField,addType,parentRecord){
+  const items=(DB[dbKey]||[]).filter(i=>i[fkField]===parentId);
+  const names={deals:'עסקה',clients:'לקוח',payments:'תשלום',meetings:'פגישה'};
+  return `<div class="related-section"><div class="related-header"><div class="related-title">${title} <span class="related-count">${items.length}</span></div><button class="btn btn-primary btn-sm" onclick="openRelatedAdd('${addType}','${parentRecord.id}','${parentRecord.name||''}')">+ ${names[addType]||''}</button></div>
+  <div class="related-list">${items.length?items.map(i=>`<div class="related-item" onclick="saveRecord();closeRecord();setTimeout(()=>openRecord('${dbKey}','${i.id}'),100)"><div><div class="related-item-name">${i.name||i.title||i.clientName||'—'}</div><div class="related-item-sub">${i.status||i.amount&&fmtMoney(i.amount)||''}</div></div><span>›</span></div>`).join(''):`<div class="related-empty">אין רשומות קשורות</div>`}</div></div>`;
 }
-
-function openClientModal(id) {
-  editingId = id || null;
-  document.getElementById('modal-client-title').textContent = id ? 'עריכת לקוח' : 'לקוח חדש';
-  populateSelect('c-agent','agents','בחר יועץ');
-  const deals = loadRec('deals');
-  const dd = document.getElementById('c-deal');
-  dd.innerHTML = '<option value="">ללא עסקה</option>' + deals.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
-  if(id) {
-    const rec = loadRec('clients').find(r => r.id === id);
-    if(rec) { ['name','phone','email','notes','start','end'].forEach(f => document.getElementById('c-'+f).value = rec[f]||''); document.getElementById('c-status').value = rec.status||'לקוח פעיל'; document.getElementById('c-agent').value = rec.agent||''; document.getElementById('c-deal').value = rec.deal||''; document.getElementById('c-meetings-total').value = rec.meetingsTotal||''; document.getElementById('c-meetings-done').value = rec.meetingsDone||''; }
-  } else {
-    ['name','phone','email','notes'].forEach(f => document.getElementById('c-'+f).value = '');
-    document.getElementById('c-start').value = new Date().toISOString().slice(0,10);
-  }
-  openModal('modal-client');
+function openRelatedAdd(type,parentId,parentName){saveRecord();modalParent={id:parentId,name:parentName,type:currentRecordType};openAddModal(type);}
+function renderNotesCol(r){
+  return `<div class="notes-header">📝 הערות ומשימות</div>
+  <div class="add-task-section"><div class="add-task-title">✅ הוסף משימה</div>
+  <div class="task-fields"><div class="task-field-full"><input class="task-input" id="nt-name" placeholder="תיאור המשימה"></div>
+  <input class="task-input" id="nt-assignee" placeholder="מבצע">
+  <input class="task-input" id="nt-due" type="date" title="תאריך ביצוע">
+  <input class="task-input" id="nt-reminder" type="date" title="תאריך תזכורת"></div>
+  <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary btn-sm" onclick="addTask()">+ הוסף</button></div></div>
+  <div id="tasksList">${renderTasksList(r.tasks||[])}</div>
+  <div class="add-note-box"><textarea id="noteInput" placeholder="כתוב הערה..."></textarea>
+  <div class="add-note-actions"><button class="btn btn-primary btn-sm" onclick="addNote()">+ הוסף הערה</button></div></div>
+  <div id="notesList">${renderNotesList(r.notes||[])}</div>`;
 }
-
-function saveClient() {
-  const name = document.getElementById('c-name').value.trim();
-  if(!name) { toast('יש להזין שם לקוח'); return; }
-  const rec = { id: editingId || uid(), name, phone: document.getElementById('c-phone').value, email: document.getElementById('c-email').value, status: document.getElementById('c-status').value, agent: document.getElementById('c-agent').value, deal: document.getElementById('c-deal').value, start: document.getElementById('c-start').value, end: document.getElementById('c-end').value, meetingsTotal: document.getElementById('c-meetings-total').value, meetingsDone: document.getElementById('c-meetings-done').value, notes: document.getElementById('c-notes').value };
-  const clients = loadRec('clients');
-  if(editingId) { const i = clients.findIndex(r => r.id === editingId); if(i>=0) clients[i] = rec; } else { clients.unshift(rec); }
-  saveRec('clients', clients);
-  closeModal('modal-client');
-  renderClients();
-  updateBadges();
-  toast(editingId ? 'לקוח עודכן ✓' : 'לקוח נוסף ✓');
+function renderNotesList(notes){if(!notes.length)return'<div style="font-size:12px;color:var(--text2);text-align:center;padding:12px;">אין הערות</div>';return notes.slice().reverse().map(n=>`<div class="note-item"><div class="note-text">${n.text}</div><div class="note-meta"><span>${n.author||'—'}</span><span>${fmt(n.created)}</span><span class="note-delete" onclick="deleteNote('${n.id}')">🗑️</span></div></div>`).join('');}
+function renderTasksList(tasks){return tasks.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div class="task-info"><div class="task-name${t.done?' done':''}">${t.name}</div><div class="task-meta">${t.assignee?`<span>👤 ${t.assignee}</span>`:''}${t.dueDate?`<span>📅 ${fmt(t.dueDate)}</span>`:''}${t.reminderDate?`<span>🔔 ${fmt(t.reminderDate)}</span>`:''}</div></div><span onclick="deleteTask('${t.id}')" style="cursor:pointer;color:var(--danger)">🗑️</span></div>`).join('');}
+function addNote(){const text=document.getElementById('noteInput').value.trim();if(!text)return;if(!currentRecord.notes)currentRecord.notes=[];currentRecord.notes.push({id:genId(),text,author:userName(),created:now()});document.getElementById('noteInput').value='';document.getElementById('notesList').innerHTML=renderNotesList(currentRecord.notes);saveRecordSilent();showToast('הערה נוספה ✅');}
+function deleteNote(id){currentRecord.notes=(currentRecord.notes||[]).filter(n=>n.id!==id);document.getElementById('notesList').innerHTML=renderNotesList(currentRecord.notes);saveRecordSilent();}
+function addTask(){const name=document.getElementById('nt-name').value.trim();if(!name)return;if(!currentRecord.tasks)currentRecord.tasks=[];const task={id:genId(),name,assignee:document.getElementById('nt-assignee').value.trim(),dueDate:document.getElementById('nt-due').value,reminderDate:document.getElementById('nt-reminder').value,done:false,created:now()};currentRecord.tasks.push(task);DB.tasks.push({...task,relatedId:currentRecord.id,relatedType:currentRecordType,relatedName:currentRecord.name});document.getElementById('nt-name').value='';document.getElementById('nt-assignee').value='';document.getElementById('nt-due').value='';document.getElementById('nt-reminder').value='';document.getElementById('tasksList').innerHTML=renderTasksList(currentRecord.tasks);saveRecordSilent();showToast('משימה נוספה ✅');}
+function toggleTask(id,done){const t=(currentRecord.tasks||[]).find(t=>t.id===id);if(t)t.done=done;const gt=DB.tasks.find(t=>t.id===id);if(gt)gt.done=done;saveRecordSilent();}
+function deleteTask(id){currentRecord.tasks=(currentRecord.tasks||[]).filter(t=>t.id!==id);DB.tasks=DB.tasks.filter(t=>t.id!==id);document.getElementById('tasksList').innerHTML=renderTasksList(currentRecord.tasks);saveRecordSilent();}
+function saveRecordSilent(){if(!currentRecord||!currentRecordType)return;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();}}
+function renderFileList(files){if(!files||!files.length)return'';const icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',default:'📎'};return files.map(f=>{const ext=(f.name||'').split('.').pop().toLowerCase();return`<div class="file-item"><span class="file-icon">${icons[ext]||icons.default}</span><span class="file-name">${f.name}</span><span class="file-size">${f.size||''}</span><span class="file-del" onclick="deleteFile('${f.id}')">✕</span></div>`;}).join('');}
+function handleFiles(e){const files=Array.from(e.target.files);files.forEach(f=>{const sizeKB=(f.size/1024).toFixed(1);currentRecord.files=currentRecord.files||[];currentRecord.files.push({id:genId(),name:f.name,size:sizeKB>1024?(sizeKB/1024).toFixed(1)+'MB':sizeKB+'KB',uploaded:now()});});document.getElementById('fileList').innerHTML=renderFileList(currentRecord.files);saveRecordSilent();showToast(files.length+' קובץ/ים הועלו ✅');}
+function deleteFile(id){currentRecord.files=(currentRecord.files||[]).filter(f=>f.id!==id);document.getElementById('fileList').innerHTML=renderFileList(currentRecord.files);saveRecordSilent();}
+function openAddModal(typeOverride){const type=typeOverride||currentPage;modalType=type;modalMode='add';const titles={leads:'מתעניין חדש',deals:'עסקה חדשה',clients:'לקוח חדש',payments:'תשלום חדש',products:'מוצר חדש',meetings:'פגישה חדשה',tasks:'משימה חדשה'};document.getElementById('modalTitle').textContent='✨ '+(titles[type]||'הוסף');document.getElementById('modalBody').innerHTML=getModalForm(type);document.getElementById('modalOverlay').classList.add('open');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');modalMode=null;modalType=null;modalParent=null;}
+function g(id){const el=document.getElementById(id);return el?el.value:'';}
+function getModalForm(type){
+  const pOpts=DB.products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  const uOpts=Object.values(USERS).map(v=>`<option>${v.name}</option>`).join('');
+  if(type==='leads')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מלא *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">טלפון</label><input class="form-control" id="f-phone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-email" type="email"></div><div class="form-group"><label class="form-label">עיר</label><input class="form-control" id="f-city"></div></div><div class="form-row"><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>לידים חדשים 🎉</option><option>לידים זהב ⭐</option><option>פולאופ איכותי 😊</option><option>נוצר קשר ראשוני 📞</option><option>לא נסגר 😊</option><option>ליד לא תקין ❌</option></select></div><div class="form-group"><label class="form-label">מקור</label><input class="form-control" id="f-source" placeholder="פייסבוק, חבר..."></div></div>`;
+  if(type==='deals')return`<div class="form-group"><label class="form-label">שם עסקה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">סכום</label><input class="form-control" id="f-amount" type="number"></div><div class="form-group"><label class="form-label">מוצר</label><select class="form-control" id="f-product">${pOpts}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">שם לקוח</label><input class="form-control" id="f-clientName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>חדשה</option><option>בתהליך</option><option>סגורה</option><option>בוטלה</option></select></div></div><div class="form-group"><label class="form-label">תאריך סגירה</label><input class="form-control" id="f-closeDate" type="date"></div>`;
+  if(type==='clients')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מלא *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">טלפון</label><input class="form-control" id="f-phone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-email" type="email"></div><div class="form-group"><label class="form-label">ת.ז</label><input class="form-control" id="f-idNumber"></div></div><div class="form-row"><div class="form-group"><label class="form-label">עיר</label><input class="form-control" id="f-city"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>פעיל</option><option>לא פעיל</option></select></div></div>`;
+  if(type==='payments')return`<div class="form-row"><div class="form-group"><label class="form-label">שם לקוח *</label><input class="form-control" id="f-clientName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">סכום</label><input class="form-control" id="f-amount" type="number"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך גבייה</label><input class="form-control" id="f-date" type="date"></div><div class="form-group"><label class="form-label">בנק</label><input class="form-control" id="f-bank"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אמצעי תשלום</label><select class="form-control" id="f-method"><option>העברה בנקאית</option><option>המחאה</option><option>אשראי</option><option>מזומן</option><option>ביט</option><option>פייבוקס</option></select></div><div class="form-group"><label class="form-label">מוצר</label><select class="form-control" id="f-product">${pOpts}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך המחאה</label><input class="form-control" id="f-checkDate" type="date"></div><div class="form-group"><label class="form-label">גבה אותו</label><input class="form-control" id="f-collector"></div></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>ממתין</option><option>שולם</option><option>בוטל</option></select></div>`;
+  if(type==='products')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מוצר *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">מחיר</label><input class="form-control" id="f-price" type="number"></div></div><div class="form-group"><label class="form-label">תיאור</label><textarea class="form-control" id="f-desc" rows="3"></textarea></div>`;
+  if(type==='meetings')return`<div class="form-group"><label class="form-label">נושא *</label><input class="form-control" id="f-title"></div><div class="form-row"><div class="form-group"><label class="form-label">עם מי</label><input class="form-control" id="f-withName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">מיקום</label><input class="form-control" id="f-location"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך</label><input class="form-control" id="f-date" type="date"></div><div class="form-group"><label class="form-label">שעה</label><input class="form-control" id="f-time" type="time"></div></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>מתוכננת</option><option>בוצעה</option><option>בוטלה</option></select></div>`;
+  if(type==='tasks')return`<div class="form-group"><label class="form-label">משימה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">מבצע</label><select class="form-control" id="f-assignee">${uOpts}</select></div><div class="form-group"><label class="form-label">תאריך ביצוע</label><input class="form-control" id="f-dueDate" type="date"></div></div><div class="form-group"><label class="form-label">תאריך תזכורת</label><input class="form-control" id="f-reminderDate" type="date"></div>`;
+  return'';
 }
-
-function openPaymentModal(id) {
-  editingId = id || null;
-  document.getElementById('modal-payment-title').textContent = id ? 'עריכת תשלום' : 'תשלום חדש';
-  populateSelect('p-method','payment-methods','בחר צורת תשלום');
-  const deals = loadRec('deals');
-  const dd = document.getElementById('p-deal');
-  dd.innerHTML = '<option value="">ללא עסקה</option>' + deals.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
-  if(id) {
-    const rec = loadRec('payments').find(r => r.id === id);
-    if(rec) { ['client','amount'].forEach(f => document.getElementById('p-'+f).value = rec[f]||''); document.getElementById('p-date').value = rec.date||''; document.getElementById('p-deal').value = rec.deal||''; document.getElementById('p-method').value = rec.method||''; document.getElementById('p-status').value = rec.status||'ממתין'; document.getElementById('p-bank').value = rec.bank||'לא'; document.getElementById('p-invoice').value = rec.invoice||'לא'; }
-  } else {
-    ['client','amount'].forEach(f => document.getElementById('p-'+f).value = '');
-    document.getElementById('p-date').value = new Date().toISOString().slice(0,10);
-  }
-  openModal('modal-payment');
+function saveModal(){
+  const type=modalType;if(!type)return;
+  const id=genId();let item={id,created:now(),notes:[],tasks:[],files:[]};
+  const req=(fid,msg)=>{const v=g(fid).trim();if(!v){showToast(msg+' ❌');return null;}return v;};
+  if(type==='leads'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;item={...item,name,phone:g('f-phone'),email:g('f-email'),city:g('f-city'),status:g('f-status'),source:g('f-source')};}
+  else if(type==='deals'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;const prod=DB.products.find(p=>p.id===g('f-product'));item={...item,name,amount:g('f-amount'),clientName:g('f-clientName'),status:g('f-status'),closeDate:g('f-closeDate'),productId:g('f-product'),productName:prod?.name||''};if(modalParent){item.leadId=modalParent.id;item.leadName=modalParent.name;}}
+  else if(type==='clients'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;item={...item,name,phone:g('f-phone'),email:g('f-email'),city:g('f-city'),status:g('f-status'),idNumber:g('f-idNumber')};if(modalParent){item.dealId=modalParent.id;}}
+  else if(type==='payments'){const cn=req('f-clientName','שם לקוח הוא שדה חובה');if(!cn)return;const prod=DB.products.find(p=>p.id===g('f-product'));item={...item,clientName:cn,amount:g('f-amount'),date:g('f-date'),bank:g('f-bank'),method:g('f-method'),status:g('f-status'),checkDate:g('f-checkDate'),collector:g('f-collector'),productId:g('f-product'),productName:prod?.name||''};if(modalParent){item.dealId=modalParent.id;item.clientId=modalParent.id;}}
+  else if(type==='products'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;item={...item,name,price:g('f-price'),desc:g('f-desc')};}
+  else if(type==='meetings'){const title=req('f-title','נושא הוא שדה חובה');if(!title)return;item={...item,title,name:title,withName:g('f-withName'),location:g('f-location'),date:g('f-date'),time:g('f-time'),status:g('f-status')};if(modalParent){item[modalParent.type+'Id']=modalParent.id;item[modalParent.type+'Name']=modalParent.name;}}
+  else if(type==='tasks'){const name=req('f-name','שם הוא שדה חובה');if(!name)return;item={...item,name,assignee:g('f-assignee'),dueDate:g('f-dueDate'),reminderDate:g('f-reminderDate'),done:false};}
+  if(!DB[type])DB[type]=[];
+  DB[type].push(item);saveData();closeModal();showToast('נוסף בהצלחה ✅');
+  if(currentRecordType&&currentRecord){const rec=DB[currentRecordType].find(r=>r.id===currentRecord.id);if(rec){currentRecord={...rec};document.getElementById('recordFields').innerHTML=renderRecordFields(currentRecordType,currentRecord);}}else{renderPage(currentPage);}
 }
-
-function savePayment() {
-  const client = document.getElementById('p-client').value.trim();
-  const amount = document.getElementById('p-amount').value;
-  if(!client || !amount) { toast('יש להזין לקוח וסכום'); return; }
-  const rec = { id: editingId || uid(), client, amount, date: document.getElementById('p-date').value, deal: document.getElementById('p-deal').value, method: document.getElementById('p-method').value, status: document.getElementById('p-status').value, bank: document.getElementById('p-bank').value, invoice: document.getElementById('p-invoice').value };
-  const payments = loadRec('payments');
-  if(editingId) { const i = payments.findIndex(r => r.id === editingId); if(i>=0) payments[i] = rec; } else { payments.unshift(rec); }
-  saveRec('payments', payments);
-  closeModal('modal-payment');
-  renderPayments();
-  updateBadges();
-  toast(editingId ? 'תשלום עודכן ✓' : 'תשלום נוסף ✓');
+function deleteItem(type,id){if(!confirm('למחוק?'))return;DB[type]=DB[type].filter(r=>r.id!==id);saveData();renderPage(currentPage);showToast('נמחק ✅');}
+function exportData(){
+  const data=DB[currentPage]||[];if(!data.length){showToast('אין נתונים לייצוא');return;}
+  const cfg=LIST_CONFIGS[currentPage];if(!cfg)return;
+  const csv='\uFEFF'+cfg.cols.join(',')+'\n'+data.map(r=>cfg.fields(r).map(f=>'"'+f.replace(/<[^>]+>/g,'').replace(/,/g,'')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=currentPage+'_export.csv';a.click();showToast('ייצוא הושלם ✅');
 }
-
-function deleteRecord(type, id) {
-  if(!confirm('למחוק רשומה זו?')) return;
-  const data = loadRec(type).filter(r => r.id !== id);
-  saveRec(type, data);
-  const renders = {leads:renderLeads,deals:renderDeals,clients:renderClients,payments:renderPayments};
-  renders[type]();
-  updateBadges();
-  toast('נמחק ✓');
+function renderSettings(){
+  return `<div style="max-width:600px"><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><button class="btn btn-primary" onclick="showToast('נשמר ✅')" style="margin-top:8px">שמור</button></div>
+  <div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">🗂️ גיבוי</div><div style="display:flex;gap:10px;margin-top:8px"><button class="btn btn-secondary" onclick="backupData()">⬇️ גיבוי JSON</button><button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">⬆️ שחזור</button><input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)"><button class="btn btn-danger" onclick="clearAll()">🗑️ מחק הכל</button></div></div>
+  <div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>${Object.keys(DB).map(k=>Array.isArray(DB[k])?`<div class="status-row"><span class="status-label">${PAGE_ICONS[k]||'📋'} ${PAGE_TITLES[k]||k}</span><span class="status-count">${DB[k].length}</span></div>`:'').filter(Boolean).join('')}</div></div>`;
 }
-
-// ===== STATUS BADGE =====
-function leadBadge(status) {
-  const map = {'🎉 לידים חדשים':'badge-new','⭐ 1.5 לידים זהב':'badge-gold','🤝 פולואפ איכותי':'badge-followup','📞 נוצר קשר ראשוני':'badge-contact','😊 לא נסגר':'badge-nomatch','❌ ליד לא תקין':'badge-nomatch'};
-  return `<span class="badge ${map[status]||'badge-new'}">${status||'חדש'}</span>`;
-}
-function dealBadge(status) {
-  if(status==='לקוח סגר') return `<span class="badge badge-closed">✅ ${status}</span>`;
-  if(status==='לא נסגר') return `<span class="badge badge-nomatch">❌ ${status}</span>`;
-  return `<span class="badge badge-open">${status||'-'}</span>`;
-}
-function clientBadge(status) {
-  if(status==='לקוח פעיל') return `<span class="badge badge-active">🟢 ${status}</span>`;
-  return `<span class="badge badge-inactive">${status||'-'}</span>`;
-}
-function paymentBadge(status) {
-  if(status==='שולם') return `<span class="badge badge-closed">✅ שולם</span>`;
-  if(status==='באיחור') return `<span class="badge badge-nomatch">⚠️ באיחור</span>`;
-  return `<span class="badge badge-open">⏳ ממתין</span>`;
-}
-
-// ===== RENDER =====
-function renderLeads() {
-  const search = (document.getElementById('leads-search')||{}).value||'';
-  const filterStatus = (document.getElementById('leads-filter-status')||{}).value||'';
-  const filterSource = (document.getElementById('leads-filter-source')||{}).value||'';
-  let data = loadRec('leads');
-
-  // populate filters
-  const statuses = [...new Set(data.map(r=>r.status).filter(Boolean))];
-  const statusEl = document.getElementById('leads-filter-status');
-  const currentSt = statusEl.value;
-  statusEl.innerHTML = '<option value="">כל הסטטוסים</option>' + statuses.map(s=>`<option value="${s}" ${s===currentSt?'selected':''}>${s}</option>`).join('');
-
-  const sources = [...new Set(data.map(r=>r.source).filter(Boolean))];
-  const sourceEl = document.getElementById('leads-filter-source');
-  const currentSrc = sourceEl.value;
-  sourceEl.innerHTML = '<option value="">כל המקורות</option>' + sources.map(s=>`<option value="${s}" ${s===currentSrc?'selected':''}>${s}</option>`).join('');
-
-  if(search) data = data.filter(r => (r.name+r.phone+r.email).toLowerCase().includes(search.toLowerCase()));
-  if(filterStatus) data = data.filter(r => r.status === filterStatus);
-  if(filterSource) data = data.filter(r => r.source === filterSource);
-
-  document.getElementById('page-count').textContent = data.length + ' רשומות';
-
-  // pipeline
-  const allStatuses = load('lead-statuses');
-  const pipeline = document.getElementById('leads-pipeline');
-  pipeline.innerHTML = allStatuses.map(s => {
-    const count = loadRec('leads').filter(r=>r.status===s).length;
-    return `<div class="pipeline-stage" onclick="document.getElementById('leads-filter-status').value='${s}';renderLeads()"><span class="pipeline-count">${count}</span>${s}</div>`;
-  }).join('');
-
-  const tbody = document.getElementById('leads-tbody');
-  if(!data.length) { tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="empty-icon">⭐</div><div class="empty-text">אין לידים עדיין</div></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => `
-    <tr onclick="openLeadModal('${r.id}')">
-      <td><strong>${r.name}</strong>${r.gold?` <span title="ליד זהב">⭐</span>`:''}</td>
-      <td><a class="phone-link" href="tel:${r.phone}" onclick="event.stopPropagation()">${r.phone||'-'}</a></td>
-      <td>${leadBadge(r.status)}</td>
-      <td>${r.source||'-'}</td>
-      <td>${r.product||'-'}</td>
-      <td>${r.agent||'-'}</td>
-      <td>${fmtDate(r.date)}</td>
-      <td><div class="row-actions"><button class="action-btn edit" onclick="event.stopPropagation();openLeadModal('${r.id}')">✏️</button><button class="action-btn" onclick="event.stopPropagation();deleteRecord('leads','${r.id}')">🗑️</button></div></td>
-    </tr>`).join('');
-}
-
-function renderDeals() {
-  const search = (document.getElementById('deals-search')||{}).value||'';
-  const filterStatus = (document.getElementById('deals-filter-status')||{}).value||'';
-  let data = loadRec('deals');
-
-  const statuses = [...new Set(data.map(r=>r.status).filter(Boolean))];
-  const statusEl = document.getElementById('deals-filter-status');
-  const cur = statusEl.value;
-  statusEl.innerHTML = '<option value="">כל הסטטוסים</option>' + statuses.map(s=>`<option value="${s}" ${s===cur?'selected':''}>${s}</option>`).join('');
-
-  if(search) data = data.filter(r => (r.name+r.client).toLowerCase().includes(search.toLowerCase()));
-  if(filterStatus) data = data.filter(r => r.status === filterStatus);
-
-  document.getElementById('page-count').textContent = data.length + ' עסקאות';
-  const tbody = document.getElementById('deals-tbody');
-  if(!data.length) { tbody.innerHTML = `<tr><td colspan="9"><div class="empty"><div class="empty-icon">💼</div><div class="empty-text">אין עסקאות עדיין</div></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => `
-    <tr onclick="openDealModal('${r.id}')">
-      <td><strong>${r.name}</strong></td>
-      <td>${r.client||'-'}</td>
-      <td>${r.product||'-'}</td>
-      <td>${fmt(r.value)}</td>
-      <td>${r.installments||'-'}</td>
-      <td>${dealBadge(r.status)}</td>
-      <td>${r.agent||'-'}</td>
-      <td>${fmtDate(r.date)}</td>
-      <td><div class="row-actions"><button class="action-btn edit" onclick="event.stopPropagation();openDealModal('${r.id}')">✏️</button><button class="action-btn" onclick="event.stopPropagation();deleteRecord('deals','${r.id}')">🗑️</button></div></td>
-    </tr>`).join('');
-}
-
-function renderClients() {
-  const search = (document.getElementById('clients-search')||{}).value||'';
-  const filterStatus = (document.getElementById('clients-filter-status')||{}).value||'';
-  let data = loadRec('clients');
-
-  const statuses = [...new Set(data.map(r=>r.status).filter(Boolean))];
-  const statusEl = document.getElementById('clients-filter-status');
-  const cur = statusEl.value;
-  statusEl.innerHTML = '<option value="">כל הסטטוסים</option>' + statuses.map(s=>`<option value="${s}" ${s===cur?'selected':''}>${s}</option>`).join('');
-
-  if(search) data = data.filter(r => (r.name+r.phone+r.email).toLowerCase().includes(search.toLowerCase()));
-  if(filterStatus) data = data.filter(r => r.status === filterStatus);
-
-  document.getElementById('page-count').textContent = data.length + ' לקוחות';
-  const deals = loadRec('deals');
-  const tbody = document.getElementById('clients-tbody');
-  if(!data.length) { tbody.innerHTML = `<tr><td colspan="9"><div class="empty"><div class="empty-icon">👥</div><div class="empty-text">אין לקוחות עדיין</div></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => {
-    const deal = deals.find(d=>d.id===r.deal);
-    return `<tr onclick="openClientModal('${r.id}')">
-      <td><strong>${r.name}</strong></td>
-      <td><a class="phone-link" href="tel:${r.phone}" onclick="event.stopPropagation()">${r.phone||'-'}</a></td>
-      <td>${r.email||'-'}</td>
-      <td>${deal?deal.name:'-'}</td>
-      <td>${clientBadge(r.status)}</td>
-      <td>${r.agent||'-'}</td>
-      <td>${fmtDate(r.start)}</td>
-      <td>${r.meetingsDone||0}/${r.meetingsTotal||12}</td>
-      <td><div class="row-actions"><button class="action-btn edit" onclick="event.stopPropagation();openClientModal('${r.id}')">✏️</button><button class="action-btn" onclick="event.stopPropagation();deleteRecord('clients','${r.id}')">🗑️</button></div></td>
-    </tr>`;
-  }).join('');
-}
-
-function renderPayments() {
-  const search = (document.getElementById('payments-search')||{}).value||'';
-  const filterStatus = (document.getElementById('payments-filter-status')||{}).value||'';
-  let data = loadRec('payments');
-
-  if(search) data = data.filter(r => (r.client).toLowerCase().includes(search.toLowerCase()));
-  if(filterStatus) data = data.filter(r => r.status === filterStatus);
-
-  document.getElementById('page-count').textContent = data.length + ' תשלומים';
-  const deals = loadRec('deals');
-  const tbody = document.getElementById('payments-tbody');
-  if(!data.length) { tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="empty-icon">💰</div><div class="empty-text">אין תשלומים עדיין</div></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => {
-    const deal = deals.find(d=>d.id===r.deal);
-    return `<tr onclick="openPaymentModal('${r.id}')">
-      <td><strong>${r.client}</strong></td>
-      <td>${deal?deal.name:'-'}</td>
-      <td><strong>${fmt(r.amount)}</strong></td>
-      <td>${fmtDate(r.date)}</td>
-      <td>${r.method||'-'}</td>
-      <td>${paymentBadge(r.status)}</td>
-      <td>${r.bank==='כן'?'✅ כן':'❌ לא'}</td>
-      <td><div class="row-actions"><button class="action-btn edit" onclick="event.stopPropagation();openPaymentModal('${r.id}')">✏️</button><button class="action-btn" onclick="event.stopPropagation();deleteRecord('payments','${r.id}')">🗑️</button></div></td>
-    </tr>`;
-  }).join('');
-}
-
-function renderDashboard() {
-  const payments = loadRec('payments');
-  const deals = loadRec('deals');
-  const leads = loadRec('leads');
-
-  const totalRevenue = payments.filter(p=>p.bank==='כן').reduce((s,p)=>s+Number(p.amount||0),0);
-  const pendingRevenue = payments.filter(p=>p.status!=='שולם').reduce((s,p)=>s+Number(p.amount||0),0);
-  const openDeals = deals.filter(d=>d.status!=='לקוח סגר'&&d.status!=='לא נסגר').length;
-  const newLeads = leads.filter(l=>l.status==='🎉 לידים חדשים').length;
-
-  document.getElementById('kpi-revenue').textContent = fmt(totalRevenue);
-  document.getElementById('kpi-deals').textContent = openDeals;
-  document.getElementById('kpi-leads').textContent = newLeads;
-  document.getElementById('kpi-pending').textContent = fmt(pendingRevenue);
-
-  // Revenue by product
-  const byProduct = {};
-  deals.forEach(d => { if(d.product) byProduct[d.product] = (byProduct[d.product]||0) + Number(d.value||0); });
-  const sorted = Object.entries(byProduct).sort((a,b)=>b[1]-a[1]);
-  const total = sorted.reduce((s,[,v])=>s+v,0);
-  document.getElementById('revenue-tbody').innerHTML = sorted.map(([p,v])=>`<tr><td>${p}</td><td>${fmt(v)}</td></tr>`).join('') + `<tr><td>סה"כ</td><td>${fmt(total)}</td></tr>`;
-
-  // Leads summary
-  const statuses = load('lead-statuses');
-  const leadsSummary = statuses.map(s => {
-    const count = leads.filter(l=>l.status===s).length;
-    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">${s}</span><strong style="color:var(--primary)">${count}</strong></div>`;
-  }).join('');
-  document.getElementById('leads-summary').innerHTML = leadsSummary || '<div style="color:var(--text-muted);text-align:center;padding:20px">אין נתונים</div>';
-}
-
-// ===== SETTINGS =====
-function renderSettings() {
-  const lists = ['lead-statuses','deal-statuses','products','sources','agents','payment-methods'];
-  lists.forEach(key => {
-    const items = load(key);
-    document.getElementById(key+'-list').innerHTML = items.map(item =>
-      `<span class="tag">${item}<span class="tag-remove" onclick="removeTag('${key}','${item}')">✕</span></span>`
-    ).join('');
-  });
-}
-
-function addTag(key, inputId) {
-  const val = document.getElementById(inputId).value.trim();
-  if(!val) return;
-  const items = load(key);
-  if(items.includes(val)) { toast('כבר קיים'); return; }
-  items.push(val);
-  save(key, items);
-  document.getElementById(inputId).value = '';
-  renderSettings();
-  toast('נוסף ✓');
-}
-
-function removeTag(key, val) {
-  if(!confirm('למחוק "' + val + '"?')) return;
-  save(key, load(key).filter(i=>i!==val));
-  renderSettings();
-}
-
-// ===== BADGES =====
-function updateBadges() {
-  document.getElementById('leads-badge').textContent = loadRec('leads').length;
-  document.getElementById('deals-badge').textContent = loadRec('deals').length;
-  document.getElementById('clients-badge').textContent = loadRec('clients').length;
-  document.getElementById('payments-badge').textContent = loadRec('payments').length;
-  document.getElementById('products-badge').textContent = loadRec('products-data').length;
-  document.getElementById('meetings-badge').textContent = loadRec('meetings').length;
-  const openTasks = loadRec('tasks').filter(t=>t.status!=='הושלם').length;
-  document.getElementById('tasks-badge').textContent = openTasks;
-}
-
-// ===== EXPORT =====
-function exportData() {
-  const data = { leads: loadRec('leads'), deals: loadRec('deals'), clients: loadRec('clients'), payments: loadRec('payments') };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'crm-export.json'; a.click();
-}
-
-// Close modal on overlay click
-document.querySelectorAll('.modal-overlay').forEach(el => el.addEventListener('click', e => { if(e.target === el) el.classList.remove('open'); }));
-
-// ===== AUTH =====
-// משתמשים — שנה כאן שם משתמש וסיסמא לפי הצורך
-const USERS = [
-  { username: 'roi', password: 'Roi2024!', name: 'רועי עובדיה', avatar: 'ר' },
-  { username: 'natan', password: 'Natan2024!', name: 'נתנאל אסרף', avatar: 'נ' },
-  { username: 'ben', password: 'Ben2024!', name: 'בן אברגל', avatar: 'ב' },
-];
-
-const SESSION_KEY = 'crm_session';
-
-function doLogin() {
-  const user = document.getElementById('login-user').value.trim().toLowerCase();
-  const pass = document.getElementById('login-pass').value;
-  const match = USERS.find(u => u.username === user && u.password === pass);
-  if(!match) {
-    const errEl = document.getElementById('login-error');
-    errEl.textContent = '❌ שם משתמש או סיסמא שגויים';
-    document.getElementById('login-pass').value = '';
-    document.getElementById('login-pass').focus();
-    setTimeout(() => errEl.textContent = '', 3000);
-    return;
-  }
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify({ username: match.username, name: match.name, avatar: match.avatar }));
-  applySession(match);
-  document.getElementById('login-overlay').style.display = 'none';
-}
-
-function doLogout() {
-  if(!confirm('להתנתק מהמערכת?')) return;
-  sessionStorage.removeItem(SESSION_KEY);
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
-  document.getElementById('login-error').textContent = '';
-  document.getElementById('login-overlay').style.display = 'flex';
-}
-
-function applySession(u) {
-  document.getElementById('user-display').textContent = u.name;
-  document.getElementById('user-avatar').textContent = u.avatar;
-}
-
-function checkAuth() {
-  const session = sessionStorage.getItem(SESSION_KEY);
-  if(session) {
-    try {
-      const u = JSON.parse(session);
-      applySession(u);
-      document.getElementById('login-overlay').style.display = 'none';
-    } catch(e) { /* stay on login */ }
-  }
-  // Focus username field
-  setTimeout(() => document.getElementById('login-user').focus(), 100);
-}
-
-// Init
-checkAuth();
-initProductsData();
+function backupData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}));a.download='roi_crm_backup.json';a.click();showToast('גיבוי הורד ✅');}
+function restoreData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{DB=JSON.parse(ev.target.result);saveData();showPage(currentPage);showToast('שוחזר ✅');}catch(err){showToast('קובץ שגוי ❌');}};reader.readAsText(file);}
+function clearAll(){if(!confirm('למחוק את כל הנתונים?'))return;DB=defaultData();saveData();showPage(currentPage);showToast('נמחק הכל ✅');}
+function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+// INIT
 updateBadges();
-renderDashboard();
+const savedUser=sessionStorage.getItem('roicrm_user');
+if(savedUser){try{const u=JSON.parse(savedUser);currentUser=u;document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=u.name;document.getElementById('userAvatar').textContent=u.avatar;showPage('dashboard');}catch(e){}}
 </script>
-
-
-</body></html>
+</body>
+</html>
