@@ -80,18 +80,18 @@ tbody tr:last-child td{border:none}
 .record-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:stretch}
 .record-overlay.open{display:flex}
 .record-panel{background:var(--bg);width:100%;max-width:1400px;margin:0 auto;display:flex;flex-direction:column;height:100vh}
-.record-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.record-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;gap:12px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .record-back{cursor:pointer;font-size:13px;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--hover);font-weight:600;white-space:nowrap}
 .breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;flex:1}
 .breadcrumb-item{cursor:pointer;color:var(--accent);font-weight:600}
 .breadcrumb-item:hover{text-decoration:underline}
 .breadcrumb-sep{color:var(--text2)}
-.record-name{font-size:16px;font-weight:700}
+.record-name{font-size:18px;font-weight:800;color:var(--text)}
 .record-type-badge{font-size:11px;color:var(--text2);background:var(--hover);padding:2px 8px;border-radius:10px;margin-right:6px;white-space:nowrap}
-.record-body{flex:1;display:grid;grid-template-columns:360px 1fr;overflow:hidden;direction:rtl}
-.record-right{padding:20px;overflow-y:auto;background:var(--white);border-left:1px solid var(--border)}
+.record-body{flex:1;display:grid;grid-template-columns:1fr 400px;overflow:hidden;direction:rtl}
+.record-right{padding:24px 28px;overflow-y:auto;background:var(--white);border-left:1px solid var(--border)}
 .record-left{padding:20px;overflow-y:auto;background:var(--bg);direction:ltr}
-.meta-box{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border-radius:10px;padding:14px;margin-bottom:16px;border:1px solid #c7d2fe}
+.meta-box{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border-radius:12px;padding:16px 18px;margin-bottom:20px;border:1px solid #c7d2fe;box-shadow:0 2px 8px rgba(79,110,247,.06)}
 .meta-box-title{font-size:10px;font-weight:700;color:#4f6ef7;margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px;direction:rtl}
 .meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;font-size:12px;direction:rtl}
 .meta-row:last-child{margin-bottom:0}
@@ -116,14 +116,15 @@ select.field-value{appearance:auto}
 .gold-badge{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700}
 .action-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;direction:rtl}
 /* LEFT */
-.left-section{background:var(--white);border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid var(--border);direction:rtl}
-.left-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.left-section-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.left-section{background:var(--white);border-radius:12px;padding:18px;margin-bottom:14px;border:1px solid var(--border);direction:rtl;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.left-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--hover)}
+.left-section-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
 .left-section-count{background:var(--accent);color:#fff;font-size:10px;padding:1px 7px;border-radius:10px}
 .add-note-box{background:var(--hover);border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid var(--border)}
 .add-note-box textarea{width:100%;border:none;background:transparent;font-size:13px;resize:none;outline:none;min-height:60px;font-family:inherit;color:var(--text);direction:rtl}
 .add-note-actions{display:flex;gap:8px;margin-top:8px}
-.note-item{background:var(--hover);border-radius:8px;padding:12px;margin-bottom:8px;border-right:3px solid var(--accent)}
+.note-item{background:var(--hover);border-radius:10px;padding:14px;margin-bottom:10px;border-right:3px solid var(--accent);transition:box-shadow .15s}
+.note-item:hover{box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .note-text{font-size:13px;line-height:1.6;direction:rtl;white-space:pre-wrap}
 .note-meta{font-size:11px;color:var(--text2);margin-top:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .note-del{cursor:pointer;color:var(--danger);margin-right:auto}
@@ -139,8 +140,8 @@ select.field-value{appearance:auto}
 .task-name.done{text-decoration:line-through;color:var(--text2)}
 .task-meta-row{font-size:11px;color:var(--text2);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
 .task-del{cursor:pointer;color:var(--danger);font-size:13px;flex-shrink:0;margin-top:2px}
-.related-item{display:flex;align-items:center;justify-content:space-between;background:var(--hover);border-radius:8px;padding:10px 14px;cursor:pointer;border:1px solid var(--border);margin-bottom:8px;transition:all .1s}
-.related-item:hover{border-color:var(--accent);background:#eef2ff}
+.related-item{display:flex;align-items:center;justify-content:space-between;background:var(--hover);border-radius:10px;padding:12px 16px;cursor:pointer;border:1px solid var(--border);margin-bottom:8px;transition:all .15s}
+.related-item:hover{border-color:var(--accent);background:#eef2ff;box-shadow:0 2px 8px rgba(79,110,247,.08);transform:translateX(-2px)}
 .related-item-name{font-size:13px;font-weight:600}
 .related-item-sub{font-size:11px;color:var(--text2)}
 .related-arrow{color:var(--accent);font-size:18px;font-weight:700}
@@ -195,6 +196,7 @@ select.field-value{appearance:auto}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+@media(max-width:1100px){.record-body{grid-template-columns:1fr 340px}}
 @media(max-width:900px){.record-body{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
 
 /* OTP LOGIN */
@@ -203,23 +205,25 @@ select.field-value{appearance:auto}
 .otp-note{font-size:10px;color:#94a3b8;margin-top:6px}
 #loginIdNum,#loginOtp{font-size:20px;letter-spacing:4px;text-align:center;font-family:monospace}
 
-.section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 0;cursor:pointer;border-bottom:1px solid var(--border);margin-top:8px}
-.section-header h3{font-size:15px;font-weight:600;color:var(--accent);margin:0}
-.section-header .chevron{transition:transform .2s;font-size:12px;color:var(--text2)}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;border-bottom:1px solid var(--border);margin-top:0;background:linear-gradient(135deg,#f8faff,#f0f4ff);border-radius:10px 10px 0 0;border:1px solid #e0e7ff;border-bottom:1px solid #d4ddff}
+.section-header h3{font-size:14px;font-weight:700;color:var(--accent);margin:0;display:flex;align-items:center;gap:8px}
+.section-header .chevron{transition:transform .2s;font-size:12px;color:var(--accent);opacity:.6}
 .section-header.collapsed .chevron{transform:rotate(-90deg)}
-.section-body{padding:8px 0}
+.section-header.collapsed{border-radius:10px;margin-bottom:12px}
+.section-body{padding:12px 16px 16px;background:var(--white);border:1px solid #e0e7ff;border-top:none;border-radius:0 0 10px 10px;margin-bottom:12px}
 .section-body.hidden{display:none}
-.field-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0f0f5;min-height:38px}
+.field-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f5f5fa;min-height:42px}
 .field-row:last-child{border-bottom:none}
-.field-label{font-size:13px;color:var(--text2);flex-shrink:0;padding-left:16px;min-width:140px;text-align:right}
+.field-label{font-size:13px;color:var(--text2);flex-shrink:0;padding-left:16px;min-width:160px;text-align:right;line-height:32px}
 .field-value{font-size:14px;font-weight:600;color:var(--text);text-align:left;flex:1;word-break:break-word}
 .field-value a{color:var(--accent);text-decoration:none}
 .field-value a:hover{text-decoration:underline}
 .field-value .phone-link{color:var(--success);cursor:pointer}
 .field-value .email-link{color:var(--accent)}
-.field-value input[type="text"],.field-value input[type="date"],.field-value input[type="number"],.field-value select,.field-value textarea{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;direction:rtl;background:#fff}
+.field-value input[type="text"],.field-value input[type="date"],.field-value input[type="number"],.field-value select,.field-value textarea{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;direction:rtl;background:#fff;transition:all .15s}
 .field-value textarea{min-height:60px;resize:vertical}
-.field-value input:focus,.field-value select:focus,.field-value textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,110,247,0.1)}
+.field-value input:focus,.field-value select:focus,.field-value textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,110,247,0.12);background:#fff}
+.field-value input:hover,.field-value select:hover,.field-value textarea:hover{border-color:#b4c6fc}
 .field-checkbox{display:flex;align-items:center;gap:8px}
 .field-checkbox input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent)}
 .confirm-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
@@ -361,7 +365,7 @@ function perm(action) {
   if (!currentUser) return false;
   const p = PERMS[currentUser.role];
   if (!p) return false;
-  if (action === 'delete') return p.canDelete;
+  if (action === 'delete') return p.canDelete && currentUser.username === 'roi';
   if (action === 'export') return p.canExport;
   if (action === 'users') return p.canManageUsers;
   if (action.startsWith('create:')) return p.canCreate.includes(action.substring(7));
@@ -567,9 +571,9 @@ function fv(key, label, val, opts) {
   if (opts.readonly) {
     h += '<span>' + val + '</span>';
   } else if (opts.checkbox) {
-    h += '<label class="field-checkbox"><input type="checkbox" id="' + id + '" ' + (val ? 'checked' : '') + ' onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.checked)"> ' + (opts.checkLabel || '') + '</label>';
+    h += '<label class="field-checkbox"><input type="checkbox" id="' + id + '" ' + (val ? 'checked' : '') + ' onchange="updateField(\'' + key + '\',this.checked)"> ' + (opts.checkLabel || '') + '</label>';
   } else if (opts.select) {
-    h += '<select id="' + id + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)">';
+    h += '<select id="' + id + '" onchange="updateField(\'' + key + '\',this.value)">';
     h += '<option value="">-- בחר --</option>';
     var labels = opts.selectLabels || opts.select;
     for (var i = 0; i < opts.select.length; i++) {
@@ -579,31 +583,31 @@ function fv(key, label, val, opts) {
     }
     h += '</select>';
   } else if (opts.textarea) {
-    h += '<textarea id="' + id + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)">' + (val || '') + '</textarea>';
+    h += '<textarea id="' + id + '" onchange="updateField(\'' + key + '\',this.value)">' + (val || '') + '</textarea>';
   } else if (opts.date) {
     var dv = val || '';
     if (dv && dv.includes('/')) { var p = dv.split('/'); if(p.length===3) dv = p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); }
-    h += '<input type="date" id="' + id + '" value="' + dv + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)">';
+    h += '<input type="date" id="' + id + '" value="' + dv + '" onchange="updateField(\'' + key + '\',this.value)">';
   } else if (opts.link) {
     if (val) {
       var shortUrl = String(val).length > 50 ? String(val).substring(0,47) + '...' : val;
       h += '<a href="' + val + '" target="_blank">' + shortUrl + '</a>';
     }
-    h += '<input type="text" id="' + id + '" value="' + (val||'').replace(/"/g,'&quot;') + '" placeholder="הזן קישור" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)" style="margin-top:4px">';
+    h += '<input type="text" id="' + id + '" value="' + (val||'').replace(/"/g,'&quot;') + '" placeholder="הזן קישור" onchange="updateField(\'' + key + '\',this.value)" style="margin-top:4px">';
   } else if (opts.phone) {
     if (val) h += '<a href="tel:' + val + '" class="phone-link">' + val + '</a>';
-    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)" style="' + (val?'margin-top:4px':'') + '">';
+    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(\'' + key + '\',this.value)" style="' + (val?'margin-top:4px':'') + '">';
   } else if (opts.email) {
     if (val) h += '<a href="mailto:' + val + '" class="email-link">' + val + '</a>';
-    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)" style="' + (val?'margin-top:4px':'') + '">';
+    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(\'' + key + '\',this.value)" style="' + (val?'margin-top:4px':'') + '">';
   } else {
-    h += '<input type="text" id="' + id + '" value="' + String(val).replace(/"/g,'&quot;') + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)">';
+    h += '<input type="text" id="' + id + '" value="' + String(val).replace(/"/g,'&quot;') + '" onchange="updateField(\'' + key + '\',this.value)">';
   }
   h += '</span></div>';
   return h;
 }
 
-function renderLeadFields(r, container) {
+function renderLeadFields(r) {
   var h = '';
   h += secHead('פרטי לקוח', 'lead_details', false);
   h += fv('name','שם מתעניין',r.name);
@@ -616,10 +620,10 @@ function renderLeadFields(r, container) {
   h += fv('email','דואר אלקטרוני',r.email,{email:true});
   h += fv('whyContact','למה השאיר פרטים',r.whyContact,{textarea:true,full:true});
   h += secEnd();
-  container.innerHTML = h;
+  return h;
 }
 
-function renderDealFields(r, container) {
+function renderDealFields(r) {
   var leadName = '';
   if (r.leadId) { var ld = DB.leads.find(function(l){return l.id===r.leadId}); if(ld) leadName=ld.name; }
   if (!leadName) leadName = r.leadName || '';
@@ -651,10 +655,10 @@ function renderDealFields(r, container) {
   h += fv('futureCollectionDate','תאריך גביה עתידי',r.futureCollectionDate,{date:true});
   h += fv('invoiceIssued','הוצאתי חשבונית?',r.invoiceIssued,{checkbox:true,checkLabel:'חשבונית הוצאה ✅'});
   h += secEnd();
-  container.innerHTML = h;
+  return h;
 }
 
-function renderClientFields(r, container) {
+function renderClientFields(r) {
   var h = '';
   h += secHead('תהליך ופגישות', 'client_process', false);
   h += fv('doneMeetings','מספר פגישות שבוצעו',r.doneMeetings||DB.meetings.filter(function(m){return m.clientId===r.id}).length);
@@ -675,10 +679,10 @@ function renderClientFields(r, container) {
   h += fv('clientPhone','טלפון ראשי - התמחות משויכת',r.clientPhone||r.phone,{phone:true});
   h += fv('daysInProcess','ימים מתחיל תהליך',r.daysInProcess||(r.startDate?Math.round((Date.now()-new Date(r.startDate))/(1000*60*60*24)):'')||'',{readonly:true});
   h += secEnd();
-  container.innerHTML = h;
+  return h;
 }
 
-function renderPaymentFields(r, container) {
+function renderPaymentFields(r) {
   var h = '';
   h += secHead('שם מקטע', 'payment_details', false);
   h += fv('name','שם',r.name||r.clientName);
@@ -692,10 +696,10 @@ function renderPaymentFields(r, container) {
   h += fv('paymentNumber','מספר תשלום',r.paymentNumber);
   h += fv('status','התשלום עבר והכל תקין',r.status,{select:['עדיין לא','שולם','לא בוצע','בדיקה']});
   h += secEnd();
-  container.innerHTML = h;
+  return h;
 }
 
-function renderMeetingFields(r, container) {
+function renderMeetingFields(r) {
   var h = '';
   h += secHead('פרטי פעילות', 'meeting_details', false);
   h += fv('title','שם',r.title||r.name);
@@ -709,10 +713,10 @@ function renderMeetingFields(r, container) {
   h += secHead('תיאור', 'meeting_desc', true);
   h += fv('notes_field','תיאור',r.notes_field,{textarea:true,full:true});
   h += secEnd();
-  container.innerHTML = h;
+  return h;
 }
 
-function renderTaskFields(r, container) {
+function renderTaskFields(r) {
   var h = '';
   h += secHead('משימה', 'task_main', false);
   h += fv('name','שם',r.name);
@@ -733,7 +737,7 @@ function renderTaskFields(r, container) {
   h += fv('createdBy','נוצר על ידי',r.createdBy?uName(r.createdBy):'',{readonly:true});
   h += fv('updatedBy','עודכן על ידי',r.updatedBy?uName(r.updatedBy):'',{readonly:true});
   h += secEnd();
-  container.innerHTML = h;
+  return h;
 }
 
 function renderProductFields(r){
@@ -743,8 +747,8 @@ ${fv('price','מחיר',r.price)}
 ${fv('desc','תיאור',r.desc,{textarea:true,full:true})}
 </div></div>`;}
 
-function updateField(key,val){if(currentRecord){currentRecord[key]=val;if(key==='status_task')currentRecord.done=(val==='סגור');}}
-function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [contenteditable]').forEach(el=>{if(el.dataset.field)currentRecord[el.dataset.field]=el.textContent.trim();});document.querySelectorAll('#recordRight input[type=date]').forEach(el=>{if(el.dataset.field)currentRecord[el.dataset.field]=el.value;});document.querySelectorAll('#recordRight select').forEach(el=>{if(el.dataset.field)currentRecord[el.dataset.field]=el.value;});document.querySelectorAll('#recordRight input[type=checkbox]').forEach(el=>{const k=el.id.replace('cb_','');currentRecord[k]=el.checked;});currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();showToast('נשמר ✅');}document.getElementById('recordName').textContent=currentRecord.name||currentRecord.title||'—';}
+function updateField(key,val){if(currentRecord){currentRecord[key]=val;if(key==='status_task')currentRecord.done=(val==='סגור');saveRS();}}
+function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();showToast('נשמר ✅');}document.getElementById('recordName').textContent=currentRecord.name||currentRecord.title||'—';}
 function deleteRecord() {
   var page = currentPage;
   var rec = currentRecord;
@@ -833,7 +837,15 @@ else if(type==='tasks'){const n=req('f-name','שם חובה');if(!n)return;item=
 if(!DB[type])DB[type]=[];DB[type].push(item);saveData();closeModal();showToast('נוסף ✅');
 if(currentRecordType&&currentRecord){const rec=DB[currentRecordType].find(r=>r.id===currentRecord.id);if(rec){currentRecord={...rec};document.getElementById('recordLeft').innerHTML=renderLeft();}}else{renderPage(currentPage);}}
 
-function deleteItem(type,id){if(!perm('delete')){showToast('אין הרשאה ❌');return;}if(!confirm('למחוק?'))return;DB[type]=DB[type].filter(r=>r.id!==id);saveData();renderPage(currentPage);showToast('נמחק ✅');}
+function deleteItem(type,id){if(!perm('delete')){showToast('אין הרשאה — רק רועי יכול למחוק ❌');return;}
+var rec=(DB[type]||[]).find(function(r){return r.id===id});if(!rec)return;
+var typeName={leads:'מתעניין',deals:'עסקה',clients:'לקוח',payments:'תשלום',meetings:'פגישה',tasks:'משימה',products:'מוצר'}[type]||'רשומה';
+var recName=rec.name||rec.title||rec.clientName||'';
+var overlay=document.createElement('div');overlay.className='confirm-overlay';
+overlay.innerHTML='<div class="confirm-dialog"><div class="confirm-icon">⚠️</div><h3>מחיקת '+typeName+'</h3><p>האם אתה בטוח שברצונך למחוק את ה'+typeName+(recName?' <span class="confirm-name">"'+recName+'"</span>':'')+'?<br>פעולה זו לא ניתנת לביטול.</p><div class="confirm-actions"><button class="btn btn-secondary" onclick="this.closest(\'.confirm-overlay\').remove()">ביטול</button><button class="btn btn-danger" id="confirmDelItemBtn">כן, מחק</button></div></div>';
+document.body.appendChild(overlay);
+overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
+document.getElementById('confirmDelItemBtn').addEventListener('click',function(){overlay.remove();DB[type]=DB[type].filter(function(r){return r.id!==id});saveData();renderPage(currentPage);showToast('נמחק ✅');});}
 function exportData(){if(!perm('export')){showToast('אין הרשאה ❌');return;}const data=DB[currentPage]||[];if(!data.length){showToast('אין נתונים');return;}const cfg=LIST_CONFIGS[currentPage];if(!cfg)return;const csv='\uFEFF'+cfg.cols.join(',')+'\n'+data.map(r=>cfg.fields(r).map(f=>'"'+String(f).replace(/<[^>]+>/g,'').replace(/,/g,'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=currentPage+'_export.csv';a.click();showToast('ייצוא ✅');}
 function renderSettings(){return`<div style="max-width:600px"><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות מערכת</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><div class="form-group"><label class="form-label">פרטי חשבון בנק</label><input class="form-control" id="bankDetails" value="בנק לאומי | סניף 900 | חשבון 12345678 | ROI"></div><button class="btn btn-primary" onclick="showToast('נשמר ✅')" style="margin-top:8px">שמור</button></div><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">🗂️ גיבוי</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-secondary" onclick="backupData()">⬇️ גיבוי JSON</button><button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">⬆️ שחזור</button><input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)">${perm('delete')?`<button class="btn btn-danger" onclick="clearAll()">🗑️ מחק הכל</button>`:''}</div></div><div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>${Object.keys(DB).map(k=>Array.isArray(DB[k])?`<div class="status-row"><span class="status-label">${PAGE_ICONS[k]||'📋'} ${PAGE_TITLES[k]||k}</span><span class="status-count">${DB[k].length}</span></div>`:'').filter(Boolean).join('')}</div></div>`;}
 function backupData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}));a.download='roi_crm_backup.json';a.click();showToast('גיבוי הורד ✅');}
@@ -857,27 +869,12 @@ setInterval(() => {
   if (changed) {
     DB = freshDB;
     updateBadges();
-    // Re-render current page silently
     if (currentPage) {
-      const c = document.getElementById('mainContent');
-      if (c) c.innerHTML = renderPage_silent(currentPage);
+      renderPage(currentPage);
     }
     showToast('✅ נתונים עודכנו');
   }
 }, 30000);
-
-// Silent render (same as renderPage but returns html instead of setting it)
-function renderPage_silent(page) {
-  try {
-    if (page === 'dashboard') return renderDashboard();
-    if (page === 'users') return renderUsers();
-    if (page === 'settings') return renderSettings();
-    if (DB[page] !== undefined) return renderList(page);
-  } catch(e) {}
-  return null;
-}
-// Override renderPage to also set content
-const _origRenderPage = renderPage;
 
 const su=sessionStorage.getItem('roicrm_user');
 if(su){try{currentUser=JSON.parse(su);initApp();}catch(e){}}
