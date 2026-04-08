@@ -88,7 +88,7 @@ tbody tr:last-child td{border:none}
 .breadcrumb-sep{color:var(--text2)}
 .record-name{font-size:18px;font-weight:800;color:var(--text)}
 .record-type-badge{font-size:11px;color:var(--text2);background:var(--hover);padding:2px 8px;border-radius:10px;margin-right:6px;white-space:nowrap}
-.record-body{flex:1;display:grid;grid-template-columns:1fr 420px;overflow:hidden;direction:rtl}
+.record-body{flex:1;display:grid;grid-template-columns:1fr 340px;overflow:hidden;direction:rtl}
 .record-right{padding:24px 28px;overflow-y:auto;background:var(--white);border-left:1px solid var(--border)}
 .record-left{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);direction:ltr}
 .meta-box{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border-radius:12px;padding:16px 18px;margin-bottom:20px;border:1px solid #c7d2fe;box-shadow:0 2px 8px rgba(79,110,247,.06)}
@@ -111,6 +111,22 @@ select.field-value{appearance:auto}
 .field-checkbox{display:flex;align-items:center;gap:6px;padding:2px 0}
 .field-checkbox input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer}
 .field-checkbox label{font-size:12px;font-weight:600;cursor:pointer}
+/* ADD TOGGLE */
+.add-toggle{display:flex;gap:0;margin-bottom:12px;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:var(--hover)}
+.add-toggle-btn{flex:1;padding:8px 12px;font-size:12px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--text2);font-family:inherit;transition:all .15s}
+.add-toggle-btn.active{background:var(--accent);color:#fff}
+.add-toggle-btn:hover:not(.active){background:rgba(79,110,247,.08)}
+/* TIMELINE */
+.timeline-item{display:flex;gap:10px;margin-bottom:10px;position:relative}
+.timeline-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:var(--hover);border:1px solid var(--border)}
+.timeline-content{flex:1;min-width:0}
+.timeline-item .note-item,.timeline-item .task-item{margin-bottom:0}
+.timeline-item .note-text{font-size:13px;line-height:1.5}
+.timeline-item .note-meta{font-size:11px;color:var(--text2);margin-top:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+/* COPY BTN */
+.copy-btn{background:none;border:none;cursor:pointer;font-size:12px;padding:2px 4px;border-radius:4px;opacity:0;transition:opacity .15s;flex-shrink:0}
+.field-row:hover .copy-btn{opacity:.5}
+.copy-btn:hover{opacity:1!important;background:var(--hover)}
 /* STATUS PIPELINE */
 .pipeline-bar{display:flex;direction:rtl;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--hover)}
 .pipeline-stage{flex:1;text-align:center;padding:8px 4px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--text2);position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -209,7 +225,7 @@ select.field-value{appearance:auto}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
-@media(max-width:1100px){.record-body{grid-template-columns:1fr 340px}}
+@media(max-width:1100px){.record-body{grid-template-columns:1fr 300px}}
 @media(max-width:900px){.record-body{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
 
 /* OTP LOGIN */
@@ -580,6 +596,7 @@ function toggleSec(el) {
   if (body) body.classList.toggle("hidden");
 }
 
+function copyVal(btn){var row=btn.closest('.field-row');var el=row.querySelector('input,select,textarea');var v=el?el.value:'';if(!v){var sp=row.querySelector('.field-value span');if(sp)v=sp.textContent;}if(v){navigator.clipboard.writeText(v).then(function(){btn.textContent='✓';setTimeout(function(){btn.textContent='📋'},800);});};}
 function fv(key, label, val, opts) {
   opts = opts || {};
   if (val === undefined || val === null) val = '';
@@ -610,17 +627,17 @@ function fv(key, label, val, opts) {
     h += '<input type="date" id="' + id + '" value="' + dv + '" onchange="updateField(\'' + key + '\',this.value)">';
   } else if (opts.link) {
     h += '<input type="text" id="' + id + '" value="' + (val||'').replace(/"/g,'&quot;') + '" placeholder="הזן קישור" onchange="updateField(\'' + key + '\',this.value)">';
-    if (val) h += '<a href="' + val + '" target="_blank" style="font-size:12px;color:var(--accent);display:block;margin-top:2px">🔗 פתח קישור</a>';
+    if (val) h += '<a href="' + val + '" target="_blank" style="font-size:11px;color:var(--accent);display:block;margin-top:2px">🔗 פתח</a>';
   } else if (opts.phone) {
     h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(\'' + key + '\',this.value)">';
-    if (val) h += '<a href="tel:' + val + '" style="font-size:12px;color:#16a34a;display:block;margin-top:2px">📞 ' + val + '</a>';
   } else if (opts.email) {
     h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(\'' + key + '\',this.value)">';
-    if (val) h += '<a href="mailto:' + val + '" style="font-size:12px;color:var(--accent);display:block;margin-top:2px">✉️ ' + val + '</a>';
   } else {
     h += '<input type="text" id="' + id + '" value="' + String(val).replace(/"/g,'&quot;') + '" onchange="updateField(\'' + key + '\',this.value)">';
   }
-  h += '</span></div>';
+  h += '</span>';
+  if (!opts.readonly && !opts.checkbox && key.charAt(0)!=='_') h += '<button class="copy-btn" onclick="copyVal(this)" title="העתק">📋</button>';
+  h += '</div>';
   return h;
 }
 
@@ -817,23 +834,25 @@ function markDealClosed(id){const deal=DB.deals.find(d=>d.id===id);if(deal){deal
 function copyBankDetails(){navigator.clipboard?.writeText('בנק לאומי | סניף 900 | חשבון 12345678 | על שם ROI').then(()=>showToast('פרטי העברה הועתקו ✅')).catch(()=>showToast('לא ניתן להעתיק'));}
 
 // ===== LEFT PANEL =====
-var activeLeftTab='notes';
+var activeLeftTab='activity';var activeAddMode='note';
 function renderLeft(){const r=currentRecord,type=currentRecordType;
-var tabs=[{id:'notes',icon:'📝',label:'הערה',count:(r.notes||[]).length},{id:'tasks',icon:'✅',label:'משימה',count:(r.tasks||[]).filter(t=>!t.done).length}];
+var totalActivity=(r.notes||[]).length+(r.tasks||[]).length;
+var tabs=[{id:'activity',icon:'📋',label:'פעולות',count:totalActivity}];
 if(type==='leads'){tabs.push({id:'rel_deals',icon:'💼',label:'עסקאות',count:(DB.deals||[]).filter(i=>i.leadId===r.id).length});tabs.push({id:'rel_meetings',icon:'📅',label:'פגישות',count:(DB.meetings||[]).filter(i=>i.leadId===r.id).length});}
 if(type==='deals'){tabs.push({id:'rel_clients',icon:'👥',label:'לקוחות',count:(DB.clients||[]).filter(i=>i.dealId===r.id).length});tabs.push({id:'rel_payments',icon:'💰',label:'תשלומים',count:(DB.payments||[]).filter(i=>i.dealId===r.id).length});}
 if(type==='clients'){tabs.push({id:'rel_meetings',icon:'📅',label:'פגישות',count:(DB.meetings||[]).filter(i=>i.clientId===r.id).length});tabs.push({id:'rel_payments',icon:'💰',label:'תשלומים',count:(DB.payments||[]).filter(i=>i.clientId===r.id).length});}
-tabs.push({id:'files',icon:'📎',label:'קובץ',count:(r.files||[]).length});
-if(!tabs.find(t=>t.id===activeLeftTab))activeLeftTab='notes';
+tabs.push({id:'files',icon:'📎',label:'קבצים',count:(r.files||[]).length});
+if(!tabs.find(t=>t.id===activeLeftTab))activeLeftTab='activity';
 var h='<div class="left-tabs">';
 tabs.forEach(function(t){h+='<button class="left-tab'+(t.id===activeLeftTab?' active':'')+'" onclick="switchLeftTab(\''+t.id+'\')">'+t.icon+' '+t.label+(t.count?'<span class="tab-count">'+t.count+'</span>':'')+'</button>';});
 h+='</div><div class="left-tab-content">';
 tabs.forEach(function(t){
 h+='<div class="left-tab-pane'+(t.id===activeLeftTab?' active':'')+'" id="ltab_'+t.id+'">';
-if(t.id==='notes'){
-h+='<div class="add-note-box"><textarea id="noteInput" placeholder="כתוב הערה..."></textarea><div class="add-note-actions"><button class="btn btn-primary btn-sm" onclick="addNote()">+ הוסף הערה</button></div></div><div id="notesList">'+renderNotes(r.notes||[])+'</div>';
-}else if(t.id==='tasks'){
-h+='<div class="add-task-box"><div class="add-task-label">+ הוסף משימה</div><div class="task-grid"><div class="task-full"><input class="tinput" id="nt-name" placeholder="תיאור המשימה"></div><select class="tinput" id="nt-executor">'+userOpts()+'</select><input class="tinput" id="nt-due" type="date" value="'+todayVal()+'"><input class="tinput" id="nt-reminder" type="date" title="תזכורת"></div><div style="display:flex"><button class="btn btn-primary btn-sm" onclick="addTask()">+ הוסף</button></div></div><div id="tasksList">'+renderTasks(r.tasks||[])+'</div>';
+if(t.id==='activity'){
+h+='<div class="add-toggle"><button class="add-toggle-btn'+(activeAddMode==='note'?' active':'')+'" onclick="switchAddMode(\'note\')">📝 הערה</button><button class="add-toggle-btn'+(activeAddMode==='task'?' active':'')+'" onclick="switchAddMode(\'task\')">✅ משימה</button></div>';
+h+='<div class="add-form" id="addNoteForm" style="'+(activeAddMode==='note'?'':'display:none')+'"><div class="add-note-box"><textarea id="noteInput" placeholder="כתוב הערה..."></textarea><div class="add-note-actions"><button class="btn btn-primary btn-sm" onclick="addNote()">+ הוסף</button></div></div></div>';
+h+='<div class="add-form" id="addTaskForm" style="'+(activeAddMode==='task'?'':'display:none')+'"><div class="add-task-box"><div class="task-grid"><div class="task-full"><input class="tinput" id="nt-name" placeholder="תיאור המשימה"></div><select class="tinput" id="nt-executor">'+userOpts()+'</select><input class="tinput" id="nt-due" type="date" value="'+todayVal()+'"><input class="tinput" id="nt-reminder" type="date" title="תזכורת"></div><div style="display:flex"><button class="btn btn-primary btn-sm" onclick="addTask()">+ הוסף</button></div></div></div>';
+h+='<div id="timelineFeed">'+renderTimeline(r)+'</div>';
 }else if(t.id==='files'){
 h+='<div class="file-drop" onclick="document.getElementById(\'fInput\').click()"><input type="file" id="fInput" multiple style="display:none" onchange="handleFiles(event)"><div class="file-drop-text">📎 לחץ להוספת קובץ</div></div><div class="file-list" id="fileList">'+renderFiles(r.files||[])+'</div>';
 }else if(t.id.startsWith('rel_')){
@@ -851,6 +870,8 @@ h+='</div>';
 h+='</div>';
 return h;}
 function switchLeftTab(tabId){activeLeftTab=tabId;document.querySelectorAll('.left-tab').forEach(function(el){el.classList.remove('active');});document.querySelectorAll('.left-tab-pane').forEach(function(el){el.classList.remove('active');});var activePane=document.getElementById('ltab_'+tabId);if(activePane)activePane.classList.add('active');document.querySelectorAll('.left-tab').forEach(function(el){if(el.getAttribute('onclick')&&el.getAttribute('onclick').indexOf("'"+tabId+"'")>-1)el.classList.add('active');});}
+function switchAddMode(mode){activeAddMode=mode;document.querySelectorAll('.add-toggle-btn').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.add-form').forEach(function(f){f.style.display='none';});if(mode==='note'){document.getElementById('addNoteForm').style.display='';document.querySelector('.add-toggle-btn').classList.add('active');}else{document.getElementById('addTaskForm').style.display='';document.querySelectorAll('.add-toggle-btn')[1].classList.add('active');}}
+function renderTimeline(r){var items=[];(r.notes||[]).forEach(function(n){items.push({type:'note',id:n.id,text:n.text,author:n.author,created:n.created});});(r.tasks||[]).forEach(function(t){items.push({type:'task',id:t.id,name:t.name,done:t.done,executor:t.executor||t.assignee,dueDate:t.dueDate,reminderDate:t.reminderDate,created:t.created,createdBy:t.createdBy});});items.sort(function(a,b){return(b.created||'').localeCompare(a.created||'');});if(!items.length)return'<div class="empty-state" style="padding:20px"><div class="es-sub">אין פעולות עדיין</div></div>';return items.map(function(item){if(item.type==='note')return'<div class="timeline-item note-item"><div class="timeline-badge note-badge">📝</div><div class="timeline-content"><div class="note-text">'+(item.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')+'</div><div class="note-meta"><span class="creator-badge"><span class="creator-av" style="background:'+uCol(item.author)+'">'+uAv(item.author)+'</span>'+uName(item.author)+'</span><span>'+fmtDT(item.created)+'</span>'+(perm('delete')?'<span class="note-del" onclick="delNote(\''+item.id+'\')">🗑️</span>':'')+'</div></div></div>';else return'<div class="timeline-item task-item"><div class="timeline-badge task-badge">✅</div><div class="timeline-content"><div style="display:flex;align-items:flex-start;gap:8px"><input type="checkbox" class="task-check" '+(item.done?'checked':'')+' onchange="toggleTask(\''+item.id+'\',this.checked)"><div class="task-info"><div class="task-name'+(item.done?' done':'')+'">'+item.name+'</div><div class="task-meta-row">'+(item.executor?'<span>👤 '+uName(item.executor)+'</span>':'')+' '+(item.dueDate?'<span>📅 '+fmt(item.dueDate)+'</span>':'')+' '+(item.reminderDate?'<span>🔔 '+fmt(item.reminderDate)+'</span>':'')+'</div></div><span class="task-del" onclick="delTask(\''+item.id+'\')">🗑️</span></div></div></div>';}).join('');}
 
 function renderRelated(type,r){let h='';
 if(type==='leads'){h+=relSec('💼 עסקאות','deals',r.id,'leadId','deals',r);h+=relSec('📅 פגישות','meetings',r.id,'leadId','meetings',r);}
@@ -862,12 +883,13 @@ return`<div class="left-section"><div class="left-section-header"><div class="le
 function relAdd(type,pid,pname){saveRecord();modalParent={id:pid,name:pname,type:currentRecordType};openAddModal(type);}
 
 function renderNotes(notes){if(!notes.length)return'<div class="empty-state" style="padding:12px"><div class="es-sub">אין הערות עדיין</div></div>';return notes.slice().reverse().map(n=>`<div class="note-item"><div class="note-text">${(n.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div><div class="note-meta"><span class="creator-badge"><span class="creator-av" style="background:${uCol(n.author)}">${uAv(n.author)}</span>${uName(n.author)}</span><span>${fmtDT(n.created)}</span>${perm('delete')?`<span class="note-del" onclick="delNote('${n.id}')">🗑️</span>`:''}</div></div>`).join('');}
-function addNote(){const t=document.getElementById('noteInput').value.trim();if(!t)return;currentRecord.notes=currentRecord.notes||[];currentRecord.notes.push({id:genId(),text:t,author:currentUser.username,created:now()});document.getElementById('noteInput').value='';document.getElementById('notesList').innerHTML=renderNotes(currentRecord.notes);saveRS();showToast('הערה נוספה ✅');}
-function delNote(id){currentRecord.notes=(currentRecord.notes||[]).filter(n=>n.id!==id);document.getElementById('notesList').innerHTML=renderNotes(currentRecord.notes);saveRS();}
+function refreshTimeline(){var el=document.getElementById('timelineFeed');if(el)el.innerHTML=renderTimeline(currentRecord);}
+function addNote(){const t=document.getElementById('noteInput').value.trim();if(!t)return;currentRecord.notes=currentRecord.notes||[];currentRecord.notes.push({id:genId(),text:t,author:currentUser.username,created:now()});document.getElementById('noteInput').value='';refreshTimeline();saveRS();showToast('הערה נוספה ✅');}
+function delNote(id){currentRecord.notes=(currentRecord.notes||[]).filter(n=>n.id!==id);refreshTimeline();saveRS();}
 function renderTasks(tasks){if(!tasks.length)return'';return tasks.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div class="task-info"><div class="task-name${t.done?' done':''}">${t.name}</div><div class="task-meta-row">${t.executor||t.assignee?`<span>👤 ${uName(t.executor||t.assignee)}</span>`:''} ${t.dueDate?`<span>📅 ${fmt(t.dueDate)}</span>`:''} ${t.reminderDate?`<span>🔔 ${fmt(t.reminderDate)}</span>`:''}</div></div><span class="task-del" onclick="delTask('${t.id}')">🗑️</span></div>`).join('');}
-function addTask(){const name=document.getElementById('nt-name').value.trim();if(!name)return;const task={id:genId(),name,executor:document.getElementById('nt-executor').value,dueDate:document.getElementById('nt-due').value||todayVal(),reminderDate:document.getElementById('nt-reminder').value,done:false,created:now(),createdBy:currentUser.username,relatedId:currentRecord.id,relatedType:currentRecordType};currentRecord.tasks=currentRecord.tasks||[];currentRecord.tasks.push(task);DB.tasks.push({...task});['nt-name'].forEach(id=>document.getElementById(id).value='');document.getElementById('nt-due').value=todayVal();document.getElementById('nt-reminder').value='';document.getElementById('tasksList').innerHTML=renderTasks(currentRecord.tasks);saveRS();showToast('משימה נוספה ✅');}
-function toggleTask(id,done){(currentRecord.tasks||[]).forEach(t=>{if(t.id===id)t.done=done;});DB.tasks.forEach(t=>{if(t.id===id)t.done=done;});document.getElementById('tasksList').innerHTML=renderTasks(currentRecord.tasks);saveRS();}
-function delTask(id){currentRecord.tasks=(currentRecord.tasks||[]).filter(t=>t.id!==id);DB.tasks=DB.tasks.filter(t=>t.id!==id);document.getElementById('tasksList').innerHTML=renderTasks(currentRecord.tasks);saveRS();}
+function addTask(){const name=document.getElementById('nt-name').value.trim();if(!name)return;const task={id:genId(),name,executor:document.getElementById('nt-executor').value,dueDate:document.getElementById('nt-due').value||todayVal(),reminderDate:document.getElementById('nt-reminder').value,done:false,created:now(),createdBy:currentUser.username,relatedId:currentRecord.id,relatedType:currentRecordType};currentRecord.tasks=currentRecord.tasks||[];currentRecord.tasks.push(task);DB.tasks.push({...task});['nt-name'].forEach(id=>document.getElementById(id).value='');document.getElementById('nt-due').value=todayVal();document.getElementById('nt-reminder').value='';refreshTimeline();saveRS();showToast('משימה נוספה ✅');}
+function toggleTask(id,done){(currentRecord.tasks||[]).forEach(t=>{if(t.id===id)t.done=done;});DB.tasks.forEach(t=>{if(t.id===id)t.done=done;});refreshTimeline();saveRS();}
+function delTask(id){currentRecord.tasks=(currentRecord.tasks||[]).filter(t=>t.id!==id);DB.tasks=DB.tasks.filter(t=>t.id!==id);refreshTimeline();saveRS();}
 function saveRS(){if(!currentRecord||!currentRecordType)return;currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();}}
 function renderFiles(files){if(!files||!files.length)return'';const ic={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',default:'📎'};return files.map(f=>`<div class="file-item"><span class="file-icon">${ic[(f.name||'').split('.').pop().toLowerCase()]||ic.default}</span><span class="file-name">${f.name}</span><span class="file-size">${f.size||''}</span><span class="file-del" onclick="delFile('${f.id}')">✕</span></div>`).join('');}
 function handleFiles(e){Array.from(e.target.files).forEach(f=>{const kb=(f.size/1024).toFixed(1);currentRecord.files=currentRecord.files||[];currentRecord.files.push({id:genId(),name:f.name,size:kb>1024?(kb/1024).toFixed(1)+'MB':kb+'KB',uploaded:now()});});document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();showToast('קובץ הועלה ✅');}
