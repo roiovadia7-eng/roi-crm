@@ -586,12 +586,14 @@ function inlineEdit(e,page,recId,colIdx){
   var edit=cfg[colIdx];
   var rec=(DB[page]||[]).find(function(r){return r.id===recId;});
   if(!rec)return false;
-  var td=e.currentTarget;
+  var td=e.target.closest('td')||e.currentTarget;
+  if(td.querySelector('select'))return false;
   var currentVal=rec[edit.key]||'';
   if(edit.key==='done')currentVal=rec.done?'סגור':'פתוח';
   if(edit.key==='agent'||edit.key==='executor'||edit.key==='advisor')currentVal=rec[edit.key]||'';
   var sel=document.createElement('select');
-  sel.style.cssText='width:100%;padding:4px;border-radius:6px;border:1px solid var(--accent);font-size:12px;background:#fff;cursor:pointer';
+  sel.style.cssText='width:100%;padding:6px 8px;border-radius:6px;border:2px solid var(--accent);font-size:13px;background:#fff;cursor:pointer;outline:none;box-shadow:0 0 0 3px rgba(79,110,247,.2)';
+  sel.setAttribute('size','1');
   edit.opts.forEach(function(o){
     var opt=document.createElement('option');
     var label=(edit.key==='agent'||edit.key==='executor'||edit.key==='advisor')?uName(o):o;
@@ -600,18 +602,21 @@ function inlineEdit(e,page,recId,colIdx){
     sel.appendChild(opt);
   });
   td.innerHTML='';td.appendChild(sel);sel.focus();
+  var _saved=false;
   function save(){
+    _saved=true;
     var newVal=sel.value;
     if(edit.map)rec[edit.key]=edit.map(newVal);
     else rec[edit.key]=newVal;
     rec.updated=now();rec.updatedBy=currentUser.username;
     saveData();
     runAutomations(page,rec,false);
-    renderPage(currentPage);
     showToast('עודכן ✅');
+    setTimeout(function(){renderPage(currentPage);},30);
   }
   sel.addEventListener('change',save);
-  sel.addEventListener('blur',function(){setTimeout(function(){renderPage(currentPage);},50);});
+  sel.addEventListener('blur',function(){if(!_saved)setTimeout(function(){renderPage(currentPage);},50);});
+  sel.addEventListener('keydown',function(ev){if(ev.key==='Escape'){_saved=true;renderPage(currentPage);}});
   return true;
 }
 
