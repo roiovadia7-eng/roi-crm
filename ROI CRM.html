@@ -857,7 +857,7 @@ h+='<div id="timelineFeed">'+renderTimeline(r)+'</div>';
 h+='<div class="file-drop" onclick="document.getElementById(\'fInput\').click()"><input type="file" id="fInput" multiple style="display:none" onchange="handleFiles(event)"><div class="file-drop-text">📎 לחץ להוספת קובץ</div></div><div class="file-list" id="fileList">'+renderFiles(r.files||[])+'</div>';
 }else if(t.id.startsWith('rel_')){
 var relType=t.id.replace('rel_','');
-var fk=type+'Id';
+var fk=type.replace(/s$/,'')+'Id';
 var items=(DB[relType]||[]).filter(function(i){return i[fk]===r.id});
 var nm={deals:'עסקה',clients:'לקוח',payments:'תשלום',meetings:'פגישה'};
 var canAdd=perm('create:'+relType);
