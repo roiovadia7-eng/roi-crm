@@ -681,10 +681,8 @@ function renderDealFields(r) {
   h += secHead('עסקה', 'deal_info', false);
   h += fv('name','שם העסקה',r.name||leadName);
   h += fv('executor','מבצע העסקה',r.executor,{select:Object.keys(USERS)});
-  h += fv('leadName','מתעניין משויך',r.leadName||leadName);
+  if(r.leadId){h+='<div class="field-row"><span class="field-label">מתעניין משויך</span><span class="field-value"><a href="#" onclick="openRecord(\'leads\',\''+r.leadId+'\',true);return false" style="color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer">'+(r.leadName||leadName||'—')+' ←</a></span></div>';}else{h+=fv('leadName','מתעניין משויך',r.leadName||leadName);}
   h += fv('productId','מוצר',r.productId,{select:DB.products.map(function(p){return p.id}),selectLabels:DB.products.map(function(p){return p.name})});
-  h += fv('referrer','מי הפנה / מתעניין משויך',r.referrer||leadName);
-  h += fv('bankTransferWhatsapp','קישור העברה בנקאית לוואטסאפ',r.bankTransferWhatsapp,{link:true,full:true});
   h += fv('status','סטטוס',r.status,{select:['חדשה','בתהליך','לקוח סגר','בוטלה']});
   h += fv('created','נוצר בתאריך',r.created||'',{readonly:true});
   h += secEnd();
