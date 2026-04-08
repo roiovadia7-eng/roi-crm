@@ -88,9 +88,9 @@ tbody tr:last-child td{border:none}
 .breadcrumb-sep{color:var(--text2)}
 .record-name{font-size:18px;font-weight:800;color:var(--text)}
 .record-type-badge{font-size:11px;color:var(--text2);background:var(--hover);padding:2px 8px;border-radius:10px;margin-right:6px;white-space:nowrap}
-.record-body{flex:1;display:grid;grid-template-columns:1fr 400px;overflow:hidden;direction:rtl}
+.record-body{flex:1;display:grid;grid-template-columns:1fr 420px;overflow:hidden;direction:rtl}
 .record-right{padding:24px 28px;overflow-y:auto;background:var(--white);border-left:1px solid var(--border)}
-.record-left{padding:20px;overflow-y:auto;background:var(--bg);direction:ltr}
+.record-left{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);direction:ltr}
 .meta-box{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border-radius:12px;padding:16px 18px;margin-bottom:20px;border:1px solid #c7d2fe;box-shadow:0 2px 8px rgba(79,110,247,.06)}
 .meta-box-title{font-size:10px;font-weight:700;color:#4f6ef7;margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px;direction:rtl}
 .meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;font-size:12px;direction:rtl}
@@ -105,17 +105,30 @@ tbody tr:last-child td{border:none}
 .field-item{display:flex;flex-direction:column;gap:3px}
 .field-item.full{grid-column:1/-1}
 .field-label{font-size:10px;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
-.field-value{font-size:13px;color:var(--text);padding:7px 10px;background:var(--hover);border-radius:6px;border:1px solid var(--border);min-height:32px;cursor:text;transition:border .15s}
-.field-value:hover{border-color:var(--accent)}
-.field-value.editable:focus{outline:none;border-color:var(--accent);background:#fff}
-input.field-value,select.field-value{font-family:inherit;width:100%;cursor:pointer;background:var(--hover)}
+.field-value{font-size:13px;color:var(--text);padding:4px 0;min-height:28px;cursor:text}
+input.field-value,select.field-value{font-family:inherit;width:100%;cursor:pointer;background:transparent}
 select.field-value{appearance:auto}
-.field-checkbox{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--hover);border-radius:6px;border:1px solid var(--border)}
-.field-checkbox input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
-.field-checkbox label{font-size:13px;font-weight:600;cursor:pointer}
+.field-checkbox{display:flex;align-items:center;gap:6px;padding:2px 0}
+.field-checkbox input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer}
+.field-checkbox label{font-size:12px;font-weight:600;cursor:pointer}
+/* STATUS PIPELINE */
+.pipeline-bar{display:flex;direction:rtl;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--hover)}
+.pipeline-stage{flex:1;text-align:center;padding:8px 4px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--text2);position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pipeline-stage:hover{background:rgba(79,110,247,.08)}
+.pipeline-stage.active{background:var(--accent);color:#fff}
+.pipeline-stage.passed{background:rgba(79,110,247,.15);color:var(--accent)}
 .gold-badge{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700}
 .action-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;direction:rtl}
-/* LEFT */
+/* LEFT - TABS */
+.left-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:0;direction:rtl;overflow-x:auto;flex-shrink:0;background:var(--white);padding:0 16px}
+.left-tab{padding:12px 16px;font-size:12px;font-weight:600;color:var(--text2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:5px}
+.left-tab:hover{color:var(--accent);background:rgba(79,110,247,.04)}
+.left-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.left-tab .tab-count{background:var(--hover);color:var(--text2);font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700}
+.left-tab.active .tab-count{background:rgba(79,110,247,.12);color:var(--accent)}
+.left-tab-content{flex:1;overflow-y:auto;padding:16px;direction:rtl}
+.left-tab-pane{display:none}
+.left-tab-pane.active{display:block}
 .left-section{background:var(--white);border-radius:12px;padding:18px;margin-bottom:14px;border:1px solid var(--border);direction:rtl;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .left-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--hover)}
 .left-section-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
@@ -205,25 +218,26 @@ select.field-value{appearance:auto}
 .otp-note{font-size:10px;color:#94a3b8;margin-top:6px}
 #loginIdNum,#loginOtp{font-size:20px;letter-spacing:4px;text-align:center;font-family:monospace}
 
-.section-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;border-bottom:1px solid var(--border);margin-top:0;background:linear-gradient(135deg,#f8faff,#f0f4ff);border-radius:10px 10px 0 0;border:1px solid #e0e7ff;border-bottom:1px solid #d4ddff}
-.section-header h3{font-size:14px;font-weight:700;color:var(--accent);margin:0;display:flex;align-items:center;gap:8px}
-.section-header .chevron{transition:transform .2s;font-size:12px;color:var(--accent);opacity:.6}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:10px 0;cursor:pointer;border-bottom:none;margin-top:4px}
+.section-header h3{font-size:14px;font-weight:700;color:var(--accent);margin:0;display:flex;align-items:center;gap:6px}
+.section-header .chevron{transition:transform .2s;font-size:11px;color:var(--accent);opacity:.5}
 .section-header.collapsed .chevron{transform:rotate(-90deg)}
-.section-header.collapsed{border-radius:10px;margin-bottom:12px}
-.section-body{padding:12px 16px 16px;background:var(--white);border:1px solid #e0e7ff;border-top:none;border-radius:0 0 10px 10px;margin-bottom:12px}
+.section-header.collapsed{margin-bottom:4px}
+.section-body{padding:0 0 8px;margin-bottom:8px}
 .section-body.hidden{display:none}
-.field-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f5f5fa;min-height:42px}
+.field-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f5f5fa;min-height:36px}
 .field-row:last-child{border-bottom:none}
-.field-label{font-size:13px;color:var(--text2);flex-shrink:0;padding-left:16px;min-width:160px;text-align:right;line-height:32px}
-.field-value{font-size:14px;font-weight:600;color:var(--text);text-align:left;flex:1;word-break:break-word}
+.field-row.full-width{flex-direction:column;align-items:stretch;gap:4px}
+.field-label{font-size:13px;color:var(--text2);flex-shrink:0;padding-left:12px;min-width:120px;text-align:right}
+.field-value{font-size:13px;font-weight:600;color:var(--text);text-align:left;flex:1;word-break:break-word}
 .field-value a{color:var(--accent);text-decoration:none}
 .field-value a:hover{text-decoration:underline}
 .field-value .phone-link{color:var(--success);cursor:pointer}
 .field-value .email-link{color:var(--accent)}
-.field-value input[type="text"],.field-value input[type="date"],.field-value input[type="number"],.field-value select,.field-value textarea{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;direction:rtl;background:#fff;transition:all .15s}
-.field-value textarea{min-height:60px;resize:vertical}
-.field-value input:focus,.field-value select:focus,.field-value textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,110,247,0.12);background:#fff}
-.field-value input:hover,.field-value select:hover,.field-value textarea:hover{border-color:#b4c6fc}
+.field-value input[type="text"],.field-value input[type="date"],.field-value input[type="number"],.field-value select,.field-value textarea{width:100%;padding:5px 8px;border:1px solid transparent;border-radius:6px;font-size:13px;font-family:inherit;direction:rtl;background:transparent;transition:all .15s}
+.field-value textarea{min-height:50px;resize:vertical}
+.field-value input:focus,.field-value select:focus,.field-value textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,110,247,0.1);background:#fff}
+.field-value input:hover,.field-value select:hover,.field-value textarea:hover{background:var(--hover);border-color:var(--border)}
 .field-checkbox{display:flex;align-items:center;gap:8px}
 .field-checkbox input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent)}
 .confirm-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
@@ -539,7 +553,7 @@ function navBC(idx){const t=recordStack[idx],st=recordStack.slice(0,idx);openRec
 
 // ===== RIGHT PANEL — per type =====
 function renderRight(){const r=currentRecord,type=currentRecordType;
-let html=`<div class="meta-box"><div class="meta-box-title">🔍 פרטי הרשומה</div><div class="meta-row"><span class="meta-label">נוצר על ידי</span><span class="meta-value">${crBadge(r.createdBy)}</span></div><div class="meta-row"><span class="meta-label">תאריך יצירה</span><span class="meta-value">${fmtDT(r.created)}</span></div><div class="meta-row"><span class="meta-label">עדכון אחרון</span><span class="meta-value">${fmtDT(r.updated)}</span></div>${r.updatedBy?`<div class="meta-row"><span class="meta-label">עודכן ע"י</span><span class="meta-value">${crBadge(r.updatedBy)}</span></div>`:''}</div>`;
+let html='';
 if(type==='leads')html+=renderLeadFields(r);
 else if(type==='deals')html+=renderDealFields(r);
 else if(type==='clients')html+=renderClientFields(r);
@@ -547,6 +561,12 @@ else if(type==='payments')html+=renderPaymentFields(r);
 else if(type==='meetings')html+=renderMeetingFields(r);
 else if(type==='tasks')html+=renderTaskFields(r);
 else if(type==='products')html+=renderProductFields(r);
+html+=secHead('פרטי רשומה','rec_meta',true);
+html+=fv('_createdBy','נוצר על ידי',crBadge(r.createdBy),{readonly:true});
+html+=fv('_created','תאריך יצירה',fmtDT(r.created),{readonly:true});
+html+=fv('_updated','עדכון אחרון',fmtDT(r.updated),{readonly:true});
+if(r.updatedBy)html+=fv('_updatedBy','עודכן ע"י',crBadge(r.updatedBy),{readonly:true});
+html+=secEnd();
 return html;}
 
 function secHead(title, id, collapsed) {
@@ -589,17 +609,14 @@ function fv(key, label, val, opts) {
     if (dv && dv.includes('/')) { var p = dv.split('/'); if(p.length===3) dv = p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); }
     h += '<input type="date" id="' + id + '" value="' + dv + '" onchange="updateField(\'' + key + '\',this.value)">';
   } else if (opts.link) {
-    if (val) {
-      var shortUrl = String(val).length > 50 ? String(val).substring(0,47) + '...' : val;
-      h += '<a href="' + val + '" target="_blank">' + shortUrl + '</a>';
-    }
-    h += '<input type="text" id="' + id + '" value="' + (val||'').replace(/"/g,'&quot;') + '" placeholder="הזן קישור" onchange="updateField(\'' + key + '\',this.value)" style="margin-top:4px">';
+    h += '<input type="text" id="' + id + '" value="' + (val||'').replace(/"/g,'&quot;') + '" placeholder="הזן קישור" onchange="updateField(\'' + key + '\',this.value)">';
+    if (val) h += '<a href="' + val + '" target="_blank" style="font-size:12px;color:var(--accent);display:block;margin-top:2px">🔗 פתח קישור</a>';
   } else if (opts.phone) {
-    if (val) h += '<a href="tel:' + val + '" class="phone-link">' + val + '</a>';
-    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(\'' + key + '\',this.value)" style="' + (val?'margin-top:4px':'') + '">';
+    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(\'' + key + '\',this.value)">';
+    if (val) h += '<a href="tel:' + val + '" style="font-size:12px;color:#16a34a;display:block;margin-top:2px">📞 ' + val + '</a>';
   } else if (opts.email) {
-    if (val) h += '<a href="mailto:' + val + '" class="email-link">' + val + '</a>';
-    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(\'' + key + '\',this.value)" style="' + (val?'margin-top:4px':'') + '">';
+    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(\'' + key + '\',this.value)">';
+    if (val) h += '<a href="mailto:' + val + '" style="font-size:12px;color:var(--accent);display:block;margin-top:2px">✉️ ' + val + '</a>';
   } else {
     h += '<input type="text" id="' + id + '" value="' + String(val).replace(/"/g,'&quot;') + '" onchange="updateField(\'' + key + '\',this.value)">';
   }
@@ -607,14 +624,29 @@ function fv(key, label, val, opts) {
   return h;
 }
 
+function renderPipeline(r, stages, key) {
+  var current = r[key] || stages[0];
+  var currentIdx = stages.indexOf(current);
+  if (currentIdx < 0) currentIdx = 0;
+  var h = '<div class="pipeline-bar">';
+  stages.forEach(function(s, i) {
+    var cls = 'pipeline-stage';
+    if (i === currentIdx) cls += ' active';
+    else if (i < currentIdx) cls += ' passed';
+    h += '<div class="' + cls + '" onclick="updateField(\'' + key + '\',\'' + s.replace(/'/g,"\\'") + '\');renderRec()">' + s + '</div>';
+  });
+  h += '</div>';
+  return h;
+}
 function renderLeadFields(r) {
-  var h = '';
+  var leadStages = ['לידים חדשים 🎉','אין מענה 📞','נוצר קשר ראשוני 😊','פולאופ איכותי 🌟','סגר ✔️','לא נסגר 😔','ליד לא תקין ❌'];
+  var h = renderPipeline(r, leadStages, 'status');
   h += secHead('פרטי לקוח', 'lead_details', false);
   h += fv('name','שם מתעניין',r.name);
   h += fv('phone','טלפון ראשי',r.phone,{phone:true});
-  h += fv('isGold','ליד זהב',r.isGold,{checkbox:true,checkLabel:'ליד זהב ⭐',full:false});
-  h += fv('whatsappLink','קישור מהיר לוואטסאפ',r.phone?'https://wa.me/972'+r.phone.replace(/^0/,''):'',{link:true,full:true});
-  h += fv('status','סטטוס',r.status,{select:['לידים חדשים 🎉','אין מענה 📞','נוצר קשר ראשוני 😊','פולאופ איכותי 🌟','סגר ✔️','לא נסגר 😔','ליד לא תקין ❌']});
+  h += fv('isGold','ליד זהב?',r.isGold,{checkbox:true,checkLabel:'ליד זהב ⭐'});
+  h += fv('whatsappLink','קישור לוואטסאפ',r.phone?'https://wa.me/972'+r.phone.replace(/^0/,''):'',{link:true});
+  h += fv('status','סטטוס',r.status,{select:leadStages});
   h += fv('agent','נציג',r.agent,{select:Object.keys(USERS)});
   h += fv('source','מקור הגעה',r.source,{select:['אינסטגרם אורגני','אינסטגרם רועי','אינסטגרם נתן','קמפיין ממומן','לקוחות חוזרים','אפיליאציה','פייסבוק','גוגל','המלצה','utm_medium','אחר']});
   h += fv('email','דואר אלקטרוני',r.email,{email:true});
@@ -627,7 +659,8 @@ function renderDealFields(r) {
   var leadName = '';
   if (r.leadId) { var ld = DB.leads.find(function(l){return l.id===r.leadId}); if(ld) leadName=ld.name; }
   if (!leadName) leadName = r.leadName || '';
-  var h = '';
+  var dealStages = ['חדשה','בתהליך','לקוח סגר','בוטלה'];
+  var h = renderPipeline(r, dealStages, 'status');
   h += secHead('עסקה', 'deal_info', false);
   h += fv('name','שם העסקה',r.name||leadName);
   h += fv('executor','מבצע העסקה',r.executor,{select:Object.keys(USERS)});
@@ -784,12 +817,40 @@ function markDealClosed(id){const deal=DB.deals.find(d=>d.id===id);if(deal){deal
 function copyBankDetails(){navigator.clipboard?.writeText('בנק לאומי | סניף 900 | חשבון 12345678 | על שם ROI').then(()=>showToast('פרטי העברה הועתקו ✅')).catch(()=>showToast('לא ניתן להעתיק'));}
 
 // ===== LEFT PANEL =====
-function renderLeft(){const r=currentRecord,type=currentRecordType;let h='';
-h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">📝 הערות <span class="left-section-count">${(r.notes||[]).length}</span></div></div><div class="add-note-box"><textarea id="noteInput" placeholder="כתוב הערה..."></textarea><div class="add-note-actions"><button class="btn btn-primary btn-sm" onclick="addNote()">+ הוסף הערה</button></div></div><div id="notesList">${renderNotes(r.notes||[])}</div></div>`;
-h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">✅ משימות <span class="left-section-count">${(r.tasks||[]).filter(t=>!t.done).length} פתוחות</span></div></div><div class="add-task-box"><div class="add-task-label">+ הוסף משימה</div><div class="task-grid"><div class="task-full"><input class="tinput" id="nt-name" placeholder="תיאור המשימה"></div><select class="tinput" id="nt-executor">${userOpts()}</select><input class="tinput" id="nt-due" type="date" value="${todayVal()}"><input class="tinput" id="nt-reminder" type="date" title="תזכורת"></div><div style="display:flex"><button class="btn btn-primary btn-sm" onclick="addTask()">+ הוסף</button></div></div><div id="tasksList">${renderTasks(r.tasks||[])}</div></div>`;
-h+=renderRelated(type,r);
-h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">📎 קבצים <span class="left-section-count">${(r.files||[]).length}</span></div></div><div class="file-drop" onclick="document.getElementById('fInput').click()"><input type="file" id="fInput" multiple style="display:none" onchange="handleFiles(event)"><div class="file-drop-text">📎 לחץ להוספת קובץ</div></div><div class="file-list" id="fileList">${renderFiles(r.files||[])}</div></div>`;
+var activeLeftTab='notes';
+function renderLeft(){const r=currentRecord,type=currentRecordType;
+var tabs=[{id:'notes',icon:'📝',label:'הערה',count:(r.notes||[]).length},{id:'tasks',icon:'✅',label:'משימה',count:(r.tasks||[]).filter(t=>!t.done).length}];
+if(type==='leads'){tabs.push({id:'rel_deals',icon:'💼',label:'עסקאות',count:(DB.deals||[]).filter(i=>i.leadId===r.id).length});tabs.push({id:'rel_meetings',icon:'📅',label:'פגישות',count:(DB.meetings||[]).filter(i=>i.leadId===r.id).length});}
+if(type==='deals'){tabs.push({id:'rel_clients',icon:'👥',label:'לקוחות',count:(DB.clients||[]).filter(i=>i.dealId===r.id).length});tabs.push({id:'rel_payments',icon:'💰',label:'תשלומים',count:(DB.payments||[]).filter(i=>i.dealId===r.id).length});}
+if(type==='clients'){tabs.push({id:'rel_meetings',icon:'📅',label:'פגישות',count:(DB.meetings||[]).filter(i=>i.clientId===r.id).length});tabs.push({id:'rel_payments',icon:'💰',label:'תשלומים',count:(DB.payments||[]).filter(i=>i.clientId===r.id).length});}
+tabs.push({id:'files',icon:'📎',label:'קובץ',count:(r.files||[]).length});
+if(!tabs.find(t=>t.id===activeLeftTab))activeLeftTab='notes';
+var h='<div class="left-tabs">';
+tabs.forEach(function(t){h+='<button class="left-tab'+(t.id===activeLeftTab?' active':'')+'" onclick="switchLeftTab(\''+t.id+'\')">'+t.icon+' '+t.label+(t.count?'<span class="tab-count">'+t.count+'</span>':'')+'</button>';});
+h+='</div><div class="left-tab-content">';
+tabs.forEach(function(t){
+h+='<div class="left-tab-pane'+(t.id===activeLeftTab?' active':'')+'" id="ltab_'+t.id+'">';
+if(t.id==='notes'){
+h+='<div class="add-note-box"><textarea id="noteInput" placeholder="כתוב הערה..."></textarea><div class="add-note-actions"><button class="btn btn-primary btn-sm" onclick="addNote()">+ הוסף הערה</button></div></div><div id="notesList">'+renderNotes(r.notes||[])+'</div>';
+}else if(t.id==='tasks'){
+h+='<div class="add-task-box"><div class="add-task-label">+ הוסף משימה</div><div class="task-grid"><div class="task-full"><input class="tinput" id="nt-name" placeholder="תיאור המשימה"></div><select class="tinput" id="nt-executor">'+userOpts()+'</select><input class="tinput" id="nt-due" type="date" value="'+todayVal()+'"><input class="tinput" id="nt-reminder" type="date" title="תזכורת"></div><div style="display:flex"><button class="btn btn-primary btn-sm" onclick="addTask()">+ הוסף</button></div></div><div id="tasksList">'+renderTasks(r.tasks||[])+'</div>';
+}else if(t.id==='files'){
+h+='<div class="file-drop" onclick="document.getElementById(\'fInput\').click()"><input type="file" id="fInput" multiple style="display:none" onchange="handleFiles(event)"><div class="file-drop-text">📎 לחץ להוספת קובץ</div></div><div class="file-list" id="fileList">'+renderFiles(r.files||[])+'</div>';
+}else if(t.id.startsWith('rel_')){
+var relType=t.id.replace('rel_','');
+var fk=type+'Id';
+var items=(DB[relType]||[]).filter(function(i){return i[fk]===r.id});
+var nm={deals:'עסקה',clients:'לקוח',payments:'תשלום',meetings:'פגישה'};
+var canAdd=perm('create:'+relType);
+if(canAdd)h+='<div style="margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="relAdd(\''+relType+'\',\''+r.id+'\',\''+((r.name||'').replace(/'/g,'&#39;'))+'\')">+ '+nm[relType]+'</button></div>';
+if(items.length)h+=items.map(function(i){return'<div class="related-item" onclick="openRecord(\''+relType+'\',\''+i.id+'\',true)"><div><div class="related-item-name">'+(i.name||i.title||i.clientName||'—')+'</div><div class="related-item-sub">'+(i.status||'')+' '+(i.amount?fmtMoney(i.amount):'')+'</div></div><span class="related-arrow">›</span></div>'}).join('');
+else h+='<div class="empty-state" style="padding:20px"><div class="es-sub">אין רשומות קשורות</div></div>';
+}
+h+='</div>';
+});
+h+='</div>';
 return h;}
+function switchLeftTab(tabId){activeLeftTab=tabId;document.querySelectorAll('.left-tab').forEach(function(el){el.classList.remove('active');});document.querySelectorAll('.left-tab-pane').forEach(function(el){el.classList.remove('active');});var activePane=document.getElementById('ltab_'+tabId);if(activePane)activePane.classList.add('active');document.querySelectorAll('.left-tab').forEach(function(el){if(el.getAttribute('onclick')&&el.getAttribute('onclick').indexOf("'"+tabId+"'")>-1)el.classList.add('active');});}
 
 function renderRelated(type,r){let h='';
 if(type==='leads'){h+=relSec('💼 עסקאות','deals',r.id,'leadId','deals',r);h+=relSec('📅 פגישות','meetings',r.id,'leadId','meetings',r);}
