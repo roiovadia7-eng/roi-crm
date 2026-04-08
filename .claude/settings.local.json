@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo:*)",
+      "Bash(gh auth:*)",
+      "Bash(brew install:*)",
+      "Bash(curl -sL https://github.com/cli/cli/releases/latest/download/gh_2.62.0_macOS_arm64.zip -o /tmp/gh.zip)",
+      "Bash(unzip -o /tmp/gh.zip -d /tmp/gh_install)",
+      "Bash(curl -sL \"https://github.com/cli/cli/releases/download/v2.62.0/gh_2.62.0_macOS_arm64.tar.gz\" -o /tmp/gh.tar.gz)",
+      "Bash(tar -xzf /tmp/gh.tar.gz -C /tmp/)",
+      "Read(//private/tmp/**)",
+      "Bash(curl -sL \"https://api.github.com/repos/cli/cli/releases/latest\")",
+      "Bash(curl -sL \"https://github.com/cli/cli/releases/download/v2.89.0/gh_2.89.0_macOS_arm64.zip\" -o /tmp/gh.zip)",
+      "Bash(export PATH=\"/tmp/gh_install/gh_2.89.0_macOS_arm64/bin:$PATH\")",
+      "Bash(gh --version)",
+      "WebFetch(domain:roi-crm-production.up.railway.app)",
+      "Bash(curl -sL \"https://roi-crm-production.up.railway.app/ROI%20CRM.html\" -o /Users/roiovadia/crm/roi-crm.html)",
+      "Bash(curl -sI \"https://roi-crm-production.up.railway.app/\")",
+      "Bash(curl -sL \"https://roi-crm-production.up.railway.app/\" -o /tmp/index-check.html)",
+      "Read(//tmp/**)",
+      "Bash(curl -sL \"https://roi-crm-production.up.railway.app/Dockerfile\" -o /Users/roiovadia/crm/Dockerfile)",
+      "Bash(curl -sL \"https://roi-crm-production.up.railway.app/serve.py\" -o /Users/roiovadia/crm/serve.py)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"Initial commit: ROI CRM from Railway deployment:*)"
+    ]
+  }
+}

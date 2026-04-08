@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROI CRM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f0f2f5;--sidebar:#1a1f2e;--sidebar2:#252b3b;--accent:#4f6ef7;--accent2:#6c8aff;--white:#fff;--border:#e2e8f0;--text:#1e293b;--text2:#64748b;--success:#10b981;--warn:#f59e0b;--danger:#ef4444;--card:#fff;--hover:#f8fafc}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
+.sidebar{width:220px;background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0}
+.logo{padding:20px 16px;border-bottom:1px solid #2d3548}
+.logo-title{font-size:22px;font-weight:800;color:#fff}
+.logo-sub{font-size:11px;color:#8892b0}
+.nav{flex:1;padding:8px 0;overflow-y:auto}
+.nav-section{padding:8px 16px 4px;font-size:10px;color:#4a5568;text-transform:uppercase;letter-spacing:1px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:#a0aec0;font-size:13.5px;transition:all .15s;border-right:3px solid transparent}
+.nav-item:hover{background:var(--sidebar2);color:#fff}
+.nav-item.active{background:var(--sidebar2);color:#fff;border-right-color:var(--accent)}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.nav-badge{margin-right:auto;background:var(--accent);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px}
+.user-bar{padding:12px 16px;border-top:1px solid #2d3548;display:flex;align-items:center;gap:10px}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+.user-name{font-size:13px;color:#e2e8f0;font-weight:600}
+.user-role{font-size:11px;color:#718096}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.page-title{font-size:18px;font-weight:700}
+.topbar-actions{display:flex;gap:10px;align-items:center}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{background:var(--hover);color:var(--text2);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-danger{background:#fef2f2;color:var(--danger);border:1px solid #fecaca}
+.btn-success{background:#f0fdf4;color:var(--success);border:1px solid #bbf7d0}
+.btn-warn{background:#fffbeb;color:var(--warn);border:1px solid #fde68a}
+.btn-whatsapp{background:#25d366;color:#fff;border:none}
+.btn-whatsapp:hover{background:#128c7e}
+.btn-icon{padding:6px 8px}
+.btn-closed{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;font-weight:700}
+.btn-closed:hover{opacity:.9}
+.content{flex:1;overflow-y:auto;padding:24px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--card);border-radius:12px;padding:20px;border:1px solid var(--border)}
+.stat-label{font-size:12px;color:var(--text2);margin-bottom:4px}
+.stat-value{font-size:28px;font-weight:800}
+.stat-value.accent{color:var(--accent)}
+.stat-value.success{color:var(--success)}
+.stat-value.warn{color:var(--warn)}
+.stat-value.danger{color:var(--danger)}
+.stat-sub{font-size:11px;color:var(--text2);margin-top:4px}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dash-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:20px}
+.dash-card-title{font-size:14px;font-weight:700;margin-bottom:16px}
+.status-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--hover)}
+.status-row:last-child{border:none}
+.status-label{font-size:13px;color:var(--text2)}
+.status-count{font-size:14px;font-weight:700;color:var(--accent)}
+.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px;min-width:220px}
+.search-box input{border:none;outline:none;font-size:13px;background:transparent;width:100%}
+.table-wrap{background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--hover);padding:12px 16px;font-size:12px;font-weight:600;color:var(--text2);text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr{cursor:pointer;transition:background .1s}
+tbody tr:hover{background:var(--hover)}
+tbody td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--hover)}
+tbody tr:last-child td{border:none}
+.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-blue{background:#eff6ff;color:#3b82f6}
+.badge-green{background:#f0fdf4;color:var(--success)}
+.badge-yellow{background:#fffbeb;color:var(--warn)}
+.badge-red{background:#fef2f2;color:var(--danger)}
+.badge-gray{background:var(--hover);color:var(--text2)}
+.badge-gold{background:#fef9c3;color:#92400e}
+.badge-purple{background:#faf5ff;color:#7c3aed}
+/* RECORD */
+.record-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:stretch}
+.record-overlay.open{display:flex}
+.record-panel{background:var(--bg);width:100%;max-width:1400px;margin:0 auto;display:flex;flex-direction:column;height:100vh}
+.record-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.record-back{cursor:pointer;font-size:13px;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--hover);font-weight:600;white-space:nowrap}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;flex:1}
+.breadcrumb-item{cursor:pointer;color:var(--accent);font-weight:600}
+.breadcrumb-item:hover{text-decoration:underline}
+.breadcrumb-sep{color:var(--text2)}
+.record-name{font-size:16px;font-weight:700}
+.record-type-badge{font-size:11px;color:var(--text2);background:var(--hover);padding:2px 8px;border-radius:10px;margin-right:6px;white-space:nowrap}
+.record-body{flex:1;display:grid;grid-template-columns:360px 1fr;overflow:hidden;direction:rtl}
+.record-right{padding:20px;overflow-y:auto;background:var(--white);border-left:1px solid var(--border)}
+.record-left{padding:20px;overflow-y:auto;background:var(--bg);direction:ltr}
+.meta-box{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border-radius:10px;padding:14px;margin-bottom:16px;border:1px solid #c7d2fe}
+.meta-box-title{font-size:10px;font-weight:700;color:#4f6ef7;margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px;direction:rtl}
+.meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;font-size:12px;direction:rtl}
+.meta-row:last-child{margin-bottom:0}
+.meta-label{color:var(--text2)}
+.meta-value{font-weight:600;color:var(--text)}
+.creator-badge{display:inline-flex;align-items:center;gap:5px}
+.creator-av{width:18px;height:18px;border-radius:50%;color:#fff;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.field-section{margin-bottom:16px;direction:rtl}
+.field-section-title{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-item{display:flex;flex-direction:column;gap:3px}
+.field-item.full{grid-column:1/-1}
+.field-label{font-size:10px;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.field-value{font-size:13px;color:var(--text);padding:7px 10px;background:var(--hover);border-radius:6px;border:1px solid var(--border);min-height:32px;cursor:text;transition:border .15s}
+.field-value:hover{border-color:var(--accent)}
+.field-value.editable:focus{outline:none;border-color:var(--accent);background:#fff}
+input.field-value,select.field-value{font-family:inherit;width:100%;cursor:pointer;background:var(--hover)}
+select.field-value{appearance:auto}
+.field-checkbox{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--hover);border-radius:6px;border:1px solid var(--border)}
+.field-checkbox input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.field-checkbox label{font-size:13px;font-weight:600;cursor:pointer}
+.gold-badge{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700}
+.action-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;direction:rtl}
+/* LEFT */
+.left-section{background:var(--white);border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid var(--border);direction:rtl}
+.left-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.left-section-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.left-section-count{background:var(--accent);color:#fff;font-size:10px;padding:1px 7px;border-radius:10px}
+.add-note-box{background:var(--hover);border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid var(--border)}
+.add-note-box textarea{width:100%;border:none;background:transparent;font-size:13px;resize:none;outline:none;min-height:60px;font-family:inherit;color:var(--text);direction:rtl}
+.add-note-actions{display:flex;gap:8px;margin-top:8px}
+.note-item{background:var(--hover);border-radius:8px;padding:12px;margin-bottom:8px;border-right:3px solid var(--accent)}
+.note-text{font-size:13px;line-height:1.6;direction:rtl;white-space:pre-wrap}
+.note-meta{font-size:11px;color:var(--text2);margin-top:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.note-del{cursor:pointer;color:var(--danger);margin-right:auto}
+.add-task-box{background:#f0f4ff;border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid #c7d2fe}
+.add-task-label{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.task-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.task-full{grid-column:1/-1}
+.tinput{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;direction:rtl}
+.task-item{background:var(--white);border-radius:8px;padding:10px 14px;margin-bottom:8px;border:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+.task-check{width:16px;height:16px;cursor:pointer;margin-top:2px;flex-shrink:0;accent-color:var(--accent)}
+.task-info{flex:1;direction:rtl}
+.task-name{font-size:13px;font-weight:600}
+.task-name.done{text-decoration:line-through;color:var(--text2)}
+.task-meta-row{font-size:11px;color:var(--text2);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.task-del{cursor:pointer;color:var(--danger);font-size:13px;flex-shrink:0;margin-top:2px}
+.related-item{display:flex;align-items:center;justify-content:space-between;background:var(--hover);border-radius:8px;padding:10px 14px;cursor:pointer;border:1px solid var(--border);margin-bottom:8px;transition:all .1s}
+.related-item:hover{border-color:var(--accent);background:#eef2ff}
+.related-item-name{font-size:13px;font-weight:600}
+.related-item-sub{font-size:11px;color:var(--text2)}
+.related-arrow{color:var(--accent);font-size:18px;font-weight:700}
+.file-drop{border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer}
+.file-drop:hover{border-color:var(--accent);background:#f0f4ff}
+.file-drop-text{font-size:12px;color:var(--text2)}
+.file-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.file-item{display:flex;align-items:center;gap:10px;background:var(--hover);border-radius:8px;padding:8px 12px;border:1px solid var(--border)}
+.file-icon{font-size:18px}
+.file-name{font-size:12px;font-weight:600;flex:1}
+.file-size{font-size:11px;color:var(--text2)}
+.file-del{cursor:pointer;color:var(--danger)}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:16px;padding:28px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:20px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}
+.form-control{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+.form-control:focus{border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+/* LOGIN */
+.login-wrap{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f2e,#252b3b)}
+.login-card{background:#fff;border-radius:20px;padding:40px;width:380px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo-text{font-size:40px;font-weight:900;color:var(--accent)}
+.login-logo-sub{font-size:13px;color:var(--text2)}
+.login-title{font-size:22px;font-weight:700;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--text2);margin-bottom:24px}
+.login-error{background:#fef2f2;color:var(--danger);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none}
+/* USERS */
+.users-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.user-card{background:var(--card);border-radius:12px;padding:20px;border:1px solid var(--border);text-align:center}
+.user-card-avatar{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;margin:0 auto 12px}
+.user-card-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.user-card-role{font-size:12px;color:var(--text2);margin-bottom:14px}
+.perm-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid var(--hover)}
+.perm-row:last-child{border:none}
+.perm-yes{color:var(--success);font-weight:700}
+.perm-no{color:var(--danger)}
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:24px;background:#1e293b;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:999;transform:translateY(100px);transition:transform .3s;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast.show{transform:translateY(0)}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text2)}
+.es-icon{font-size:40px;margin-bottom:12px}
+.es-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.es-sub{font-size:12px}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.info-chip{display:inline-flex;align-items:center;gap:4px;background:var(--hover);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--text2)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+@media(max-width:900px){.record-body{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
+
+/* OTP LOGIN */
+.otp-display{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border-radius:12px;padding:16px;margin-bottom:16px;text-align:center;border:2px solid #c7d2fe}
+.otp-code{font-size:32px;font-weight:900;letter-spacing:10px;color:#4f6ef7;font-family:monospace}
+.otp-note{font-size:10px;color:#94a3b8;margin-top:6px}
+#loginIdNum,#loginOtp{font-size:20px;letter-spacing:4px;text-align:center;font-family:monospace}
+
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 0;cursor:pointer;border-bottom:1px solid var(--border);margin-top:8px}
+.section-header h3{font-size:15px;font-weight:600;color:var(--accent);margin:0}
+.section-header .chevron{transition:transform .2s;font-size:12px;color:var(--text2)}
+.section-header.collapsed .chevron{transform:rotate(-90deg)}
+.section-body{padding:8px 0}
+.section-body.hidden{display:none}
+.field-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0f0f5;min-height:38px}
+.field-row:last-child{border-bottom:none}
+.field-label{font-size:13px;color:var(--text2);flex-shrink:0;padding-left:16px;min-width:140px;text-align:right}
+.field-value{font-size:14px;font-weight:600;color:var(--text);text-align:left;flex:1;word-break:break-word}
+.field-value a{color:var(--accent);text-decoration:none}
+.field-value a:hover{text-decoration:underline}
+.field-value .phone-link{color:var(--success);cursor:pointer}
+.field-value .email-link{color:var(--accent)}
+.field-value input[type="text"],.field-value input[type="date"],.field-value input[type="number"],.field-value select,.field-value textarea{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;direction:rtl;background:#fff}
+.field-value textarea{min-height:60px;resize:vertical}
+.field-value input:focus,.field-value select:focus,.field-value textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,110,247,0.1)}
+.field-checkbox{display:flex;align-items:center;gap:8px}
+.field-checkbox input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent)}
+.confirm-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
+.confirm-dialog{background:#fff;border-radius:16px;padding:32px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:scaleIn .2s}
+.confirm-dialog .confirm-icon{font-size:48px;margin-bottom:16px}
+.confirm-dialog h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
+.confirm-dialog p{font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.5}
+.confirm-dialog .confirm-name{font-weight:700;color:var(--danger)}
+.confirm-actions{display:flex;gap:12px;justify-content:center}
+.confirm-actions .btn{min-width:120px;padding:10px 20px;font-size:14px;font-weight:600}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
+
+</style>
+</head>
+<body>
+<div id="loginPage" class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo"><div class="login-logo-text">ROI</div><div class="login-logo-sub">מערכת CRM</div></div>
+
+    <!-- STEP 1: Enter ID -->
+    <div id="loginStep1">
+      <div class="login-title">ברוך הבא 👋</div>
+      <div class="login-sub">הכנס מספר תעודת זהות</div>
+      <div class="login-error" id="loginError1">מספר ת.ז לא נמצא במערכת</div>
+      <div class="form-group">
+        <label class="form-label">מספר תעודת זהות</label>
+        <input class="form-control" id="loginIdNum" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="9" placeholder="123456789" dir="ltr" style="font-size:18px;letter-spacing:3px;text-align:center">
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" onclick="step1Submit()">📲 שלח קוד לוואטסאפ</button>
+    </div>
+
+    <!-- STEP 2: Enter OTP -->
+    <div id="loginStep2" style="display:none">
+      <div class="otp-display">
+        <div class="otp-code" id="debugOtp">------</div>
+        <div class="otp-note" id="debugOtpMsg">הקוד נשלח לוואטסאפ שלך</div>
+      </div>
+      <div class="login-title">קוד אימות 🔐</div>
+      <div class="login-sub" id="loginStep2Sub">קוד נשלח לוואטסאפ שלך</div>
+      <div class="login-error" id="loginError2">קוד שגוי, נסה שוב</div>
+
+      <div class="form-group">
+        <label class="form-label">הכנס קוד 6 ספרות</label>
+        <input class="form-control" id="loginOtp" type="text" inputmode="numeric" maxlength="6" placeholder="000000" dir="ltr" style="font-size:22px;letter-spacing:6px;text-align:center">
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;margin-bottom:10px" onclick="step2Submit()">✅ כניסה</button>
+      <button class="btn btn-secondary" style="width:100%;justify-content:center" onclick="backToStep1()">← חזרה</button>
+    </div>
+  </div>
+</div>
+
+<div id="app" style="display:none;width:100%;flex-direction:row;height:100vh">
+<div class="sidebar">
+  <div class="logo"><div class="logo-title">ROI</div><div class="logo-sub">CRM מערכת</div></div>
+  <nav class="nav">
+    <div class="nav-section">ראשי</div>
+    <div class="nav-item active" onclick="showPage('dashboard')"><span class="icon">📊</span> דאשבורד</div>
+    <div class="nav-section">ניהול</div>
+    <div class="nav-item" onclick="showPage('leads')"><span class="icon">⭐</span> מתעניינים<span class="nav-badge" id="badge-leads">0</span></div>
+    <div class="nav-item" onclick="showPage('deals')"><span class="icon">💼</span> עסקאות<span class="nav-badge" id="badge-deals">0</span></div>
+    <div class="nav-item" onclick="showPage('clients')"><span class="icon">👥</span> לקוחות<span class="nav-badge" id="badge-clients">0</span></div>
+    <div class="nav-item" onclick="showPage('payments')"><span class="icon">💰</span> תשלומים<span class="nav-badge" id="badge-payments">0</span></div>
+    <div class="nav-item" onclick="showPage('products')"><span class="icon">🛍️</span> מוצרים<span class="nav-badge" id="badge-products">0</span></div>
+    <div class="nav-item" onclick="showPage('meetings')"><span class="icon">📅</span> פגישות<span class="nav-badge" id="badge-meetings">0</span></div>
+    <div class="nav-item" onclick="showPage('tasks')"><span class="icon">✅</span> משימות<span class="nav-badge" id="badge-tasks">0</span></div>
+    <div class="nav-section">מערכת</div>
+    <div class="nav-item" onclick="showPage('users')" id="usersNavItem" style="display:none"><span class="icon">👤</span> משתמשים</div>
+    <div class="nav-item" onclick="showPage('settings')"><span class="icon">⚙️</span> הגדרות</div>
+  </nav>
+  <div class="user-bar"><div class="user-avatar" id="userAvatar">ר</div><div><div class="user-name" id="userName">רועי</div><div class="user-role" id="userRoleLabel">מנהל מערכת</div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="pageTitle">דאשבורד</div>
+    <div class="topbar-actions">
+      <button class="btn btn-secondary btn-sm" id="exportBtn" onclick="exportData()" style="display:none">⬇️ ייצוא</button>
+      <button class="btn btn-primary" id="addBtn" onclick="openAddModal()" style="display:none">+ הוסף</button>
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()">🚪 יציאה</button>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+</div>
+
+<div class="record-overlay" id="recordOverlay">
+  <div class="record-panel">
+    <div class="record-topbar">
+      <button class="btn btn-secondary btn-sm record-back" onclick="closeRecord()">✕ סגור</button>
+      <div class="breadcrumb" id="recordBreadcrumb"></div>
+      <div style="flex:1;display:flex;align-items:center;gap:8px;margin-right:8px">
+        <span class="record-type-badge" id="recordTypeBadge">—</span>
+        <span class="record-name" id="recordName">—</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <button class="btn btn-success btn-sm" onclick="saveRecord()">💾 שמור</button>
+        <button class="btn btn-danger btn-sm" id="recordDeleteBtn" onclick="deleteRecord()">🗑️ מחק</button>
+      </div>
+    </div>
+    <div class="record-body">
+      <div class="record-right" id="recordRight"></div>
+      <div class="record-left" id="recordLeft"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">הוסף</h3>
+    <div id="modalBody"></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">ביטול</button><button class="btn btn-primary" onclick="saveModal()">שמור</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"><span id="toastMsg">נשמר ✅</span></div>
+
+<script>
+// ===== USERS & PERMISSIONS =====
+const USERS={
+  roi:   {id:'318686540', phone:'972526569844', name:'רועי עובדיה', role:'admin', roleLabel:'מנהל מערכת',  avatar:'ר', color:'#4f6ef7'},
+  natan: {id:'211870100', phone:'972504744114', name:'נתן',          role:'agent', roleLabel:'יועץ מחירות', avatar:'נ', color:'#10b981'},
+  ben:   {id:'322230731', phone:'972523817637', name:'בן',           role:'agent', roleLabel:'יועץ מחירות', avatar:'ב', color:'#f59e0b'}
+};
+
+// ===== GREEN API CONFIG =====
+const GREEN_API = {
+  instanceId: '7103856687',
+  token: '024b675981874843ad9749cabdf86079dc999a26e36a4fe0a6',
+  baseUrl: 'https://api.green-api.com'
+};
+
+
+// ===== PERMISSIONS =====
+const PERMS = {
+  admin: {canCreate:['leads','deals','clients','payments','products','meetings','tasks'],canDelete:true,canExport:true,canManageUsers:true},
+  agent: {canCreate:['leads','deals','clients','payments','meetings','tasks'],canDelete:false,canExport:false,canManageUsers:false}
+};
+
+function perm(action) {
+  if (!currentUser) return false;
+  const p = PERMS[currentUser.role];
+  if (!p) return false;
+  if (action === 'delete') return p.canDelete;
+  if (action === 'export') return p.canExport;
+  if (action === 'users') return p.canManageUsers;
+  if (action.startsWith('create:')) return p.canCreate.includes(action.substring(7));
+  return true;
+}
+
+// ===== DATA =====
+function defaultData() {
+  return {leads:[],deals:[],clients:[],payments:[],products:[],meetings:[],tasks:[]};
+}
+
+function saveData() {
+  try { localStorage.setItem('roicrm_data', JSON.stringify(DB)); } catch(e) {}
+}
+
+function loadData() {
+  try {
+    const d = localStorage.getItem('roicrm_data');
+    return d ? JSON.parse(d) : defaultData();
+  } catch(e) { return defaultData(); }
+}
+
+let DB = loadData();
+
+// ===== STATE =====
+let currentUser = null, currentPage = 'dashboard';
+let currentRecord = null, currentRecordType = null, recordStack = [];
+let modalType = null, modalParent = null;
+
+// ===== HELPERS =====
+function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2,5); }
+function now() { return new Date().toISOString(); }
+function todayVal() { return new Date().toISOString().split('T')[0]; }
+function fmt(d) { return d ? d.split('T')[0] : ''; }
+function fmtDT(d) { if(!d) return ''; const dt=new Date(d); return dt.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function fmtMoney(n) { return n ? Number(n).toLocaleString('he-IL') + ' ₪' : '-'; }
+function uName(k) { return USERS[k]?.name || k || ''; }
+function uAv(k) { return USERS[k]?.avatar || '?'; }
+function uCol(k) { return USERS[k]?.color || '#4f6ef7'; }
+function crBadge(k) { return `<span class="creator-badge"><span class="creator-av" style="background:${uCol(k)}">${uAv(k)}</span>${uName(k)}</span>`; }
+function userOpts(sel) { return Object.entries(USERS).map(([k,u])=>`<option value="${k}"${sel===k?' selected':''}>${u.name}</option>`).join(''); }
+
+
+let _otpCode = '', _otpUsername = '';
+
+function generateOtp() { return String(Math.floor(100000 + Math.random() * 900000)); }
+
+async function sendWhatsAppOtp(phone, otp) {
+  const url = `${GREEN_API.baseUrl}/waInstance${GREEN_API.instanceId}/sendMessage/${GREEN_API.token}`;
+  const body = {
+    chatId: phone + '@c.us',
+    message: `🔐 קוד הכניסה שלך ל-ROI CRM:\n\n*${otp}*\n\nהקוד תקף ל-5 דקות.\nאל תשתף קוד זה עם אף אחד.`
+  };
+  try {
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    return d.idMessage ? true : false;
+  } catch(e) {
+    console.error('WhatsApp send error:', e);
+    return false;
+  }
+}
+
+async function step1Submit() {
+  const idNum = document.getElementById('loginIdNum').value.trim();
+  const found = Object.entries(USERS).find(([k,v]) => v.id === idNum);
+  document.getElementById('loginError1').style.display = 'none';
+  if (!found) { document.getElementById('loginError1').style.display = 'block'; return; }
+  
+  _otpUsername = found[0];
+  _otpCode = generateOtp();
+  
+  // Show loading state
+  const btn = document.querySelector('#loginStep1 .btn-primary');
+  btn.textContent = '⏳ שולח...';
+  btn.disabled = true;
+  
+  const sent = await sendWhatsAppOtp(found[1].phone, _otpCode);
+  
+  btn.textContent = '📲 שלח קוד לוואטסאפ';
+  btn.disabled = false;
+  
+  // Show OTP screen
+  const ph = found[1].phone.replace('972','0');
+  const masked = ph.substring(0,3) + '-' + ph.substring(3,6) + '-' + ph.substring(6);
+  document.getElementById('loginStep2Sub').textContent = 'קוד נשלח לוואטסאפ ' + masked;
+  
+  if (sent) {
+    document.getElementById('debugOtp').textContent = '✅ נשלח!';
+    document.getElementById('debugOtp').style.fontSize = '16px';
+    document.getElementById('debugOtp').style.letterSpacing = '0';
+  } else {
+    // Fallback: show code if API failed
+    document.getElementById('debugOtp').textContent = _otpCode;
+    document.getElementById('debugOtpMsg').textContent = '⚠️ שגיאה בשליחה — הקוד מוצג כרזרב:';
+  }
+  
+  document.getElementById('loginStep1').style.display = 'none';
+  document.getElementById('loginStep2').style.display = 'block';
+  document.getElementById('loginOtp').focus();
+}
+
+function step2Submit() {
+  const entered = document.getElementById('loginOtp').value.trim();
+  document.getElementById('loginError2').style.display = 'none';
+  if (entered !== _otpCode) { document.getElementById('loginError2').style.display = 'block'; return; }
+  currentUser = {...USERS[_otpUsername], username: _otpUsername};
+  sessionStorage.setItem('roicrm_user', JSON.stringify(currentUser));
+  _otpCode = ''; _otpUsername = '';
+  initApp();
+}
+
+function backToStep1() {
+  document.getElementById('loginStep2').style.display = 'none';
+  document.getElementById('loginStep1').style.display = 'block';
+  document.getElementById('loginIdNum').value = '';
+  document.getElementById('loginOtp').value = '';
+  _otpCode = ''; _otpUsername = '';
+}
+
+
+function doLogin(){step1Submit();} // legacy - redirects to OTP flow
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginPage').style.display!=='none'){if(document.getElementById('loginStep2').style.display!=='none')step2Submit();else step1Submit();}});
+function doLogout(){sessionStorage.removeItem('roicrm_user');currentUser=null;document.getElementById('loginPage').style.display='flex';document.getElementById('app').style.display='none';}
+function initApp(){document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=currentUser.name;document.getElementById('userAvatar').textContent=currentUser.avatar;document.getElementById('userAvatar').style.background=currentUser.color;document.getElementById('userRoleLabel').textContent=currentUser.roleLabel;document.getElementById('usersNavItem').style.display=perm('users')?'flex':'none';updateBadges();showPage('dashboard');}
+
+// ===== NAV =====
+const PAGE_TITLES={dashboard:'דאשבורד',leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',products:'מוצרים',meetings:'פגישות',tasks:'משימות',users:'משתמשים',settings:'הגדרות'};
+const PAGE_ICONS={leads:'⭐',deals:'💼',clients:'👥',payments:'💰',products:'🛍️',meetings:'📅',tasks:'✅',users:'👤'};
+const TYPE_LABELS={leads:'מתעניין',deals:'עסקה',clients:'לקוח',payments:'תשלום',products:'מוצר',meetings:'פגישה',tasks:'משימה'};
+const ADD_LABELS={leads:'מתעניין חדש',deals:'עסקה חדשה',clients:'לקוח חדש',payments:'תשלום חדש',products:'מוצר חדש',meetings:'פגישה חדשה',tasks:'משימה חדשה'};
+function showPage(page){currentPage=page;document.querySelectorAll('.nav-item').forEach(el=>{el.classList.remove('active');if(el.textContent.trim().startsWith(PAGE_TITLES[page]?.substring(0,3)||'XX'))el.classList.add('active');});document.getElementById('pageTitle').textContent=PAGE_TITLES[page]||page;const hasList=['leads','deals','clients','payments','products','meetings','tasks'].includes(page);document.getElementById('addBtn').style.display=(hasList&&perm('create:'+page))?'flex':'none';document.getElementById('addBtn').textContent='+ '+(ADD_LABELS[page]||'הוסף');document.getElementById('exportBtn').style.display=(hasList&&perm('export'))?'flex':'none';renderPage(page);}
+function updateBadges(){['leads','deals','clients','payments','products','meetings','tasks'].forEach(k=>{const el=document.getElementById('badge-'+k);if(el)el.textContent=(DB[k]||[]).length;});}
+
+// ===== RENDER =====
+function renderPage(page){const c=document.getElementById('mainContent');if(page==='dashboard'){c.innerHTML=renderDashboard();return;}if(page==='users'){c.innerHTML=renderUsers();return;}if(page==='settings'){c.innerHTML=renderSettings();return;}if(DB[page]!==undefined){c.innerHTML=renderList(page);return;}c.innerHTML='<div class="empty-state"><div class="es-icon">🚧</div><div class="es-title">בקרוב</div></div>';}
+function renderDashboard(){const tL=DB.leads.length,oD=DB.deals.filter(d=>d.status!=='סגורה').length,rev=DB.payments.filter(p=>p.status==='שולם').reduce((s,p)=>s+(Number(p.amount)||0),0),tasks=[...DB.tasks,...DB.leads.flatMap(l=>l.tasks||[]),...DB.deals.flatMap(d=>d.tasks||[])].filter(t=>!t.done).length;
+return `<div class="stats-grid"><div class="stat-card"><div class="stat-label">⭐ מתעניינים</div><div class="stat-value accent">${tL}</div><div class="stat-sub">ממתינים לטיפול</div></div><div class="stat-card"><div class="stat-label">💼 עסקאות פתוחות</div><div class="stat-value warn">${oD}</div><div class="stat-sub">ממתינות לסגירה</div></div><div class="stat-card"><div class="stat-label">💰 גביה שנתית</div><div class="stat-value success">${fmtMoney(rev)}</div><div class="stat-sub">תשלומים שהתקבלו</div></div><div class="stat-card"><div class="stat-label">✅ משימות פתוחות</div><div class="stat-value danger">${tasks}</div><div class="stat-sub">מחכות לביצוע</div></div></div>
+<div class="dash-grid"><div class="dash-card"><div class="dash-card-title">סטטוס לידים</div>${['לידים חדשים 🎉','לידים זהב ⭐','פולאופ איכותי 😊','נוצר קשר ראשוני 📞','לא נסגר 😊','ליד לא תקין ❌','חיפוש חופשי 🔍'].map(s=>`<div class="status-row"><span class="status-label">${s}</span><span class="status-count">${DB.leads.filter(l=>l.status===s).length}</span></div>`).join('')}</div><div class="dash-card"><div class="dash-card-title">מחזור לפי מוצר</div>${DB.products.map(p=>{const r=DB.payments.filter(x=>x.productId===p.id&&x.status==='שולם').reduce((s,x)=>s+(Number(x.amount)||0),0);return`<div class="status-row"><span class="status-label">${p.name}</span><span class="status-count">${fmtMoney(r)}</span></div>`;}).join('')||'<div class="empty-state" style="padding:16px"><div class="es-sub">אין מוצרים</div></div>'}</div></div>`;}
+
+function renderUsers(){if(!perm('users'))return'<div class="empty-state"><div class="es-icon">🔒</div><div class="es-title">אין הרשאה</div></div>';
+return`<div class="users-grid">${Object.entries(USERS).map(([k,u])=>{const p=PERMS[u.role];return`<div class="user-card"><div class="user-card-avatar" style="background:${u.color}">${u.avatar}</div><div class="user-card-name">${u.name}</div><div class="user-card-role">${u.roleLabel}</div><div style="border-top:1px solid var(--border);padding-top:12px;text-align:right"><div class="perm-row"><span>יצירת לידים/עסקאות</span><span class="perm-yes">✓</span></div><div class="perm-row"><span>יצירת לקוחות/תשלומים</span><span class="${p.canCreate.includes('clients')?'perm-yes':'perm-no'}">${p.canCreate.includes('clients')?'✓':'✗'}</span></div><div class="perm-row"><span>מחיקת רשומות</span><span class="${p.canDelete?'perm-yes':'perm-no'}">${p.canDelete?'✓':'✗'}</span></div><div class="perm-row"><span>ייצוא נתונים</span><span class="${p.canExport?'perm-yes':'perm-no'}">${p.canExport?'✓':'✗'}</span></div><div class="perm-row"><span>ניהול משתמשים</span><span class="${p.canManageUsers?'perm-yes':'perm-no'}">${p.canManageUsers?'✓':'✗'}</span></div></div></div>`;}).join('')}</div>`;}
+
+// ===== LIST CONFIGS =====
+const LIST_CONFIGS={
+  leads:{cols:['שם','טלפון','סטטוס','נציג','מקור','זהב','נוצר ע"י'],fields:r=>[r.name,r.phone||'—',`<span class="badge badge-blue">${r.status||'חדש'}</span>`,uName(r.agent),r.source||'—',r.isGold?'⭐ זהב':'—',crBadge(r.createdBy)]},
+  deals:{cols:['שם עסקה','מתעניין','מוצר','סטטוס','מבצע','נוצר ע"י'],fields:r=>[r.name,r.leadName||r.clientName||'—',r.productName||'—',`<span class="badge badge-${r.status==='סגורה'?'green':r.status==='בתהליך'?'yellow':'blue'}">${r.status||'חדשה'}</span>`,uName(r.executor),crBadge(r.createdBy)]},
+  clients:{cols:['שם','טלפון','יועץ','סטטוס','תחילת תהליך','נוצר ע"י'],fields:r=>[r.name,r.clientPhone||r.phone||'—',uName(r.advisor),r.clientStatus||'פעיל',fmt(r.startDate),crBadge(r.createdBy)]},
+  payments:{cols:['שם','עסקה','צורת תשלום','סכום','תאריך','מס תשלום','סטטוס'],fields:r=>[r.name||r.clientName||'—',r.dealName||'—',r.paymentType||'—',fmtMoney(r.amount),fmt(r.paymentDate),r.paymentNumber||'—',`<span class="badge badge-${r.status==='שולם'?'green':r.status==='בדיקה'?'yellow':'red'}">${r.status||'ממתין'}</span>`]},
+  products:{cols:['שם מוצר','מחיר','תיאור'],fields:r=>[r.name,fmtMoney(r.price),r.desc||'—']},
+  meetings:{cols:['נושא','לקוח','מספר פגישה','נציג','תאריך התחלה','סטטוס'],fields:r=>[r.title||r.name,r.clientName||r.withName||'—',r.meetingNumber||'—',uName(r.agent),fmt(r.startDate||r.date),`<span class="badge badge-${r.status==='בוצעה'?'green':'blue'}">${r.status||'מתוכננת'}</span>`]},
+  tasks:{cols:['נושא','סטטוס','מבצע','תחסיום','תזכורת'],fields:r=>[r.name,`<span class="badge badge-${r.done?'green':'yellow'}">${r.done?'סגור':'פתוח'}</span>`,uName(r.executor||r.assignee),fmt(r.dueDate),fmt(r.reminderDate)]}
+};
+
+function renderList(page){const cfg=LIST_CONFIGS[page],items=DB[page]||[];
+return`<div class="table-header"><div class="search-box"><span>🔍</span><input placeholder="חיפוש..." oninput="filterTable(this.value,'${page}')" id="search-${page}"></div><div style="font-size:13px;color:var(--text2)">${items.length} רשומות</div></div>
+<div class="table-wrap"><table id="tbl-${page}"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}<th>פעולות</th></tr></thead>
+<tbody>${items.length?items.map(r=>`<tr onclick="openRecord('${page}','${r.id}')">${cfg.fields(r).map(f=>`<td>${f}</td>`).join('')}<td onclick="event.stopPropagation()"><button class="btn btn-secondary btn-sm btn-icon" onclick="openRecord('${page}','${r.id}')">📂</button>${perm('delete')?`<button class="btn btn-danger btn-sm btn-icon" onclick="deleteItem('${page}','${r.id}')">🗑️</button>`:''}</td></tr>`).join(''):`<tr><td colspan="${cfg.cols.length+1}"><div class="empty-state"><div class="es-icon">${PAGE_ICONS[page]||'📋'}</div><div class="es-title">אין רשומות</div><div class="es-sub">לחץ + הוסף</div></div></td></tr>`}
+</tbody></table></div>`;}
+function filterTable(q,page){document.querySelectorAll(`#tbl-${page} tbody tr`).forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});}
+
+// ===== RECORD =====
+function openRecord(type,id,push){const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;if(push&&currentRecord){recordStack.push({type:currentRecordType,id:currentRecord.id,name:currentRecord.name||currentRecord.title||'—'});}else if(!push){recordStack=[];}currentRecord={...item,notes:item.notes||[],tasks:item.tasks||[],files:item.files||[]};currentRecordType=type;renderRec();document.getElementById('recordOverlay').classList.add('open');}
+function closeRecord(){if(recordStack.length>0){const p=recordStack.pop(),st=[...recordStack];openRecord(p.type,p.id,false);recordStack=st;}else{document.getElementById('recordOverlay').classList.remove('open');currentRecord=null;currentRecordType=null;recordStack=[];renderPage(currentPage);}}
+function renderRec(){document.getElementById('recordName').textContent=currentRecord.name||currentRecord.title||'—';document.getElementById('recordTypeBadge').textContent=TYPE_LABELS[currentRecordType]||currentRecordType;document.getElementById('recordBreadcrumb').innerHTML=recordStack.map((s,i)=>`<span class="breadcrumb-item" onclick="navBC(${i})">${TYPE_LABELS[s.type]}: ${s.name}</span><span class="breadcrumb-sep">›</span>`).join('');document.getElementById('recordDeleteBtn').style.display=perm('delete')?'flex':'none';document.getElementById('recordRight').innerHTML=renderRight();document.getElementById('recordLeft').innerHTML=renderLeft();}
+function navBC(idx){const t=recordStack[idx],st=recordStack.slice(0,idx);openRecord(t.type,t.id,false);recordStack=st;}
+
+// ===== RIGHT PANEL — per type =====
+function renderRight(){const r=currentRecord,type=currentRecordType;
+let html=`<div class="meta-box"><div class="meta-box-title">🔍 פרטי הרשומה</div><div class="meta-row"><span class="meta-label">נוצר על ידי</span><span class="meta-value">${crBadge(r.createdBy)}</span></div><div class="meta-row"><span class="meta-label">תאריך יצירה</span><span class="meta-value">${fmtDT(r.created)}</span></div><div class="meta-row"><span class="meta-label">עדכון אחרון</span><span class="meta-value">${fmtDT(r.updated)}</span></div>${r.updatedBy?`<div class="meta-row"><span class="meta-label">עודכן ע"י</span><span class="meta-value">${crBadge(r.updatedBy)}</span></div>`:''}</div>`;
+if(type==='leads')html+=renderLeadFields(r);
+else if(type==='deals')html+=renderDealFields(r);
+else if(type==='clients')html+=renderClientFields(r);
+else if(type==='payments')html+=renderPaymentFields(r);
+else if(type==='meetings')html+=renderMeetingFields(r);
+else if(type==='tasks')html+=renderTaskFields(r);
+else if(type==='products')html+=renderProductFields(r);
+return html;}
+
+function secHead(title, id, collapsed) {
+  var cls = "section-header" + (collapsed ? " collapsed" : "");
+  return '<div class="' + cls + '" onclick="toggleSec(this)"><h3>' + title + '</h3><span class="chevron">&#x276E;</span></div><div class="section-body' + (collapsed ? ' hidden' : '') + '" id="sec_' + id + '">';
+}
+function secEnd() { return "</div>"; }
+function toggleSec(el) {
+  el.classList.toggle("collapsed");
+  var body = el.nextElementSibling;
+  if (body) body.classList.toggle("hidden");
+}
+
+function fv(key, label, val, opts) {
+  opts = opts || {};
+  if (val === undefined || val === null) val = '';
+  var id = 'fld_' + key;
+  var cls = 'field-row' + (opts.full ? ' full-width' : '');
+  var h = '<div class="' + cls + '">';
+  h += '<span class="field-label">' + label + '</span>';
+  h += '<span class="field-value">';
+  if (opts.readonly) {
+    h += '<span>' + val + '</span>';
+  } else if (opts.checkbox) {
+    h += '<label class="field-checkbox"><input type="checkbox" id="' + id + '" ' + (val ? 'checked' : '') + ' onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.checked)"> ' + (opts.checkLabel || '') + '</label>';
+  } else if (opts.select) {
+    h += '<select id="' + id + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)">';
+    h += '<option value="">-- בחר --</option>';
+    var labels = opts.selectLabels || opts.select;
+    for (var i = 0; i < opts.select.length; i++) {
+      var sv = String(opts.select[i]);
+      var sl = String(labels[i] || sv);
+      h += '<option value="' + sv.replace(/"/g,'&quot;') + '"' + (String(val) === sv ? ' selected' : '') + '>' + sl + '</option>';
+    }
+    h += '</select>';
+  } else if (opts.textarea) {
+    h += '<textarea id="' + id + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)">' + (val || '') + '</textarea>';
+  } else if (opts.date) {
+    var dv = val || '';
+    if (dv && dv.includes('/')) { var p = dv.split('/'); if(p.length===3) dv = p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); }
+    h += '<input type="date" id="' + id + '" value="' + dv + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)">';
+  } else if (opts.link) {
+    if (val) {
+      var shortUrl = String(val).length > 50 ? String(val).substring(0,47) + '...' : val;
+      h += '<a href="' + val + '" target="_blank">' + shortUrl + '</a>';
+    }
+    h += '<input type="text" id="' + id + '" value="' + (val||'').replace(/"/g,'&quot;') + '" placeholder="הזן קישור" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)" style="margin-top:4px">';
+  } else if (opts.phone) {
+    if (val) h += '<a href="tel:' + val + '" class="phone-link">' + val + '</a>';
+    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)" style="' + (val?'margin-top:4px':'') + '">';
+  } else if (opts.email) {
+    if (val) h += '<a href="mailto:' + val + '" class="email-link">' + val + '</a>';
+    h += '<input type="text" id="' + id + '" value="' + (val||'') + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)" style="' + (val?'margin-top:4px':'') + '">';
+  } else {
+    h += '<input type="text" id="' + id + '" value="' + String(val).replace(/"/g,'&quot;') + '" onchange="updateField(this.closest(\'.record-detail\'),\'' + key + '\',this.value)">';
+  }
+  h += '</span></div>';
+  return h;
+}
+
+function renderLeadFields(r, container) {
+  var h = '';
+  h += secHead('פרטי לקוח', 'lead_details', false);
+  h += fv('name','שם מתעניין',r.name);
+  h += fv('phone','טלפון ראשי',r.phone,{phone:true});
+  h += fv('isGold','ליד זהב',r.isGold,{checkbox:true,checkLabel:'ליד זהב ⭐',full:false});
+  h += fv('whatsappLink','קישור מהיר לוואטסאפ',r.phone?'https://wa.me/972'+r.phone.replace(/^0/,''):'',{link:true,full:true});
+  h += fv('status','סטטוס',r.status,{select:['לידים חדשים 🎉','אין מענה 📞','נוצר קשר ראשוני 😊','פולאופ איכותי 🌟','סגר ✔️','לא נסגר 😔','ליד לא תקין ❌']});
+  h += fv('agent','נציג',r.agent,{select:Object.keys(USERS)});
+  h += fv('source','מקור הגעה',r.source,{select:['אינסטגרם אורגני','אינסטגרם רועי','אינסטגרם נתן','קמפיין ממומן','לקוחות חוזרים','אפיליאציה','פייסבוק','גוגל','המלצה','utm_medium','אחר']});
+  h += fv('email','דואר אלקטרוני',r.email,{email:true});
+  h += fv('whyContact','למה השאיר פרטים',r.whyContact,{textarea:true,full:true});
+  h += secEnd();
+  container.innerHTML = h;
+}
+
+function renderDealFields(r, container) {
+  var leadName = '';
+  if (r.leadId) { var ld = DB.leads.find(function(l){return l.id===r.leadId}); if(ld) leadName=ld.name; }
+  if (!leadName) leadName = r.leadName || '';
+  var h = '';
+  h += secHead('עסקה', 'deal_info', false);
+  h += fv('name','שם העסקה',r.name||leadName);
+  h += fv('executor','מבצע העסקה',r.executor,{select:Object.keys(USERS)});
+  h += fv('leadName','מתעניין משויך',r.leadName||leadName);
+  h += fv('productId','מוצר',r.productId,{select:DB.products.map(function(p){return p.id}),selectLabels:DB.products.map(function(p){return p.name})});
+  h += fv('referrer','מי הפנה / מתעניין משויך',r.referrer||leadName);
+  h += fv('bankTransferWhatsapp','קישור העברה בנקאית לוואטסאפ',r.bankTransferWhatsapp,{link:true,full:true});
+  h += fv('status','סטטוס',r.status,{select:['חדשה','בתהליך','לקוח סגר','בוטלה']});
+  h += fv('created','נוצר בתאריך',r.created||'',{readonly:true});
+  h += secEnd();
+  h += secHead('חוזה', 'deal_contract', true);
+  h += fv('contractLink','קישור לחוזה',r.contractLink,{link:true,full:true});
+  h += secEnd();
+  h += secHead('פרטי עסקה', 'deal_details', false);
+  h += fv('paymentType','סוג תשלום',r.paymentType,{select:['העברה בנקאית','אשראי תופס מסגרת','הוראת קבע באשראי','ביט / פייבוקס','מזומן']});
+  h += fv('creditFrameLink','קישור לאשראי תופס מסגרת',r.creditFrameLink,{link:true,full:true});
+  h += fv('numPayments','מספר תשלומים',r.numPayments);
+  h += fv('standingOrderLink','קישור להוראת קבע',r.standingOrderLink,{link:true,full:true});
+  h += fv('creditDetails','פרטי אשראי',r.creditDetails);
+  h += fv('dealTotal','שווי עסקה כולל מע\"מ',r.dealTotal);
+  var totalCollected = 0;
+  DB.payments.filter(function(p){return p.dealId===r.id||p.dealName===r.name}).forEach(function(p){if(p.status==='שולם')totalCollected+=Number(p.amount)||0});
+  h += fv('totalCollected','סה\"כ גביה מתשלומים',totalCollected||r.totalCollected||0,{readonly:true});
+  h += fv('remainingBalance','יתרה לתשלום לגביה',((Number(r.dealTotal)||0)-totalCollected)||r.remainingBalance||0,{readonly:true});
+  h += fv('futureCollectionDate','תאריך גביה עתידי',r.futureCollectionDate,{date:true});
+  h += fv('invoiceIssued','הוצאתי חשבונית?',r.invoiceIssued,{checkbox:true,checkLabel:'חשבונית הוצאה ✅'});
+  h += secEnd();
+  container.innerHTML = h;
+}
+
+function renderClientFields(r, container) {
+  var h = '';
+  h += secHead('תהליך ופגישות', 'client_process', false);
+  h += fv('doneMeetings','מספר פגישות שבוצעו',r.doneMeetings||DB.meetings.filter(function(m){return m.clientId===r.id}).length);
+  h += fv('clientStatus','סטטוס לקוח',r.clientStatus,{select:['לקוח פעיל','לא פעיל','בהקפאה','סיים תהליך']});
+  h += fv('totalMeetings','סה\"כ פגישות לתהליך',r.totalMeetings);
+  h += fv('startDate','תאריך תחילת תהליך',r.startDate||(r.created?r.created.split('T')[0]:''),{date:true});
+  h += fv('endDate','תאריך סיום תהליך',r.endDate,{date:true});
+  h += fv('advisor','שייך ליועץ',r.advisor,{select:Object.keys(USERS)});
+  h += fv('advisorEmail','דואר אלקטרוני - שייך ליועץ',r.advisorEmail||(USERS[r.advisor]?USERS[r.advisor].email:'')||'',{email:true});
+  h += fv('advisorPhone','מספר טלפון עסקי - שייך ליועץ',r.advisorPhone||(USERS[r.advisor]?USERS[r.advisor].phone:'')||'',{phone:true});
+  h += secEnd();
+  h += secHead('פרטי לקוח', 'client_details', false);
+  h += fv('name','שם',r.name);
+  h += fv('advisorName','שם היועץ',r.advisor?uName(r.advisor):(r.advisorName||''));
+  h += fv('dealRef','עסקה משויכת',r.dealRef||r.name);
+  h += fv('clientEmail','דואר אלקטרוני - התמחות משויכת',r.clientEmail||r.email,{email:true});
+  h += fv('avgMonthsInProcess','מספר חדשים ממוצע בתהליך',r.avgMonthsInProcess||(r.startDate?Math.round((Date.now()-new Date(r.startDate))/(1000*60*60*24*30)):'')||'');
+  h += fv('clientPhone','טלפון ראשי - התמחות משויכת',r.clientPhone||r.phone,{phone:true});
+  h += fv('daysInProcess','ימים מתחיל תהליך',r.daysInProcess||(r.startDate?Math.round((Date.now()-new Date(r.startDate))/(1000*60*60*24)):'')||'',{readonly:true});
+  h += secEnd();
+  container.innerHTML = h;
+}
+
+function renderPaymentFields(r, container) {
+  var h = '';
+  h += secHead('שם מקטע', 'payment_details', false);
+  h += fv('name','שם',r.name||r.clientName);
+  h += fv('executor','משתמש',r.executor||r.createdBy,{select:Object.keys(USERS)});
+  h += fv('setupDate','תאריך גביה',r.setupDate||todayVal(),{date:true});
+  h += fv('dealName','עסקה משויכת',r.dealName);
+  h += fv('paymentType','סוג תשלום',r.paymentType,{select:['הוראת קבע באשראי','אשראי תופס מסגרת','העברה בנקאית','ביט','פייבוקס','מזומן']});
+  h += fv('numPayments','מספר תשלומים',r.numPayments);
+  h += fv('paymentDate','תאריך כסף בבנק',r.paymentDate,{date:true});
+  h += fv('amount','סכום לתשלום',r.amount);
+  h += fv('paymentNumber','מספר תשלום',r.paymentNumber);
+  h += fv('status','התשלום עבר והכל תקין',r.status,{select:['עדיין לא','שולם','לא בוצע','בדיקה']});
+  h += secEnd();
+  container.innerHTML = h;
+}
+
+function renderMeetingFields(r, container) {
+  var h = '';
+  h += secHead('פרטי פעילות', 'meeting_details', false);
+  h += fv('title','שם',r.title||r.name);
+  h += fv('clientName','משייך ל',r.clientName||r.withName);
+  h += fv('agent','שם נציג',r.agent,{select:Object.keys(USERS)});
+  h += fv('meetingNumber','מספר פגישה',r.meetingNumber);
+  h += fv('startDate','תאריך התחלה',r.startDate||r.date,{date:true});
+  h += fv('endDate','תאריך סיום',r.endDate,{date:true});
+  h += fv('roiEmail','מייל של התוכן - משייך ל',r.roiEmail||'',{email:true});
+  h += secEnd();
+  h += secHead('תיאור', 'meeting_desc', true);
+  h += fv('notes_field','תיאור',r.notes_field,{textarea:true,full:true});
+  h += secEnd();
+  container.innerHTML = h;
+}
+
+function renderTaskFields(r, container) {
+  var h = '';
+  h += secHead('משימה', 'task_main', false);
+  h += fv('name','שם',r.name);
+  h += fv('description','תיאור',r.description||r.notes_field,{textarea:true,full:true});
+  h += fv('status_task','סטטוס',r.done?'סגור':'פתוח',{select:['פתוח','סגור']});
+  h += fv('dueDate','תאריך סיום',r.dueDate,{date:true});
+  h += fv('leadRef','משייך ל',r.leadRef||r.relatedName||'');
+  h += fv('executor','מבצע',r.executor||r.assignee,{select:Object.keys(USERS)});
+  h += secEnd();
+  h += secHead('פרטי משימה', 'task_details', false);
+  h += fv('reminderDate','תאריך תזכורת',r.reminderDate,{date:true});
+  h += fv('taskType','סוג משימה',r.taskType,{select:['שיחת מעקב','פגישה','משימה כללית','אחר']});
+  h += fv('priority','עדיפות',r.priority,{select:['נמוכה','בינונית','גבוהה','דחוף']});
+  h += secEnd();
+  h += secHead('פרטי רשומה', 'task_record', true);
+  h += fv('created','נוצר בתאריך',r.created||'',{readonly:true});
+  h += fv('updated','עודכן בתאריך',r.updated||'',{readonly:true});
+  h += fv('createdBy','נוצר על ידי',r.createdBy?uName(r.createdBy):'',{readonly:true});
+  h += fv('updatedBy','עודכן על ידי',r.updatedBy?uName(r.updatedBy):'',{readonly:true});
+  h += secEnd();
+  container.innerHTML = h;
+}
+
+function renderProductFields(r){
+return`<div class="field-section"><div class="field-section-title">🛍️ פרטי מוצר</div><div class="field-grid">
+${fv('name','שם מוצר',r.name)}
+${fv('price','מחיר',r.price)}
+${fv('desc','תיאור',r.desc,{textarea:true,full:true})}
+</div></div>`;}
+
+function updateField(key,val){if(currentRecord){currentRecord[key]=val;if(key==='status_task')currentRecord.done=(val==='סגור');}}
+function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [contenteditable]').forEach(el=>{if(el.dataset.field)currentRecord[el.dataset.field]=el.textContent.trim();});document.querySelectorAll('#recordRight input[type=date]').forEach(el=>{if(el.dataset.field)currentRecord[el.dataset.field]=el.value;});document.querySelectorAll('#recordRight select').forEach(el=>{if(el.dataset.field)currentRecord[el.dataset.field]=el.value;});document.querySelectorAll('#recordRight input[type=checkbox]').forEach(el=>{const k=el.id.replace('cb_','');currentRecord[k]=el.checked;});currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();showToast('נשמר ✅');}document.getElementById('recordName').textContent=currentRecord.name||currentRecord.title||'—';}
+function deleteRecord() {
+  var page = currentPage;
+  var rec = currentRecord;
+  if (!rec) return;
+  var typeName = {leads:'מתעניין',deals:'עסקה',clients:'לקוח',payments:'תשלום',meetings:'פגישה',tasks:'משימה',products:'מוצר'}[page]||'רשומה';
+  var recName = rec.name || rec.title || rec.clientName || '';
+  var overlay = document.createElement('div');
+  overlay.className = 'confirm-overlay';
+  overlay.innerHTML = '<div class="confirm-dialog">' +
+    '<div class="confirm-icon">⚠️</div>' +
+    '<h3>מחיקת ' + typeName + '</h3>' +
+    '<p>האם אתה בטוח שברצונך למחוק את ה' + typeName +
+    (recName ? ' <span class="confirm-name">\"' + recName + '\"</span>' : '') +
+    '?<br>פעולה זו לא ניתנת לביטול.</p>' +
+    '<div class="confirm-actions">' +
+    '<button class="btn btn-secondary" onclick="this.closest(\'.confirm-overlay\').remove()">ביטול</button>' +
+    '<button class="btn btn-danger" id="confirmDeleteBtn">כן, מחק</button>' +
+    '</div></div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+  document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    overlay.remove();
+    doDeleteRecord(page, rec);
+  });
+}
+function doDeleteRecord(page, rec) {
+  var arr = DB[page];
+  var idx = arr.findIndex(function(r){return r.id===rec.id});
+  if (idx > -1) { arr.splice(idx, 1); saveData(); closeRecord(); renderPage(); }
+}
+
+function markDealClosed(id){const deal=DB.deals.find(d=>d.id===id);if(deal){deal.status='סגורה';deal.updated=now();deal.updatedBy=currentUser.username;saveData();renderRec();showToast('🎉 עסקה סגורה!');}}
+function copyBankDetails(){navigator.clipboard?.writeText('בנק לאומי | סניף 900 | חשבון 12345678 | על שם ROI').then(()=>showToast('פרטי העברה הועתקו ✅')).catch(()=>showToast('לא ניתן להעתיק'));}
+
+// ===== LEFT PANEL =====
+function renderLeft(){const r=currentRecord,type=currentRecordType;let h='';
+h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">📝 הערות <span class="left-section-count">${(r.notes||[]).length}</span></div></div><div class="add-note-box"><textarea id="noteInput" placeholder="כתוב הערה..."></textarea><div class="add-note-actions"><button class="btn btn-primary btn-sm" onclick="addNote()">+ הוסף הערה</button></div></div><div id="notesList">${renderNotes(r.notes||[])}</div></div>`;
+h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">✅ משימות <span class="left-section-count">${(r.tasks||[]).filter(t=>!t.done).length} פתוחות</span></div></div><div class="add-task-box"><div class="add-task-label">+ הוסף משימה</div><div class="task-grid"><div class="task-full"><input class="tinput" id="nt-name" placeholder="תיאור המשימה"></div><select class="tinput" id="nt-executor">${userOpts()}</select><input class="tinput" id="nt-due" type="date" value="${todayVal()}"><input class="tinput" id="nt-reminder" type="date" title="תזכורת"></div><div style="display:flex"><button class="btn btn-primary btn-sm" onclick="addTask()">+ הוסף</button></div></div><div id="tasksList">${renderTasks(r.tasks||[])}</div></div>`;
+h+=renderRelated(type,r);
+h+=`<div class="left-section"><div class="left-section-header"><div class="left-section-title">📎 קבצים <span class="left-section-count">${(r.files||[]).length}</span></div></div><div class="file-drop" onclick="document.getElementById('fInput').click()"><input type="file" id="fInput" multiple style="display:none" onchange="handleFiles(event)"><div class="file-drop-text">📎 לחץ להוספת קובץ</div></div><div class="file-list" id="fileList">${renderFiles(r.files||[])}</div></div>`;
+return h;}
+
+function renderRelated(type,r){let h='';
+if(type==='leads'){h+=relSec('💼 עסקאות','deals',r.id,'leadId','deals',r);h+=relSec('📅 פגישות','meetings',r.id,'leadId','meetings',r);}
+if(type==='deals'){h+=relSec('👥 לקוח','clients',r.id,'dealId','clients',r);h+=relSec('💰 תשלומים','payments',r.id,'dealId','payments',r);}
+if(type==='clients'){h+=relSec('📅 פגישות','meetings',r.id,'clientId','meetings',r);h+=relSec('💰 תשלומים','payments',r.id,'clientId','payments',r);}
+return h;}
+function relSec(title,dbKey,pid,fk,addType,pr){const items=(DB[dbKey]||[]).filter(i=>i[fk]===pid);const nm={deals:'עסקה',clients:'לקוח',payments:'תשלום',meetings:'פגישה'};const canAdd=perm('create:'+addType);
+return`<div class="left-section"><div class="left-section-header"><div class="left-section-title">${title} <span class="left-section-count">${items.length}</span></div>${canAdd?`<button class="btn btn-primary btn-sm" onclick="relAdd('${addType}','${pr.id}','${(pr.name||'').replace(/'/g,'&#39;')}')">+ ${nm[addType]||''}</button>`:''}</div>${items.length?items.map(i=>`<div class="related-item" onclick="openRecord('${dbKey}','${i.id}',true)"><div><div class="related-item-name">${i.name||i.title||i.clientName||'—'}</div><div class="related-item-sub">${i.status||''} ${i.amount?fmtMoney(i.amount):''}</div></div><span class="related-arrow">›</span></div>`).join(''):`<div class="empty-state" style="padding:12px"><div class="es-sub">אין רשומות קשורות</div></div>`}</div>`;}
+function relAdd(type,pid,pname){saveRecord();modalParent={id:pid,name:pname,type:currentRecordType};openAddModal(type);}
+
+function renderNotes(notes){if(!notes.length)return'<div class="empty-state" style="padding:12px"><div class="es-sub">אין הערות עדיין</div></div>';return notes.slice().reverse().map(n=>`<div class="note-item"><div class="note-text">${(n.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div><div class="note-meta"><span class="creator-badge"><span class="creator-av" style="background:${uCol(n.author)}">${uAv(n.author)}</span>${uName(n.author)}</span><span>${fmtDT(n.created)}</span>${perm('delete')?`<span class="note-del" onclick="delNote('${n.id}')">🗑️</span>`:''}</div></div>`).join('');}
+function addNote(){const t=document.getElementById('noteInput').value.trim();if(!t)return;currentRecord.notes=currentRecord.notes||[];currentRecord.notes.push({id:genId(),text:t,author:currentUser.username,created:now()});document.getElementById('noteInput').value='';document.getElementById('notesList').innerHTML=renderNotes(currentRecord.notes);saveRS();showToast('הערה נוספה ✅');}
+function delNote(id){currentRecord.notes=(currentRecord.notes||[]).filter(n=>n.id!==id);document.getElementById('notesList').innerHTML=renderNotes(currentRecord.notes);saveRS();}
+function renderTasks(tasks){if(!tasks.length)return'';return tasks.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div class="task-info"><div class="task-name${t.done?' done':''}">${t.name}</div><div class="task-meta-row">${t.executor||t.assignee?`<span>👤 ${uName(t.executor||t.assignee)}</span>`:''} ${t.dueDate?`<span>📅 ${fmt(t.dueDate)}</span>`:''} ${t.reminderDate?`<span>🔔 ${fmt(t.reminderDate)}</span>`:''}</div></div><span class="task-del" onclick="delTask('${t.id}')">🗑️</span></div>`).join('');}
+function addTask(){const name=document.getElementById('nt-name').value.trim();if(!name)return;const task={id:genId(),name,executor:document.getElementById('nt-executor').value,dueDate:document.getElementById('nt-due').value||todayVal(),reminderDate:document.getElementById('nt-reminder').value,done:false,created:now(),createdBy:currentUser.username,relatedId:currentRecord.id,relatedType:currentRecordType};currentRecord.tasks=currentRecord.tasks||[];currentRecord.tasks.push(task);DB.tasks.push({...task});['nt-name'].forEach(id=>document.getElementById(id).value='');document.getElementById('nt-due').value=todayVal();document.getElementById('nt-reminder').value='';document.getElementById('tasksList').innerHTML=renderTasks(currentRecord.tasks);saveRS();showToast('משימה נוספה ✅');}
+function toggleTask(id,done){(currentRecord.tasks||[]).forEach(t=>{if(t.id===id)t.done=done;});DB.tasks.forEach(t=>{if(t.id===id)t.done=done;});document.getElementById('tasksList').innerHTML=renderTasks(currentRecord.tasks);saveRS();}
+function delTask(id){currentRecord.tasks=(currentRecord.tasks||[]).filter(t=>t.id!==id);DB.tasks=DB.tasks.filter(t=>t.id!==id);document.getElementById('tasksList').innerHTML=renderTasks(currentRecord.tasks);saveRS();}
+function saveRS(){if(!currentRecord||!currentRecordType)return;currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();}}
+function renderFiles(files){if(!files||!files.length)return'';const ic={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',default:'📎'};return files.map(f=>`<div class="file-item"><span class="file-icon">${ic[(f.name||'').split('.').pop().toLowerCase()]||ic.default}</span><span class="file-name">${f.name}</span><span class="file-size">${f.size||''}</span><span class="file-del" onclick="delFile('${f.id}')">✕</span></div>`).join('');}
+function handleFiles(e){Array.from(e.target.files).forEach(f=>{const kb=(f.size/1024).toFixed(1);currentRecord.files=currentRecord.files||[];currentRecord.files.push({id:genId(),name:f.name,size:kb>1024?(kb/1024).toFixed(1)+'MB':kb+'KB',uploaded:now()});});document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();showToast('קובץ הועלה ✅');}
+function delFile(id){currentRecord.files=(currentRecord.files||[]).filter(f=>f.id!==id);document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();}
+
+// ===== MODAL FORMS =====
+function openAddModal(to){const type=to||currentPage;modalType=type;if(!perm('create:'+type)){showToast('אין הרשאה ❌');return;}const tl={leads:'מתעניין חדש',deals:'עסקה חדשה',clients:'לקוח חדש',payments:'תשלום חדש',products:'מוצר חדש',meetings:'פגישה חדשה',tasks:'משימה חדשה'};document.getElementById('modalTitle').textContent='✨ '+(tl[type]||'הוסף');document.getElementById('modalBody').innerHTML=getForm(type);document.getElementById('modalOverlay').classList.add('open');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');modalType=null;modalParent=null;}
+function g(id){const el=document.getElementById(id);return el?el.value:'';}
+function getForm(type){const td=todayVal();const po=DB.products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');const uo=userOpts();const leadOpts=DB.leads.map(l=>`<option value="${l.id}">${l.name}</option>`).join('');const dealOpts=DB.deals.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');const clientOpts=DB.clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+if(type==='leads')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מתעניין *</label><input class="form-control" id="f-name" placeholder="שם מלא"></div><div class="form-group"><label class="form-label">טלפון ראשי</label><input class="form-control" id="f-phone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>לידים חדשים 🎉</option><option>לידים זהב ⭐</option><option>פולאופ איכותי 😊</option><option>נוצר קשר ראשוני 📞</option><option>לא נסגר 😊</option><option>ליד לא תקין ❌</option></select></div><div class="form-group"><label class="form-label">נציג</label><select class="form-control" id="f-agent">${uo}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">מקור</label><select class="form-control" id="f-source"><option>אינסטגרם אורגני</option><option>אינסטגרם רועי</option><option>אינסטגרם נתן</option><option>קמפיין ממומן</option><option>לקוחות חוזרים</option><option>אפיליאציה</option><option>פייסבוק</option><option>גוגל</option><option>המלצה</option><option>אחר</option></select></div><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-email" type="email"></div></div><div class="form-group"><label class="form-label">למה פנה</label><textarea class="form-control" id="f-whyContact" rows="2" placeholder="תיאור קצר..."></textarea></div>`;
+if(type==='deals')return`<div class="form-group"><label class="form-label">שם עסקה *</label><input class="form-control" id="f-name" value="${modalParent?.name||''}"></div><div class="form-row"><div class="form-group"><label class="form-label">מבצע העסקה</label><select class="form-control" id="f-executor">${uo}</select></div><div class="form-group"><label class="form-label">מוצר</label><select class="form-control" id="f-product">${po}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">מתעניין משויך</label><input class="form-control" id="f-leadName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>חדשה</option><option>בתהליך</option><option>סגורה</option><option>בוטלה</option></select></div></div><div class="form-row"><div class="form-group"><label class="form-label">סוג תשלום</label><select class="form-control" id="f-paymentType"><option>העברה בנקאית</option><option>אשראי תופס מסגרת</option><option>הוראת קבע באשראי</option><option>ביט / פייבוקס</option><option>מזומן</option></select></div><div class="form-group"><label class="form-label">שווי עסקה כולל מע"מ</label><input class="form-control" id="f-dealTotal" type="number"></div></div>`;
+if(type==='clients')return`<div class="form-row"><div class="form-group"><label class="form-label">שם לקוח *</label><input class="form-control" id="f-name" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">טלפון</label><input class="form-control" id="f-clientPhone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-clientEmail" type="email"></div><div class="form-group"><label class="form-label">יועץ משויך</label><select class="form-control" id="f-advisor">${uo}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך תחילת תהליך</label><input class="form-control" id="f-startDate" type="date" value="${td}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-clientStatus"><option>פעיל</option><option>לא פעיל</option><option>בהקפאה</option></select></div></div>`;
+if(type==='payments')return`<div class="form-row"><div class="form-group"><label class="form-label">שם *</label><input class="form-control" id="f-name" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">עסקה משויכת</label><input class="form-control" id="f-dealName" value="${modalParent?.type==='deals'?modalParent?.name||'':''}"></div></div><div class="form-row"><div class="form-group"><label class="form-label">צורת תשלום</label><select class="form-control" id="f-paymentType"><option>הוראת קבע</option><option>אשראי תופס מסגרת</option><option>העברה בנקאית</option><option>ביט</option><option>פייבוקס</option><option>מזומן</option></select></div><div class="form-group"><label class="form-label">סכום</label><input class="form-control" id="f-amount" type="number"></div></div><div class="form-row"><div class="form-group"><label class="form-label">מספר תשלומים</label><input class="form-control" id="f-numPayments" type="number" placeholder="1"></div><div class="form-group"><label class="form-label">מספר תשלום</label><input class="form-control" id="f-paymentNumber" type="number" placeholder="1"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך קביעה</label><input class="form-control" id="f-setupDate" type="date" value="${td}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>ממתין</option><option>שולם</option><option>לא בוצע</option><option>בדיקה</option></select></div></div>`;
+if(type==='products')return`<div class="form-row"><div class="form-group"><label class="form-label">שם *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">מחיר</label><input class="form-control" id="f-price" type="number"></div></div><div class="form-group"><label class="form-label">תיאור</label><textarea class="form-control" id="f-desc" rows="3"></textarea></div>`;
+if(type==='meetings')return`<div class="form-group"><label class="form-label">נושא *</label><input class="form-control" id="f-title"></div><div class="form-row"><div class="form-group"><label class="form-label">לקוח משויך</label><input class="form-control" id="f-clientName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">נציג מעביר</label><select class="form-control" id="f-agent">${uo}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">מספר פגישה</label><input class="form-control" id="f-meetingNumber" type="number" placeholder="1"></div><div class="form-group"><label class="form-label">שעת התחלה</label><input class="form-control" id="f-startTime" type="time"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך</label><input class="form-control" id="f-startDate" type="date" value="${td}"></div><div class="form-group"><label class="form-label">שעת סיום</label><input class="form-control" id="f-endTime" type="time"></div></div>`;
+if(type==='tasks')return`<div class="form-group"><label class="form-label">נושא המשימה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">מבצע</label><select class="form-control" id="f-executor">${uo}</select></div><div class="form-group"><label class="form-label">תחסיום</label><input class="form-control" id="f-dueDate" type="date" value="${td}"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תזכורת</label><input class="form-control" id="f-reminderDate" type="date"></div><div class="form-group"><label class="form-label">מתעניין משויך</label><input class="form-control" id="f-leadRef" value="${modalParent?.name||''}"></div></div>`;
+return'';}
+
+function saveModal(){const type=modalType;if(!type)return;const id=genId(),ts=now();let item={id,created:ts,updated:ts,createdBy:currentUser.username,notes:[],tasks:[],files:[]};const req=(fid,msg)=>{const v=g(fid).trim();if(!v){showToast(msg+' ❌');return null;}return v;};
+if(type==='leads'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,phone:g('f-phone'),email:g('f-email'),status:g('f-status'),agent:g('f-agent'),source:g('f-source'),whyContact:g('f-whyContact')};}
+else if(type==='deals'){const n=req('f-name','שם חובה');if(!n)return;const prod=DB.products.find(p=>p.id===g('f-product'));item={...item,name:n,leadName:g('f-leadName'),executor:g('f-executor'),status:g('f-status'),productId:g('f-product'),productName:prod?.name||'',paymentType:g('f-paymentType'),dealTotal:g('f-dealTotal')};if(modalParent){item.leadId=modalParent.id;item.leadName=item.leadName||modalParent.name;}}
+else if(type==='clients'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,clientPhone:g('f-clientPhone'),clientEmail:g('f-clientEmail'),advisor:g('f-advisor'),startDate:g('f-startDate')||ts.split('T')[0],clientStatus:g('f-clientStatus')};if(modalParent){item.dealId=modalParent.id;item.dealName=modalParent.name;item.leadName=modalParent.name;}}
+else if(type==='payments'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,dealName:g('f-dealName'),paymentType:g('f-paymentType'),amount:g('f-amount'),numPayments:g('f-numPayments'),paymentNumber:g('f-paymentNumber'),setupDate:g('f-setupDate')||ts.split('T')[0],status:g('f-status'),executor:currentUser.username};if(modalParent){item.dealId=modalParent.id;item.dealName=modalParent.name||item.dealName;}}
+else if(type==='products'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,price:g('f-price'),desc:g('f-desc')};}
+else if(type==='meetings'){const t=req('f-title','נושא חובה');if(!t)return;item={...item,title:t,name:t,clientName:g('f-clientName'),agent:g('f-agent'),meetingNumber:g('f-meetingNumber'),startDate:g('f-startDate')||ts.split('T')[0],startTime:g('f-startTime'),endTime:g('f-endTime'),status:'מתוכננת'};if(modalParent){item[modalParent.type+'Id']=modalParent.id;item[modalParent.type+'Name']=modalParent.name;item.clientName=item.clientName||modalParent.name;}}
+else if(type==='tasks'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,executor:g('f-executor'),dueDate:g('f-dueDate')||ts.split('T')[0],reminderDate:g('f-reminderDate'),leadRef:g('f-leadRef'),done:false};if(modalParent){item.relatedId=modalParent.id;item.relatedName=modalParent.name;item.leadRef=item.leadRef||modalParent.name;}}
+if(!DB[type])DB[type]=[];DB[type].push(item);saveData();closeModal();showToast('נוסף ✅');
+if(currentRecordType&&currentRecord){const rec=DB[currentRecordType].find(r=>r.id===currentRecord.id);if(rec){currentRecord={...rec};document.getElementById('recordLeft').innerHTML=renderLeft();}}else{renderPage(currentPage);}}
+
+function deleteItem(type,id){if(!perm('delete')){showToast('אין הרשאה ❌');return;}if(!confirm('למחוק?'))return;DB[type]=DB[type].filter(r=>r.id!==id);saveData();renderPage(currentPage);showToast('נמחק ✅');}
+function exportData(){if(!perm('export')){showToast('אין הרשאה ❌');return;}const data=DB[currentPage]||[];if(!data.length){showToast('אין נתונים');return;}const cfg=LIST_CONFIGS[currentPage];if(!cfg)return;const csv='\uFEFF'+cfg.cols.join(',')+'\n'+data.map(r=>cfg.fields(r).map(f=>'"'+String(f).replace(/<[^>]+>/g,'').replace(/,/g,'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=currentPage+'_export.csv';a.click();showToast('ייצוא ✅');}
+function renderSettings(){return`<div style="max-width:600px"><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות מערכת</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><div class="form-group"><label class="form-label">פרטי חשבון בנק</label><input class="form-control" id="bankDetails" value="בנק לאומי | סניף 900 | חשבון 12345678 | ROI"></div><button class="btn btn-primary" onclick="showToast('נשמר ✅')" style="margin-top:8px">שמור</button></div><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">🗂️ גיבוי</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-secondary" onclick="backupData()">⬇️ גיבוי JSON</button><button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">⬆️ שחזור</button><input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)">${perm('delete')?`<button class="btn btn-danger" onclick="clearAll()">🗑️ מחק הכל</button>`:''}</div></div><div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>${Object.keys(DB).map(k=>Array.isArray(DB[k])?`<div class="status-row"><span class="status-label">${PAGE_ICONS[k]||'📋'} ${PAGE_TITLES[k]||k}</span><span class="status-count">${DB[k].length}</span></div>`:'').filter(Boolean).join('')}</div></div>`;}
+function backupData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}));a.download='roi_crm_backup.json';a.click();showToast('גיבוי הורד ✅');}
+function restoreData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{DB=JSON.parse(ev.target.result);saveData();showPage(currentPage);showToast('שוחזר ✅');}catch{showToast('קובץ שגוי ❌');}};r.readAsText(f);}
+function clearAll(){if(!confirm('למחוק הכל?'))return;DB=defaultData();saveData();showPage(currentPage);showToast('נמחק ✅');}
+function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+// INIT
+updateBadges();
+
+// ===== AUTO REFRESH =====
+// Refresh data every 30 seconds so new leads/deals appear automatically
+setInterval(() => {
+  // Only refresh if user is logged in and not editing a record
+  if (!currentUser) return;
+  if (document.getElementById('recordOverlay')?.classList.contains('open')) return;
+  if (document.getElementById('modalOverlay')?.classList.contains('open')) return;
+  
+  const freshDB = loadData();
+  // Check if data actually changed
+  const changed = JSON.stringify(freshDB) !== JSON.stringify(DB);
+  if (changed) {
+    DB = freshDB;
+    updateBadges();
+    // Re-render current page silently
+    if (currentPage) {
+      const c = document.getElementById('mainContent');
+      if (c) c.innerHTML = renderPage_silent(currentPage);
+    }
+    showToast('✅ נתונים עודכנו');
+  }
+}, 30000);
+
+// Silent render (same as renderPage but returns html instead of setting it)
+function renderPage_silent(page) {
+  try {
+    if (page === 'dashboard') return renderDashboard();
+    if (page === 'users') return renderUsers();
+    if (page === 'settings') return renderSettings();
+    if (DB[page] !== undefined) return renderList(page);
+  } catch(e) {}
+  return null;
+}
+// Override renderPage to also set content
+const _origRenderPage = renderPage;
+
+const su=sessionStorage.getItem('roicrm_user');
+if(su){try{currentUser=JSON.parse(su);initApp();}catch(e){}}
+</script>
+</body>
+</html>
