@@ -250,6 +250,9 @@ select.field-value{appearance:auto}
 .col-toggle input[type="checkbox"]{accent-color:var(--accent);width:15px;height:15px}
 .filter-tag{display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:var(--accent);padding:3px 8px;border-radius:12px;font-size:11px;margin:0 2px}
 .filter-tag .remove-filter{cursor:pointer;font-weight:700;margin-right:2px}
+td[onclick*="inlineEdit"]:hover{background:#eef2ff !important;border-radius:4px}
+td[onclick*="inlineEdit"] .badge{cursor:pointer;transition:box-shadow .15s}
+td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 
 /* OTP LOGIN */
 .otp-display{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border-radius:12px;padding:16px;margin-bottom:16px;text-align:center;border:2px solid #c7d2fe}
@@ -566,6 +569,52 @@ return `<div class="stats-grid"><div class="stat-card"><div class="stat-label">�
 function renderUsers(){if(!perm('users'))return'<div class="empty-state"><div class="es-icon">🔒</div><div class="es-title">אין הרשאה</div></div>';
 return`<div class="users-grid">${Object.entries(USERS).map(([k,u])=>{const p=PERMS[u.role];return`<div class="user-card"><div class="user-card-avatar" style="background:${u.color}">${u.avatar}</div><div class="user-card-name">${u.name}</div><div class="user-card-role">${u.roleLabel}</div><div style="border-top:1px solid var(--border);padding-top:12px;text-align:right"><div class="perm-row"><span>יצירת לידים/עסקאות</span><span class="perm-yes">✓</span></div><div class="perm-row"><span>יצירת לקוחות/תשלומים</span><span class="${p.canCreate.includes('clients')?'perm-yes':'perm-no'}">${p.canCreate.includes('clients')?'✓':'✗'}</span></div><div class="perm-row"><span>מחיקת רשומות</span><span class="${p.canDelete?'perm-yes':'perm-no'}">${p.canDelete?'✓':'✗'}</span></div><div class="perm-row"><span>ייצוא נתונים</span><span class="${p.canExport?'perm-yes':'perm-no'}">${p.canExport?'✓':'✗'}</span></div><div class="perm-row"><span>ניהול משתמשים</span><span class="${p.canManageUsers?'perm-yes':'perm-no'}">${p.canManageUsers?'✓':'✗'}</span></div></div></div>`;}).join('')}</div>`;}
 
+// ===== INLINE EDIT OPTIONS =====
+var INLINE_EDITS={
+  leads:{2:{key:'status',opts:['לידים חדשים 🎉','אין מענה 📞','נוצר קשר ראשוני 😊','פולאופ איכותי 🌟','סגר ✔️','לא נסגר 😔','ליד לא תקין ❌']},3:{key:'agent',opts:Object.keys(USERS)}},
+  deals:{3:{key:'status',opts:['חדשה','בתהליך','לקוח סגר','בוטלה']},6:{key:'executor',opts:Object.keys(USERS)}},
+  clients:{2:{key:'advisor',opts:Object.keys(USERS)},3:{key:'clientStatus',opts:['לקוח פעיל','לא פעיל','בהקפאה','סיים תהליך']}},
+  payments:{7:{key:'status',opts:['עדיין לא','שולם','לא בוצע','בדיקה']}},
+  meetings:{5:{key:'status',opts:['מתוכננת','בוצעה','בוטלה']}},
+  tasks:{1:{key:'done',opts:['פתוח','סגור'],map:function(v){return v==='סגור';}}},
+  products:{}
+};
+
+function inlineEdit(e,page,recId,colIdx){
+  e.stopPropagation();
+  var cfg=INLINE_EDITS[page];if(!cfg||!cfg[colIdx])return false;
+  var edit=cfg[colIdx];
+  var rec=(DB[page]||[]).find(function(r){return r.id===recId;});
+  if(!rec)return false;
+  var td=e.currentTarget;
+  var currentVal=rec[edit.key]||'';
+  if(edit.key==='done')currentVal=rec.done?'סגור':'פתוח';
+  if(edit.key==='agent'||edit.key==='executor'||edit.key==='advisor')currentVal=rec[edit.key]||'';
+  var sel=document.createElement('select');
+  sel.style.cssText='width:100%;padding:4px;border-radius:6px;border:1px solid var(--accent);font-size:12px;background:#fff;cursor:pointer';
+  edit.opts.forEach(function(o){
+    var opt=document.createElement('option');
+    var label=(edit.key==='agent'||edit.key==='executor'||edit.key==='advisor')?uName(o):o;
+    opt.value=o;opt.textContent=label;
+    if(o===currentVal)opt.selected=true;
+    sel.appendChild(opt);
+  });
+  td.innerHTML='';td.appendChild(sel);sel.focus();
+  function save(){
+    var newVal=sel.value;
+    if(edit.map)rec[edit.key]=edit.map(newVal);
+    else rec[edit.key]=newVal;
+    rec.updated=now();rec.updatedBy=currentUser.username;
+    saveData();
+    runAutomations(page,rec,false);
+    renderPage(currentPage);
+    showToast('עודכן ✅');
+  }
+  sel.addEventListener('change',save);
+  sel.addEventListener('blur',function(){setTimeout(function(){renderPage(currentPage);},50);});
+  return true;
+}
+
 // ===== LIST CONFIGS =====
 const LIST_CONFIGS={
   leads:{cols:['שם','טלפון','סטטוס','נציג','מקור','זהב','נוצר בתאריך','עודכן','נוצר ע"י'],fields:r=>[r.name,r.phone||'—',`<span class="badge badge-blue">${r.status||'חדש'}</span>`,uName(r.agent),r.source||'—',r.isGold?'⭐ זהב':'—',fmt(r.created),fmt(r.updated),crBadge(r.createdBy)],defaultCols:[0,1,2,3,4,5,8]},
@@ -788,10 +837,17 @@ function renderList(page){
   visCols.forEach(function(ci){table+='<th>'+cfg.cols[ci]+'</th>';});
   table+='<th>פעולות</th></tr></thead><tbody>';
   if(items.length){
+    var inlineCfg=INLINE_EDITS[page]||{};
     items.forEach(function(r){
       var allFields=cfg.fields(r);
       table+='<tr onclick="openRecord(\''+page+'\',\''+r.id+'\')">';
-      visCols.forEach(function(ci){table+='<td>'+allFields[ci]+'</td>';});
+      visCols.forEach(function(ci){
+        if(inlineCfg[ci]){
+          table+='<td style="cursor:pointer" onclick="event.stopPropagation();inlineEdit(event,\''+page+'\',\''+r.id+'\','+ci+')" title="לחץ לעריכה">'+allFields[ci]+'</td>';
+        } else {
+          table+='<td>'+allFields[ci]+'</td>';
+        }
+      });
       table+='<td onclick="event.stopPropagation()"><button class="btn btn-secondary btn-sm btn-icon" onclick="openRecord(\''+page+'\',\''+r.id+'\')">📂</button>';
       if(perm('delete'))table+='<button class="btn btn-danger btn-sm btn-icon" onclick="deleteItem(\''+page+'\',\''+r.id+'\')">🗑️</button>';
       table+='</td></tr>';
@@ -808,8 +864,36 @@ function filterTable(q,page){document.querySelectorAll('#tbl-'+page+' tbody tr')
 function filterViews(input){var q=input.value.toLowerCase();input.closest('.views-sidebar').querySelectorAll('.view-item').forEach(function(v){v.style.display=(v.getAttribute('data-view-name')||'').toLowerCase().indexOf(q)>=0?'':'none';});}
 
 // ===== RECORD =====
-function openRecord(type,id,push){const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;if(push&&currentRecord){recordStack.push({type:currentRecordType,id:currentRecord.id,name:currentRecord.name||currentRecord.title||'—'});}else if(!push){recordStack=[];}currentRecord={...item,notes:item.notes||[],tasks:item.tasks||[],files:item.files||[]};currentRecordType=type;renderRec();document.getElementById('recordOverlay').classList.add('open');}
-function closeRecord(){if(recordStack.length>0){const p=recordStack.pop(),st=[...recordStack];openRecord(p.type,p.id,false);recordStack=st;}else{document.getElementById('recordOverlay').classList.remove('open');currentRecord=null;currentRecordType=null;recordStack=[];renderPage(currentPage);}}
+var _recordDirty=false;
+var _recordSnapshot='';
+function _markDirty(){_recordDirty=true;}
+function _checkDirty(){
+  if(!currentRecord)return false;
+  var els=document.querySelectorAll('#recordRight [id^="fld_"]');
+  var snap={};
+  els.forEach(function(el){var k=el.id.replace('fld_','');snap[k]=el.type==='checkbox'?el.checked:el.value;});
+  return JSON.stringify(snap)!==_recordSnapshot;
+}
+function _takeSnapshot(){
+  var els=document.querySelectorAll('#recordRight [id^="fld_"]');
+  var snap={};
+  els.forEach(function(el){var k=el.id.replace('fld_','');snap[k]=el.type==='checkbox'?el.checked:el.value;});
+  _recordSnapshot=JSON.stringify(snap);_recordDirty=false;
+}
+function openRecord(type,id,push){const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;if(push&&currentRecord){recordStack.push({type:currentRecordType,id:currentRecord.id,name:currentRecord.name||currentRecord.title||'—'});}else if(!push){recordStack=[];}currentRecord={...item,notes:item.notes||[],tasks:item.tasks||[],files:item.files||[]};currentRecordType=type;_recordDirty=false;renderRec();document.getElementById('recordOverlay').classList.add('open');setTimeout(_takeSnapshot,100);}
+function _doClose(){if(recordStack.length>0){const p=recordStack.pop(),st=[...recordStack];openRecord(p.type,p.id,false);recordStack=st;}else{document.getElementById('recordOverlay').classList.remove('open');currentRecord=null;currentRecordType=null;recordStack=[];_recordDirty=false;renderPage(currentPage);}}
+function closeRecord(){
+  if(_checkDirty()){
+    var ov=document.createElement('div');ov.className='confirm-overlay';
+    ov.innerHTML='<div class="confirm-dialog"><div class="confirm-icon">⚠️</div><h3>שינויים לא נשמרו</h3><p>יש שינויים שלא נשמרו. מה תרצה לעשות?</p><div class="confirm-actions"><button class="btn btn-secondary" id="discardBtn">בטל שינויים</button><button class="btn btn-success" id="saveCloseBtn">💾 שמור וצא</button></div></div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+    document.getElementById('discardBtn').addEventListener('click',function(){ov.remove();_recordDirty=false;_doClose();});
+    document.getElementById('saveCloseBtn').addEventListener('click',function(){ov.remove();saveRecord();});
+  } else {
+    _doClose();
+  }
+}
 function renderRec(){document.getElementById('recordName').textContent=currentRecord.name||currentRecord.title||'—';document.getElementById('recordTypeBadge').textContent=TYPE_LABELS[currentRecordType]||currentRecordType;document.getElementById('recordBreadcrumb').innerHTML=recordStack.map((s,i)=>`<span class="breadcrumb-item" onclick="navBC(${i})">${TYPE_LABELS[s.type]}: ${s.name}</span><span class="breadcrumb-sep">›</span>`).join('');document.getElementById('recordDeleteBtn').style.display=perm('delete')?'flex':'none';document.getElementById('recordRight').innerHTML=renderRight();document.getElementById('recordLeft').innerHTML=renderLeft();}
 function navBC(idx){const t=recordStack[idx],st=recordStack.slice(0,idx);openRecord(t.type,t.id,false);recordStack=st;}
 
@@ -1041,7 +1125,7 @@ ${fv('desc','תיאור',r.desc,{textarea:true,full:true})}
 </div></div>`;}
 
 function updateField(key,val){if(currentRecord){currentRecord[key]=val;if(key==='status_task')currentRecord.done=(val==='סגור');saveRS();}}
-function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();showToast('נשמר ✅');}document.getElementById('recordName').textContent=currentRecord.name||currentRecord.title||'—';}
+function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();runAutomations(currentRecordType,currentRecord,false);showToast('נשמר ✅');}_recordDirty=false;_doClose();}
 function deleteRecord() {
   var page = currentPage;
   var rec = currentRecord;
