@@ -685,9 +685,7 @@ function renderDealFields(r) {
   h += fv('productId','מוצר',r.productId,{select:DB.products.map(function(p){return p.id}),selectLabels:DB.products.map(function(p){return p.name})});
   h += fv('status','סטטוס',r.status,{select:['חדשה','בתהליך','לקוח סגר','בוטלה']});
   h += fv('created','נוצר בתאריך',r.created||'',{readonly:true});
-  h += secEnd();
-  h += secHead('חוזה', 'deal_contract', true);
-  h += fv('contractLink','קישור לחוזה',r.contractLink,{link:true,full:true});
+  h += fv('contractLink','קישור לחוזה',r.contractLink,{link:true});
   h += secEnd();
   h += secHead('פרטי עסקה', 'deal_details', false);
   h += fv('paymentType','סוג תשלום',r.paymentType,{select:['העברה בנקאית','אשראי תופס מסגרת','הוראת קבע באשראי','ביט / פייבוקס','מזומן']});
