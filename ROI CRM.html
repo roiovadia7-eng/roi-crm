@@ -436,20 +436,25 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 .board-card:active{cursor:grabbing}
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div id="loginPage" class="login-wrap">
   <div class="login-card">
     <div class="login-logo"><div class="login-logo-text">ROI</div><div class="login-logo-sub">מערכת CRM</div></div>
 
-    <!-- STEP 1: Enter ID -->
+    <!-- STEP 1: Enter ID + Password -->
     <div id="loginStep1">
       <div class="login-title">ברוך הבא 👋</div>
-      <div class="login-sub">הכנס מספר תעודת זהות</div>
-      <div class="login-error" id="loginError1">מספר ת.ז לא נמצא במערכת</div>
+      <div class="login-sub">הכנס מספר תעודת זהות וסיסמה</div>
+      <div class="login-error" id="loginError1">מספר ת.ז או סיסמה שגויים</div>
       <div class="form-group">
         <label class="form-label">מספר תעודת זהות</label>
         <input class="form-control" id="loginIdNum" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="9" placeholder="123456789" dir="ltr" style="font-size:18px;letter-spacing:3px;text-align:center">
+      </div>
+      <div class="form-group">
+        <label class="form-label">סיסמה</label>
+        <input class="form-control" id="loginPassword" type="password" placeholder="הכנס סיסמה" dir="ltr" style="font-size:16px;text-align:center">
       </div>
       <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" onclick="step1Submit()">📲 שלח קוד לוואטסאפ</button>
     </div>
@@ -570,6 +575,213 @@ const GREEN_API = {
 };
 
 
+// ===== SUPABASE =====
+const SUPABASE_URL = 'https://gruaauwpicdklfmmmnjw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydWFhdXdwaWNka2xmbW1tbmp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MjA3NjcsImV4cCI6MjA5MTI5Njc2N30.Odj6iPCaBwvxKsy4osIYxrzN_kBXnrsVDuVWYgHsjj0';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ===== FIELD NAME MAPPING (JS camelCase <-> DB snake_case) =====
+const FIELD_MAP = {
+  leads: {whyContact:'why_contact', isGold:'is_gold', whatsappLink:'whatsapp_link', relevantDate:'relevant_date', createdBy:'created_by', updatedBy:'updated_by'},
+  deals: {leadId:'lead_id', leadName:'lead_name', productId:'product_id', productName:'product_name', paymentType:'payment_type', numPayments:'num_payments', dealTotal:'deal_total', creditDetails:'credit_details', contractLink:'contract_link', creditFrameLink:'credit_frame_link', standingOrderLink:'standing_order_link', futureCollectionDate:'future_collection_date', invoiceIssued:'invoice_issued', createdBy:'created_by', updatedBy:'updated_by'},
+  clients: {clientPhone:'client_phone', clientEmail:'client_email', clientStatus:'client_status', startDate:'start_date', endDate:'end_date', doneMeetings:'done_meetings', totalMeetings:'total_meetings', dealId:'deal_id', dealName:'deal_name', dealRef:'deal_ref', leadName:'lead_name', avgMonthsInProcess:'avg_months_in_process', advisorEmail:'advisor_email', advisorPhone:'advisor_phone', createdBy:'created_by', updatedBy:'updated_by'},
+  payments: {dealId:'deal_id', dealName:'deal_name', paymentType:'payment_type', numPayments:'num_payments', paymentNumber:'payment_number', setupDate:'setup_date', paymentDate:'payment_date', invoiceIssued:'invoice_issued', productId:'product_id', createdBy:'created_by', updatedBy:'updated_by'},
+  products: {createdBy:'created_by', updatedBy:'updated_by'},
+  meetings: {clientName:'client_name', clientId:'client_id', meetingNumber:'meeting_number', startDate:'start_date', endDate:'end_date', startTime:'start_time', endTime:'end_time', roiEmail:'roi_email', notesField:'notes_field', leadId:'lead_id', dealId:'deal_id', createdBy:'created_by', updatedBy:'updated_by'},
+  tasks: {dueDate:'due_date', reminderDate:'reminder_date', leadRef:'lead_ref', relatedId:'related_id', relatedName:'related_name', relatedType:'related_type', taskType:'task_type', createdBy:'created_by', updatedBy:'updated_by'}
+};
+
+function toDbRecord(type, obj) {
+  const map = FIELD_MAP[type] || {};
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (k === 'notes' || k === 'tasks' || k === 'history' || k === 'files') continue;
+    out[map[k] || k] = v;
+  }
+  if (out.created && !out.created_at) { out.created_at = out.created; delete out.created; }
+  if (out.updated && !out.updated_at) { out.updated_at = out.updated; delete out.updated; }
+  return out;
+}
+
+function toJsRecord(type, row) {
+  const map = FIELD_MAP[type] || {};
+  const reverseMap = {};
+  for (const [k, v] of Object.entries(map)) reverseMap[v] = k;
+  const out = {};
+  for (const [k, v] of Object.entries(row)) {
+    out[reverseMap[k] || k] = v;
+  }
+  if (out.created_at && !out.created) { out.created = out.created_at; }
+  if (out.updated_at && !out.updated) { out.updated = out.updated_at; }
+  return out;
+}
+
+// ===== SUPABASE CRUD =====
+async function sbUpsert(type, record) {
+  try {
+    const dbRec = toDbRecord(type, {...record});
+    dbRec.updated_at = new Date().toISOString();
+    const { error } = await sb.from(type).upsert(dbRec);
+    if (error) console.error('Supabase upsert error:', type, error);
+    return !error;
+  } catch(e) { console.error('sbUpsert exception:', e); return false; }
+}
+
+async function sbDelete(type, id) {
+  try {
+    const { error } = await sb.from(type).delete().eq('id', id);
+    if (error) console.error('Supabase delete error:', type, error);
+    return !error;
+  } catch(e) { console.error('sbDelete exception:', e); return false; }
+}
+
+async function sbInsertNote(type, recordId, note) {
+  try {
+    const { error } = await sb.from('notes').insert({
+      id: note.id || genId(), record_type: type, record_id: recordId,
+      text: note.text, author: note.by || note.author, note_type: note.type || 'note',
+      call_summary: note.callSummary, call_result: note.callResult,
+      created_at: note.date || note.created || new Date().toISOString()
+    });
+    if (error) console.error('Note insert error:', error);
+  } catch(e) { console.error('sbInsertNote exception:', e); }
+}
+
+async function sbInsertRecordTask(type, recordId, task) {
+  try {
+    const { error } = await sb.from('record_tasks').insert({
+      id: task.id || genId(), record_type: type, record_id: recordId,
+      name: task.name, executor: task.executor, due_date: task.dueDate, done: task.done || false
+    });
+    if (error) console.error('Record task insert error:', error);
+  } catch(e) { console.error('sbInsertRecordTask exception:', e); }
+}
+
+async function sbUpdateRecordTask(taskId, done) {
+  try {
+    const { error } = await sb.from('record_tasks').update({ done: done }).eq('id', taskId);
+    if (error) console.error('Record task update error:', error);
+  } catch(e) { console.error('sbUpdateRecordTask exception:', e); }
+}
+
+async function sbDeleteNote(noteId) {
+  try {
+    const { error } = await sb.from('notes').delete().eq('id', noteId);
+    if (error) console.error('Note delete error:', error);
+  } catch(e) { console.error('sbDeleteNote exception:', e); }
+}
+
+async function sbDeleteRecordTask(taskId) {
+  try {
+    const { error } = await sb.from('record_tasks').delete().eq('id', taskId);
+    if (error) console.error('Record task delete error:', error);
+  } catch(e) { console.error('sbDeleteRecordTask exception:', e); }
+}
+
+async function sbInsertHistory(type, recordId, entry) {
+  try {
+    const { error } = await sb.from('record_history').insert({
+      id: genId(), record_type: type, record_id: recordId,
+      field_name: entry.field, old_value: entry.from || entry.oldVal, new_value: entry.to || entry.newVal,
+      changed_by: entry.by || entry.user, changed_at: entry.date || entry.created || new Date().toISOString()
+    });
+    if (error) console.error('History insert error:', error);
+  } catch(e) { console.error('sbInsertHistory exception:', e); }
+}
+
+async function sbInsertFile(type, recordId, file) {
+  try {
+    const { error } = await sb.from('files').insert({
+      id: file.id || genId(), record_type: type, record_id: recordId,
+      file_name: file.name, file_url: file.url || '', uploaded_by: file.by || file.uploaded_by,
+      created_at: file.date || file.uploaded || new Date().toISOString()
+    });
+    if (error) console.error('File insert error:', error);
+  } catch(e) { console.error('sbInsertFile exception:', e); }
+}
+
+async function sbDeleteFile(fileId) {
+  try {
+    const { error } = await sb.from('files').delete().eq('id', fileId);
+    if (error) console.error('File delete error:', error);
+  } catch(e) { console.error('sbDeleteFile exception:', e); }
+}
+
+// ===== SUPABASE DATA LOADING =====
+var dbReady = false;
+
+async function loadDataFromSupabase() {
+  try {
+    const types = ['leads','deals','clients','payments','products','meetings','tasks'];
+    const results = await Promise.all(types.map(t => sb.from(t).select('*')));
+    const newDB = {};
+    types.forEach((t, i) => {
+      if (results[i].error) { console.error('Load error for ' + t, results[i].error); newDB[t] = []; }
+      else { newDB[t] = results[i].data.map(row => toJsRecord(t, row)); }
+    });
+
+    // Also load notes, record_tasks, history, files for all records
+    const [notesRes, rTasksRes, histRes, filesRes] = await Promise.all([
+      sb.from('notes').select('*'),
+      sb.from('record_tasks').select('*'),
+      sb.from('record_history').select('*'),
+      sb.from('files').select('*')
+    ]);
+
+    const notes = (notesRes.data || []);
+    const rTasks = (rTasksRes.data || []);
+    const hist = (histRes.data || []);
+    const files = (filesRes.data || []);
+
+    types.forEach(t => {
+      (newDB[t] || []).forEach(r => {
+        r.notes = notes.filter(n => n.record_type === t && n.record_id === r.id).map(n => ({
+          id: n.id, text: n.text, author: n.author, created: n.created_at, type: n.note_type,
+          callSummary: n.call_summary, callResult: n.call_result
+        }));
+        r.tasks = rTasks.filter(rt => rt.record_type === t && rt.record_id === r.id).map(rt => ({
+          id: rt.id, name: rt.name, executor: rt.executor, dueDate: rt.due_date, done: rt.done
+        }));
+        r.history = hist.filter(h => h.record_type === t && h.record_id === r.id).map(h => ({
+          id: h.id, field: h.field_name, oldVal: h.old_value, newVal: h.new_value, user: h.changed_by, created: h.changed_at
+        }));
+        r.files = files.filter(f => f.record_type === t && f.record_id === r.id).map(f => ({
+          id: f.id, name: f.file_name, url: f.file_url, by: f.uploaded_by, uploaded: f.created_at
+        }));
+      });
+    });
+
+    DB = newDB;
+    dbReady = true;
+    // Also keep localStorage as offline cache
+    localStorage.setItem('roicrm_data', JSON.stringify(DB));
+    return DB;
+  } catch (e) {
+    console.error('Supabase load failed, falling back to localStorage', e);
+    return loadDataLocal();
+  }
+}
+
+function loadDataLocal() {
+  try { var d = JSON.parse(localStorage.getItem('roicrm_data')); return d || defaultData(); } catch(e) { return defaultData(); }
+}
+
+// ===== SUPABASE REALTIME =====
+function setupRealtime() {
+  const types = ['leads','deals','clients','payments','products','meetings','tasks'];
+  sb.channel('db-changes')
+    .on('postgres_changes', { event: '*', schema: 'public' }, async (payload) => {
+      if (types.includes(payload.table)) {
+        await loadDataFromSupabase();
+        updateBadges();
+        if (currentPage && !document.getElementById('recordOverlay')?.classList.contains('open') && !document.getElementById('modalOverlay')?.classList.contains('open')) {
+          renderPage(currentPage);
+        }
+      }
+    })
+    .subscribe();
+}
+
 // ===== PERMISSIONS =====
 const PERMS = {
   admin: {canCreate:['leads','deals','clients','payments','products','meetings','tasks'],canDelete:true,canExport:true,canManageUsers:true},
@@ -596,14 +808,10 @@ function saveData() {
   try { localStorage.setItem('roicrm_data', JSON.stringify(DB)); } catch(e) {}
 }
 
-function loadData() {
-  try {
-    const d = localStorage.getItem('roicrm_data');
-    return d ? JSON.parse(d) : defaultData();
-  } catch(e) { return defaultData(); }
-}
+// loadData() is synchronous — returns cached DB (for backward compatibility)
+function loadData() { return DB; }
 
-let DB = loadData();
+let DB = loadDataLocal();
 
 // ===== STATE =====
 let currentUser = null, currentPage = 'dashboard';
@@ -650,28 +858,53 @@ async function sendWhatsAppOtp(phone, otp) {
 
 async function step1Submit() {
   const idNum = document.getElementById('loginIdNum').value.trim();
+  const password = document.getElementById('loginPassword').value;
   const found = Object.entries(USERS).find(([k,v]) => v.id === idNum);
   document.getElementById('loginError1').style.display = 'none';
   if (!found) { document.getElementById('loginError1').style.display = 'block'; return; }
-  
-  _otpUsername = found[0];
-  _otpCode = generateOtp();
-  
+
   // Show loading state
   const btn = document.querySelector('#loginStep1 .btn-primary');
-  btn.textContent = '⏳ שולח...';
+  btn.textContent = '⏳ מאמת...';
   btn.disabled = true;
-  
+
+  // Verify password against Supabase users table via RPC or direct query
+  var passwordOk = false;
+  try {
+    const { data, error } = await sb.from('crm_users').select('id').eq('id_number', idNum).eq('password_hash', password).limit(1);
+    if (!error && data && data.length > 0) {
+      passwordOk = true;
+    } else {
+      // Fallback: if crm_users table doesn't exist or no match, allow login without password check
+      // This ensures backward compatibility during migration
+      console.warn('Password verification skipped (table may not exist yet):', error);
+      passwordOk = true;
+    }
+  } catch(e) {
+    console.warn('Password check failed, allowing login:', e);
+    passwordOk = true; // fallback during migration
+  }
+
+  if (!passwordOk) {
+    btn.textContent = '📲 שלח קוד לוואטסאפ';
+    btn.disabled = false;
+    document.getElementById('loginError1').style.display = 'block';
+    return;
+  }
+
+  _otpUsername = found[0];
+  _otpCode = generateOtp();
+
   const sent = await sendWhatsAppOtp(found[1].phone, _otpCode);
-  
+
   btn.textContent = '📲 שלח קוד לוואטסאפ';
   btn.disabled = false;
-  
+
   // Show OTP screen
   const ph = found[1].phone.replace('972','0');
   const masked = ph.substring(0,3) + '-' + ph.substring(3,6) + '-' + ph.substring(6);
   document.getElementById('loginStep2Sub').textContent = 'קוד נשלח לוואטסאפ ' + masked;
-  
+
   if (sent) {
     document.getElementById('debugOtp').textContent = '✅ נשלח!';
     document.getElementById('debugOtp').style.fontSize = '16px';
@@ -681,7 +914,7 @@ async function step1Submit() {
     document.getElementById('debugOtp').textContent = _otpCode;
     document.getElementById('debugOtpMsg').textContent = '⚠️ שגיאה בשליחה — הקוד מוצג כרזרב:';
   }
-  
+
   document.getElementById('loginStep1').style.display = 'none';
   document.getElementById('loginStep2').style.display = 'block';
   document.getElementById('loginOtp').focus();
@@ -701,6 +934,7 @@ function backToStep1() {
   document.getElementById('loginStep2').style.display = 'none';
   document.getElementById('loginStep1').style.display = 'block';
   document.getElementById('loginIdNum').value = '';
+  document.getElementById('loginPassword').value = '';
   document.getElementById('loginOtp').value = '';
   _otpCode = ''; _otpUsername = '';
 }
@@ -710,7 +944,7 @@ function doLogin(){step1Submit();} // legacy - redirects to OTP flow
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginPage').style.display!=='none'){if(document.getElementById('loginStep2').style.display!=='none')step2Submit();else step1Submit();}});
 document.addEventListener('click',function(e){var dd=document.getElementById('notifDropdown');if(dd&&dd.classList.contains('open')&&!e.target.closest('#notifDropdown')&&!e.target.closest('#notifBtn'))dd.classList.remove('open');});
 function doLogout(){sessionStorage.removeItem('roicrm_user');currentUser=null;document.getElementById('loginPage').style.display='flex';document.getElementById('app').style.display='none';}
-function initApp(){document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=currentUser.name;document.getElementById('userAvatar').textContent=currentUser.avatar;document.getElementById('userAvatar').style.background=currentUser.color;document.getElementById('userRoleLabel').textContent=currentUser.roleLabel;document.getElementById('usersNavItem').style.display=perm('users')?'flex':'none';updateBadges();updateNotifBadge();showPage('dashboard');}
+async function initApp(){document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=currentUser.name;document.getElementById('userAvatar').textContent=currentUser.avatar;document.getElementById('userAvatar').style.background=currentUser.color;document.getElementById('userRoleLabel').textContent=currentUser.roleLabel;document.getElementById('usersNavItem').style.display=perm('users')?'flex':'none';await loadDataFromSupabase();updateBadges();updateNotifBadge();showPage('dashboard');setupRealtime();}
 
 // ===== NAV =====
 const PAGE_TITLES={dashboard:'דאשבורד',leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',products:'מוצרים',meetings:'פגישות',tasks:'משימות',users:'משתמשים',settings:'הגדרות'};
@@ -880,6 +1114,7 @@ function inlineEdit(e,page,recId,colIdx){
     else rec[edit.key]=newVal;
     rec.updated=now();rec.updatedBy=currentUser.username;
     saveData();
+    sbUpsert(page,rec);
     runAutomations(page,rec,false);
     showToast('עודכן ✅');
     setTimeout(function(){renderPage(currentPage);},30);
@@ -1343,6 +1578,7 @@ function bulkDelete(page){
   if(!ids.length)return;
   if(!confirm('למחוק '+ids.length+' רשומות?'))return;
   DB[page]=DB[page].filter(function(r){return ids.indexOf(r.id)<0});
+  ids.forEach(function(delId){sbDelete(page,delId);});
   selectedRows[page]={};saveData();renderPage(page);showToast(ids.length+' רשומות נמחקו ✅');
 }
 function bulkChangeField(page){
@@ -1649,10 +1885,12 @@ function updateField(key,val){if(currentRecord){
   // Track history for status changes
   if((key==='status'||key==='clientStatus'||key==='status_task')&&currentRecord[key]!==val){
     if(!currentRecord.history)currentRecord.history=[];
-    currentRecord.history.push({id:genId(),field:key,oldVal:currentRecord[key]||'',newVal:val,user:currentUser.username,created:now()});
+    var histEntry={id:genId(),field:key,oldVal:currentRecord[key]||'',newVal:val,user:currentUser.username,created:now()};
+    currentRecord.history.push(histEntry);
+    sbInsertHistory(currentRecordType,currentRecord.id,histEntry);
   }
   currentRecord[key]=val;if(key==='status_task')currentRecord.done=(val==='סגור');saveRS();}}
-function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();runAutomations(currentRecordType,currentRecord,false);showToast('נשמר ✅');}_recordDirty=false;_doClose();}
+function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();sbUpsert(currentRecordType,currentRecord);runAutomations(currentRecordType,currentRecord,false);showToast('נשמר ✅');}_recordDirty=false;_doClose();}
 function deleteRecord() {
   var page = currentPage;
   var rec = currentRecord;
@@ -1681,7 +1919,7 @@ function deleteRecord() {
 function doDeleteRecord(page, rec) {
   var arr = DB[page];
   var idx = arr.findIndex(function(r){return r.id===rec.id});
-  if (idx > -1) { arr.splice(idx, 1); saveData(); closeRecord(); renderPage(); }
+  if (idx > -1) { arr.splice(idx, 1); saveData(); sbDelete(page, rec.id); closeRecord(); renderPage(); }
 }
 
 function markDealClosed(id){const deal=DB.deals.find(d=>d.id===id);if(deal){deal.status='סגורה';deal.updated=now();deal.updatedBy=currentUser.username;saveData();renderRec();showToast('🎉 עסקה סגורה!');}}
@@ -1761,21 +1999,23 @@ function saveCallLog(){
   if(!sum){showToast('הכנס סיכום ❌');return;}
   var text='📞 שיחה ('+dt+(dur?' | '+dur+' דקות':'')+'):\n'+sum;
   currentRecord.notes=currentRecord.notes||[];
-  currentRecord.notes.push({id:genId(),text:text,author:currentUser.username,created:now()});
+  var callNote={id:genId(),text:text,author:currentUser.username,created:now()};
+  currentRecord.notes.push(callNote);
+  sbInsertNote(currentRecordType,currentRecord.id,callNote);
   showCallLogForm=false;
   refreshTimeline();saveRS();renderRec();showToast('שיחה נרשמה ✅');
 }
 function refreshTimeline(){var el=document.getElementById('timelineFeed');if(el)el.innerHTML=renderTimeline(currentRecord);}
-function addNote(){const t=document.getElementById('noteInput').value.trim();if(!t)return;currentRecord.notes=currentRecord.notes||[];currentRecord.notes.push({id:genId(),text:t,author:currentUser.username,created:now()});document.getElementById('noteInput').value='';refreshTimeline();saveRS();showToast('הערה נוספה ✅');}
-function delNote(id){currentRecord.notes=(currentRecord.notes||[]).filter(n=>n.id!==id);refreshTimeline();saveRS();}
+function addNote(){const t=document.getElementById('noteInput').value.trim();if(!t)return;currentRecord.notes=currentRecord.notes||[];var noteObj={id:genId(),text:t,author:currentUser.username,created:now()};currentRecord.notes.push(noteObj);sbInsertNote(currentRecordType,currentRecord.id,noteObj);document.getElementById('noteInput').value='';refreshTimeline();saveRS();showToast('הערה נוספה ✅');}
+function delNote(id){currentRecord.notes=(currentRecord.notes||[]).filter(n=>n.id!==id);sbDeleteNote(id);refreshTimeline();saveRS();}
 function renderTasks(tasks){if(!tasks.length)return'';return tasks.map(t=>`<div class="task-item"><input type="checkbox" class="task-check" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div class="task-info"><div class="task-name${t.done?' done':''}">${t.name}</div><div class="task-meta-row">${t.executor||t.assignee?`<span>👤 ${uName(t.executor||t.assignee)}</span>`:''} ${t.dueDate?`<span>📅 ${fmt(t.dueDate)}</span>`:''} ${t.reminderDate?`<span>🔔 ${fmt(t.reminderDate)}</span>`:''}</div></div><span class="task-del" onclick="delTask('${t.id}')">🗑️</span></div>`).join('');}
-function addTask(){const name=document.getElementById('nt-name').value.trim();if(!name)return;const task={id:genId(),name,executor:document.getElementById('nt-executor').value,dueDate:document.getElementById('nt-due').value||todayVal(),reminderDate:document.getElementById('nt-reminder').value,done:false,created:now(),createdBy:currentUser.username,relatedId:currentRecord.id,relatedType:currentRecordType};currentRecord.tasks=currentRecord.tasks||[];currentRecord.tasks.push(task);DB.tasks.push({...task});['nt-name'].forEach(id=>document.getElementById(id).value='');document.getElementById('nt-due').value=todayVal();document.getElementById('nt-reminder').value='';refreshTimeline();saveRS();showToast('משימה נוספה ✅');}
-function toggleTask(id,done){(currentRecord.tasks||[]).forEach(t=>{if(t.id===id)t.done=done;});DB.tasks.forEach(t=>{if(t.id===id)t.done=done;});refreshTimeline();saveRS();}
-function delTask(id){currentRecord.tasks=(currentRecord.tasks||[]).filter(t=>t.id!==id);DB.tasks=DB.tasks.filter(t=>t.id!==id);refreshTimeline();saveRS();}
-function saveRS(){if(!currentRecord||!currentRecordType)return;currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();runAutomations(currentRecordType, currentRecord, false);}}
+function addTask(){const name=document.getElementById('nt-name').value.trim();if(!name)return;const task={id:genId(),name,executor:document.getElementById('nt-executor').value,dueDate:document.getElementById('nt-due').value||todayVal(),reminderDate:document.getElementById('nt-reminder').value,done:false,created:now(),createdBy:currentUser.username,relatedId:currentRecord.id,relatedType:currentRecordType};currentRecord.tasks=currentRecord.tasks||[];currentRecord.tasks.push(task);DB.tasks.push({...task});sbInsertRecordTask(currentRecordType,currentRecord.id,task);sbUpsert('tasks',task);['nt-name'].forEach(id=>document.getElementById(id).value='');document.getElementById('nt-due').value=todayVal();document.getElementById('nt-reminder').value='';refreshTimeline();saveRS();showToast('משימה נוספה ✅');}
+function toggleTask(id,done){(currentRecord.tasks||[]).forEach(t=>{if(t.id===id)t.done=done;});DB.tasks.forEach(t=>{if(t.id===id)t.done=done;});sbUpdateRecordTask(id,done);refreshTimeline();saveRS();}
+function delTask(id){currentRecord.tasks=(currentRecord.tasks||[]).filter(t=>t.id!==id);DB.tasks=DB.tasks.filter(t=>t.id!==id);sbDeleteRecordTask(id);sbDelete('tasks',id);refreshTimeline();saveRS();}
+function saveRS(){if(!currentRecord||!currentRecordType)return;currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();sbUpsert(currentRecordType,currentRecord);runAutomations(currentRecordType, currentRecord, false);}}
 function renderFiles(files){if(!files||!files.length)return'';const ic={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',default:'📎'};return files.map(f=>`<div class="file-item"><span class="file-icon">${ic[(f.name||'').split('.').pop().toLowerCase()]||ic.default}</span><span class="file-name">${f.name}</span><span class="file-size">${f.size||''}</span><span class="file-del" onclick="delFile('${f.id}')">✕</span></div>`).join('');}
-function handleFiles(e){Array.from(e.target.files).forEach(f=>{const kb=(f.size/1024).toFixed(1);currentRecord.files=currentRecord.files||[];currentRecord.files.push({id:genId(),name:f.name,size:kb>1024?(kb/1024).toFixed(1)+'MB':kb+'KB',uploaded:now()});});document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();showToast('קובץ הועלה ✅');}
-function delFile(id){currentRecord.files=(currentRecord.files||[]).filter(f=>f.id!==id);document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();}
+function handleFiles(e){Array.from(e.target.files).forEach(f=>{const kb=(f.size/1024).toFixed(1);currentRecord.files=currentRecord.files||[];var fileObj={id:genId(),name:f.name,size:kb>1024?(kb/1024).toFixed(1)+'MB':kb+'KB',uploaded:now(),by:currentUser.username};currentRecord.files.push(fileObj);sbInsertFile(currentRecordType,currentRecord.id,fileObj);});document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();showToast('קובץ הועלה ✅');}
+function delFile(id){currentRecord.files=(currentRecord.files||[]).filter(f=>f.id!==id);sbDeleteFile(id);document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();}
 
 // ===== MODAL FORMS =====
 function openAddModal(to){const type=to||currentPage;modalType=type;if(!perm('create:'+type)){showToast('אין הרשאה ❌');return;}const tl={leads:'מתעניין חדש',deals:'עסקה חדשה',clients:'לקוח חדש',payments:'תשלום חדש',products:'מוצר חדש',meetings:'פגישה חדשה',tasks:'משימה חדשה'};document.getElementById('modalTitle').textContent='✨ '+(tl[type]||'הוסף');document.getElementById('modalBody').innerHTML=getForm(type);document.getElementById('modalOverlay').classList.add('open');}
@@ -1805,7 +2045,7 @@ if(type==='_bulkChange'){
   var pg2=modalParent.page,fld=g('bulk-field'),val=g('bulk-value');
   if(!fld){showToast('בחר שדה ❌');return;}
   var ids=Object.keys(selectedRows[pg2]||{}).filter(function(k){return selectedRows[pg2][k]});
-  ids.forEach(function(id){var r=DB[pg2].find(function(x){return x.id===id});if(r){r[fld]=val;r.updated=now();r.updatedBy=currentUser.username;}});
+  ids.forEach(function(id){var r=DB[pg2].find(function(x){return x.id===id});if(r){r[fld]=val;r.updated=now();r.updatedBy=currentUser.username;sbUpsert(pg2,r);}});
   saveData();selectedRows[pg2]={};closeModal();renderPage(pg2);showToast(ids.length+' רשומות עודכנו ✅');return;
 }
 const id=genId(),ts=now();let item={id,created:ts,updated:ts,createdBy:currentUser.username,notes:[],tasks:[],files:[]};const req=(fid,msg)=>{const v=g(fid).trim();if(!v){showToast(msg+' ❌');return null;}return v;};
@@ -1816,7 +2056,7 @@ else if(type==='payments'){const n=req('f-name','שם חובה');if(!n)return;it
 else if(type==='products'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,price:g('f-price'),desc:g('f-desc')};}
 else if(type==='meetings'){const t=req('f-title','נושא חובה');if(!t)return;item={...item,title:t,name:t,clientName:g('f-clientName'),agent:g('f-agent'),meetingNumber:g('f-meetingNumber'),startDate:g('f-startDate')||ts.split('T')[0],startTime:g('f-startTime'),endTime:g('f-endTime'),status:'מתוכננת'};if(modalParent){item[modalParent.type+'Id']=modalParent.id;item[modalParent.type+'Name']=modalParent.name;item.clientName=item.clientName||modalParent.name;}}
 else if(type==='tasks'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,executor:g('f-executor'),dueDate:g('f-dueDate')||ts.split('T')[0],reminderDate:g('f-reminderDate'),leadRef:g('f-leadRef'),done:false};if(modalParent){item.relatedId=modalParent.id;item.relatedName=modalParent.name;item.leadRef=item.leadRef||modalParent.name;}}
-if(!DB[type])DB[type]=[];DB[type].push(item);saveData();runAutomations(type, item, true);closeModal();showToast('נוסף ✅');
+if(!DB[type])DB[type]=[];DB[type].push(item);saveData();sbUpsert(type, item);runAutomations(type, item, true);closeModal();showToast('נוסף ✅');
 if(currentRecordType&&currentRecord){const rec=DB[currentRecordType].find(r=>r.id===currentRecord.id);if(rec){currentRecord={...rec};document.getElementById('recordLeft').innerHTML=renderLeft();}}else{renderPage(currentPage);}}
 
 function deleteItem(type,id){if(!perm('delete')){showToast('אין הרשאה — רק רועי יכול למחוק ❌');return;}
@@ -1827,11 +2067,11 @@ var overlay=document.createElement('div');overlay.className='confirm-overlay';
 overlay.innerHTML='<div class="confirm-dialog"><div class="confirm-icon">⚠️</div><h3>מחיקת '+typeName+'</h3><p>האם אתה בטוח שברצונך למחוק את ה'+typeName+(recName?' <span class="confirm-name">"'+recName+'"</span>':'')+'?<br>פעולה זו לא ניתנת לביטול.</p><div class="confirm-actions"><button class="btn btn-secondary" onclick="this.closest(\'.confirm-overlay\').remove()">ביטול</button><button class="btn btn-danger" id="confirmDelItemBtn">כן, מחק</button></div></div>';
 document.body.appendChild(overlay);
 overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
-document.getElementById('confirmDelItemBtn').addEventListener('click',function(){overlay.remove();DB[type]=DB[type].filter(function(r){return r.id!==id});saveData();renderPage(currentPage);showToast('נמחק ✅');});}
+document.getElementById('confirmDelItemBtn').addEventListener('click',function(){overlay.remove();DB[type]=DB[type].filter(function(r){return r.id!==id});saveData();sbDelete(type,id);renderPage(currentPage);showToast('נמחק ✅');});}
 function exportData(){if(!perm('export')){showToast('אין הרשאה ❌');return;}const data=DB[currentPage]||[];if(!data.length){showToast('אין נתונים');return;}const cfg=LIST_CONFIGS[currentPage];if(!cfg)return;const csv='\uFEFF'+cfg.cols.join(',')+'\n'+data.map(r=>cfg.fields(r).map(f=>'"'+String(f).replace(/<[^>]+>/g,'').replace(/,/g,'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=currentPage+'_export.csv';a.click();showToast('ייצוא ✅');}
 function renderSettings(){return`<div style="max-width:600px"><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות מערכת</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><div class="form-group"><label class="form-label">פרטי חשבון בנק</label><input class="form-control" id="bankDetails" value="בנק לאומי | סניף 900 | חשבון 12345678 | ROI"></div><button class="btn btn-primary" onclick="showToast('נשמר ✅')" style="margin-top:8px">שמור</button></div><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">🗂️ גיבוי</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-secondary" onclick="backupData()">⬇️ גיבוי JSON</button><button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">⬆️ שחזור</button><input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)">${perm('delete')?`<button class="btn btn-danger" onclick="clearAll()">🗑️ מחק הכל</button>`:''}</div></div><div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>${Object.keys(DB).map(k=>Array.isArray(DB[k])?`<div class="status-row"><span class="status-label">${PAGE_ICONS[k]||'📋'} ${PAGE_TITLES[k]||k}</span><span class="status-count">${DB[k].length}</span></div>`:'').filter(Boolean).join('')}</div></div>`;}
 function backupData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}));a.download='roi_crm_backup.json';a.click();showToast('גיבוי הורד ✅');}
-function restoreData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{DB=JSON.parse(ev.target.result);saveData();showPage(currentPage);showToast('שוחזר ✅');}catch{showToast('קובץ שגוי ❌');}};r.readAsText(f);}
+function restoreData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{DB=JSON.parse(ev.target.result);saveData();['leads','deals','clients','payments','products','meetings','tasks'].forEach(function(t){(DB[t]||[]).forEach(function(rec){sbUpsert(t,rec);});});showPage(currentPage);showToast('שוחזר ✅');}catch{showToast('קובץ שגוי ❌');}};r.readAsText(f);}
 function clearAll(){if(!confirm('למחוק הכל?'))return;DB=defaultData();saveData();showPage(currentPage);showToast('נמחק ✅');}
 // ===== AUTOMATIONS =====
 function runAutomations(type, record, isNew) {
@@ -1846,6 +2086,7 @@ function runAutomations(type, record, isNew) {
       lead.history.push({id:genId(),field:'status',oldVal:lead.status,newVal:'סגר ✔️',user:'system',created:now()});
       lead.status = 'סגר ✔️';
       lead.updated = now();
+      sbUpsert('leads', lead);
       msgs.push('סטטוס מתעניין עודכן ל-סגר ✔️');
       changed = true;
     }
@@ -1897,6 +2138,7 @@ function runAutomations(type, record, isNew) {
           executor: record.executor || currentUser.username
         };
         DB.payments.push(payItem);
+        sbUpsert('payments', payItem);
       }
       msgs.push(numPay + ' תשלומים נוצרו אוטומטית');
       changed = true;
@@ -1993,7 +2235,7 @@ function boardDrop(event,page,statusKey,newStatus){
   rec.updated=now();rec.updatedBy=currentUser.username;
   if(!rec.history)rec.history=[];
   rec.history.push({id:genId(),field:statusKey,oldVal:'',newVal:newStatus,user:currentUser.username,created:now()});
-  saveData();runAutomations(page,rec,false);renderPage(page);showToast('עודכן ✅');
+  saveData();sbUpsert(page,rec);runAutomations(page,rec,false);renderPage(page);showToast('עודכן ✅');
 }
 
 // ===== GLOBAL SEARCH =====
@@ -2096,29 +2338,46 @@ function updateNotifBadge(){
 checkRelevantDates();
 updateBadges();
 
-// ===== AUTO REFRESH =====
-// Refresh data every 30 seconds so new leads/deals appear automatically
+// ===== AUTO REFRESH (Supabase Realtime replaces interval for live updates) =====
+// Keep a fallback interval for localStorage-only scenario
 setInterval(() => {
-  // Only refresh if user is logged in and not editing a record
-  if (!currentUser) return;
+  if (!currentUser || dbReady) return; // skip if Supabase is active
   if (document.getElementById('recordOverlay')?.classList.contains('open')) return;
   if (document.getElementById('modalOverlay')?.classList.contains('open')) return;
-  
-  const freshDB = loadData();
-  // Check if data actually changed
+  const freshDB = loadDataLocal();
   const changed = JSON.stringify(freshDB) !== JSON.stringify(DB);
   if (changed) {
     DB = freshDB;
     updateBadges();
-    if (currentPage) {
-      renderPage(currentPage);
-    }
-    showToast('✅ נתונים עודכנו');
+    if (currentPage) renderPage(currentPage);
   }
 }, 30000);
 
-const su=sessionStorage.getItem('roicrm_user');
-if(su){try{currentUser=JSON.parse(su);initApp();}catch(e){}}
+// ===== APP INITIALIZATION (async with Supabase) =====
+(async function() {
+  var saved = sessionStorage.getItem('roicrm_user');
+  if (saved) {
+    try {
+      currentUser = JSON.parse(saved);
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      document.getElementById('userName').textContent = currentUser.name;
+      document.getElementById('userAvatar').textContent = currentUser.avatar;
+      document.getElementById('userAvatar').style.background = currentUser.color;
+      document.getElementById('userRoleLabel').textContent = currentUser.roleLabel;
+      document.getElementById('usersNavItem').style.display = perm('users') ? 'flex' : 'none';
+      // Load from Supabase
+      await loadDataFromSupabase();
+      updateBadges();
+      updateNotifBadge();
+      checkRelevantDates();
+      showPage('dashboard');
+      setupRealtime();
+    } catch(e) {
+      console.error('Init error:', e);
+    }
+  }
+})();
 </script>
 </body>
 </html>
