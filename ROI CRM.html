@@ -436,7 +436,7 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 .board-card:active{cursor:grabbing}
 
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- API calls go through server proxy - no external SDK needed -->
 </head>
 <body>
 <div id="loginPage" class="login-wrap">
@@ -608,10 +608,66 @@ const AUTH_RATE_LIMIT = {
 };
 
 
-// ===== SUPABASE =====
-const SUPABASE_URL = 'https://gruaauwpicdklfmmmnjw.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydWFhdXdwaWNka2xmbW1tbmp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MjA3NjcsImV4cCI6MjA5MTI5Njc2N30.Odj6iPCaBwvxKsy4osIYxrzN_kBXnrsVDuVWYgHsjj0';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ===== API CLIENT (all credentials server-side) =====
+let _authToken = sessionStorage.getItem('roicrm_token') || null;
+let _refreshToken = sessionStorage.getItem('roicrm_refresh') || null;
+
+function apiHeaders() {
+  const h = { 'Content-Type': 'application/json' };
+  if (_authToken) h['Authorization'] = 'Bearer ' + _authToken;
+  return h;
+}
+
+async function apiGet(path) {
+  const r = await fetch(path, { headers: apiHeaders() });
+  if (r.status === 401) { _handleExpired(); return { data: null, error: { message: 'unauthorized' } }; }
+  const d = await r.json();
+  return r.ok ? { data: d, error: null } : { data: null, error: d };
+}
+
+async function apiPost(path, body) {
+  const r = await fetch(path, { method: 'POST', headers: apiHeaders(), body: JSON.stringify(body) });
+  if (r.status === 401 && !path.includes('/auth/')) { _handleExpired(); return { data: null, error: { message: 'unauthorized' } }; }
+  const text = await r.text();
+  const d = text ? JSON.parse(text) : null;
+  return r.ok ? { data: d, error: null } : { data: null, error: d || { message: 'error ' + r.status } };
+}
+
+async function apiDelete(path) {
+  const r = await fetch(path, { method: 'DELETE', headers: apiHeaders() });
+  if (r.status === 401) { _handleExpired(); return { error: { message: 'unauthorized' } }; }
+  return r.ok ? { error: null } : { error: { message: 'delete failed' } };
+}
+
+async function apiPatch(path, body) {
+  const r = await fetch(path, { method: 'PATCH', headers: apiHeaders(), body: JSON.stringify(body) });
+  if (r.status === 401) { _handleExpired(); return { error: { message: 'unauthorized' } }; }
+  return r.ok ? { error: null } : { error: { message: 'patch failed' } };
+}
+
+function _setAuth(accessToken, refreshToken) {
+  _authToken = accessToken;
+  _refreshToken = refreshToken;
+  if (accessToken) { sessionStorage.setItem('roicrm_token', accessToken); } else { sessionStorage.removeItem('roicrm_token'); }
+  if (refreshToken) { sessionStorage.setItem('roicrm_refresh', refreshToken); } else { sessionStorage.removeItem('roicrm_refresh'); }
+}
+
+function _handleExpired() {
+  // Try refresh once, then logout
+  if (_refreshToken) {
+    apiPost('/api/auth/refresh', { refresh_token: _refreshToken }).then(res => {
+      if (res.data && res.data.access_token) {
+        _setAuth(res.data.access_token, res.data.refresh_token || _refreshToken);
+      } else {
+        _setAuth(null, null);
+        if (currentUser) doLogout();
+      }
+    });
+  } else {
+    _setAuth(null, null);
+    if (currentUser) doLogout();
+  }
+}
 
 // ===== FIELD NAME MAPPING (JS camelCase <-> DB snake_case) =====
 const FIELD_MAP = {
@@ -649,28 +705,28 @@ function toJsRecord(type, row) {
   return out;
 }
 
-// ===== SUPABASE CRUD =====
+// ===== SERVER-SIDE CRUD (via proxy) =====
 async function sbUpsert(type, record) {
   try {
     const dbRec = toDbRecord(type, {...record});
     dbRec.updated_at = new Date().toISOString();
-    const { error } = await sb.from(type).upsert(dbRec);
-    if (error) console.error('Supabase upsert error:', type, error);
+    const { error } = await apiPost('/api/data/' + type, dbRec);
+    if (error) console.error('Upsert error:', type, error);
     return !error;
   } catch(e) { console.error('sbUpsert exception:', e); return false; }
 }
 
 async function sbDelete(type, id) {
   try {
-    const { error } = await sb.from(type).delete().eq('id', id);
-    if (error) console.error('Supabase delete error:', type, error);
+    const { error } = await apiDelete('/api/data/' + type + '?id=eq.' + id);
+    if (error) console.error('Delete error:', type, error);
     return !error;
   } catch(e) { console.error('sbDelete exception:', e); return false; }
 }
 
 async function sbInsertNote(type, recordId, note) {
   try {
-    const { error } = await sb.from('notes').insert({
+    const { error } = await apiPost('/api/data/notes', {
       id: note.id || genId(), record_type: type, record_id: recordId,
       text: note.text, author: note.by || note.author, note_type: note.type || 'note',
       call_summary: note.callSummary, call_result: note.callResult,
@@ -682,7 +738,7 @@ async function sbInsertNote(type, recordId, note) {
 
 async function sbInsertRecordTask(type, recordId, task) {
   try {
-    const { error } = await sb.from('record_tasks').insert({
+    const { error } = await apiPost('/api/data/record_tasks', {
       id: task.id || genId(), record_type: type, record_id: recordId,
       name: task.name, executor: task.executor, due_date: task.dueDate, done: task.done || false
     });
@@ -692,28 +748,28 @@ async function sbInsertRecordTask(type, recordId, task) {
 
 async function sbUpdateRecordTask(taskId, done) {
   try {
-    const { error } = await sb.from('record_tasks').update({ done: done }).eq('id', taskId);
+    const { error } = await apiPatch('/api/data/record_tasks?id=eq.' + taskId, { done: done });
     if (error) console.error('Record task update error:', error);
   } catch(e) { console.error('sbUpdateRecordTask exception:', e); }
 }
 
 async function sbDeleteNote(noteId) {
   try {
-    const { error } = await sb.from('notes').delete().eq('id', noteId);
+    const { error } = await apiDelete('/api/data/notes?id=eq.' + noteId);
     if (error) console.error('Note delete error:', error);
   } catch(e) { console.error('sbDeleteNote exception:', e); }
 }
 
 async function sbDeleteRecordTask(taskId) {
   try {
-    const { error } = await sb.from('record_tasks').delete().eq('id', taskId);
+    const { error } = await apiDelete('/api/data/record_tasks?id=eq.' + taskId);
     if (error) console.error('Record task delete error:', error);
   } catch(e) { console.error('sbDeleteRecordTask exception:', e); }
 }
 
 async function sbInsertHistory(type, recordId, entry) {
   try {
-    const { error } = await sb.from('record_history').insert({
+    const { error } = await apiPost('/api/data/record_history', {
       id: genId(), record_type: type, record_id: recordId,
       field_name: entry.field, old_value: entry.from || entry.oldVal, new_value: entry.to || entry.newVal,
       changed_by: entry.by || entry.user, changed_at: entry.date || entry.created || new Date().toISOString()
@@ -724,7 +780,7 @@ async function sbInsertHistory(type, recordId, entry) {
 
 async function sbInsertFile(type, recordId, file) {
   try {
-    const { error } = await sb.from('files').insert({
+    const { error } = await apiPost('/api/data/files', {
       id: file.id || genId(), record_type: type, record_id: recordId,
       file_name: file.name, file_url: file.url || '', uploaded_by: file.by || file.uploaded_by,
       created_at: file.date || file.uploaded || new Date().toISOString()
@@ -735,12 +791,12 @@ async function sbInsertFile(type, recordId, file) {
 
 async function sbDeleteFile(fileId) {
   try {
-    const { error } = await sb.from('files').delete().eq('id', fileId);
+    const { error } = await apiDelete('/api/data/files?id=eq.' + fileId);
     if (error) console.error('File delete error:', error);
   } catch(e) { console.error('sbDeleteFile exception:', e); }
 }
 
-// ===== SUPABASE DATA LOADING =====
+// ===== DATA LOADING (via server proxy) =====
 var dbReady = false;
 
 async function loadDataFromSupabase() {
@@ -749,20 +805,20 @@ async function loadDataFromSupabase() {
     const encryptedRpc = { leads: 'get_leads_decrypted', deals: 'get_deals_decrypted', clients: 'get_clients_decrypted' };
     const types = ['leads','deals','clients','payments','products','meetings','tasks'];
     const results = await Promise.all(types.map(t =>
-      encryptedRpc[t] ? sb.rpc(encryptedRpc[t]) : sb.from(t).select('*')
+      encryptedRpc[t] ? apiPost('/api/rpc/' + encryptedRpc[t], {}) : apiGet('/api/data/' + t)
     ));
     const newDB = {};
     types.forEach((t, i) => {
       if (results[i].error) { console.error('Load error for ' + t, results[i].error); newDB[t] = []; }
-      else { newDB[t] = results[i].data.map(row => toJsRecord(t, row)); }
+      else { newDB[t] = (results[i].data || []).map(row => toJsRecord(t, row)); }
     });
 
     // Also load notes, record_tasks, history, files for all records
     const [notesRes, rTasksRes, histRes, filesRes] = await Promise.all([
-      sb.from('notes').select('*'),
-      sb.from('record_tasks').select('*'),
-      sb.from('record_history').select('*'),
-      sb.from('files').select('*')
+      apiGet('/api/data/notes'),
+      apiGet('/api/data/record_tasks'),
+      apiGet('/api/data/record_history'),
+      apiGet('/api/data/files')
     ]);
 
     const notes = (notesRes.data || []);
@@ -790,11 +846,10 @@ async function loadDataFromSupabase() {
 
     DB = newDB;
     dbReady = true;
-    // Also keep localStorage as offline cache
     localStorage.setItem('roicrm_data', JSON.stringify(DB));
     return DB;
   } catch (e) {
-    console.error('Supabase load failed, falling back to localStorage', e);
+    console.error('Data load failed, falling back to localStorage', e);
     return loadDataLocal();
   }
 }
@@ -803,20 +858,9 @@ function loadDataLocal() {
   try { var d = JSON.parse(localStorage.getItem('roicrm_data')); return d || defaultData(); } catch(e) { return defaultData(); }
 }
 
-// ===== SUPABASE REALTIME =====
+// ===== DATA REFRESH (polling, no credentials exposed) =====
 function setupRealtime() {
-  const types = ['leads','deals','clients','payments','products','meetings','tasks'];
-  sb.channel('db-changes')
-    .on('postgres_changes', { event: '*', schema: 'public' }, async (payload) => {
-      if (types.includes(payload.table)) {
-        await loadDataFromSupabase();
-        updateBadges();
-        if (currentPage && !document.getElementById('recordOverlay')?.classList.contains('open') && !document.getElementById('modalOverlay')?.classList.contains('open')) {
-          renderPage(currentPage);
-        }
-      }
-    })
-    .subscribe();
+  // No realtime needed - data refreshes via polling every 30s (see setInterval below)
 }
 
 // ===== PERMISSIONS =====
@@ -875,8 +919,7 @@ function generateOtp() { return String(Math.floor(100000 + Math.random() * 90000
 
 async function sendWhatsAppOtp(phone, otp) {
   try {
-    // Send OTP via server-side RPC (Green API credentials stored securely in DB)
-    const { data, error } = await sb.rpc('send_whatsapp_otp', { p_phone: phone, p_otp: otp });
+    const { data, error } = await apiPost('/api/rpc/send_whatsapp_otp', { p_phone: phone, p_otp: otp });
     if (error) { console.error('OTP RPC error:', error); return false; }
     return data === true;
   } catch(e) {
@@ -918,10 +961,10 @@ async function step1Submit() {
   btn.textContent = '⏳ מאמת...';
   btn.disabled = true;
 
-  // Authenticate via Supabase Auth
+  // Authenticate via server proxy
   const email = username + '@roicrm.local';
   try {
-    const { data: authData, error: authError } = await sb.auth.signInWithPassword({
+    const { data: authData, error: authError } = await apiPost('/api/auth/login', {
       email: email,
       password: password
     });
@@ -940,7 +983,8 @@ async function step1Submit() {
       return;
     }
 
-    // Supabase Auth succeeded - user session is now active
+    // Auth succeeded - store tokens
+    _setAuth(authData.access_token, authData.refresh_token);
     AUTH_RATE_LIMIT.reset(idNum);
     _otpUsername = username;
     _otpCode = generateOtp();
@@ -992,8 +1036,9 @@ function step2Submit() {
 }
 
 async function backToStep1() {
-  // Sign out the Supabase session since user cancelled OTP step
-  try { await sb.auth.signOut(); } catch(e) {}
+  // Sign out since user cancelled OTP step
+  try { await apiPost('/api/auth/logout', {}); } catch(e) {}
+  _setAuth(null, null);
   document.getElementById('loginStep2').style.display = 'none';
   document.getElementById('loginStep1').style.display = 'block';
   document.getElementById('loginIdNum').value = '';
@@ -1007,7 +1052,8 @@ function doLogin(){step1Submit();} // legacy - redirects to OTP flow
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginPage').style.display!=='none'){if(document.getElementById('loginStep2').style.display!=='none')step2Submit();else step1Submit();}});
 document.addEventListener('click',function(e){var dd=document.getElementById('notifDropdown');if(dd&&dd.classList.contains('open')&&!e.target.closest('#notifDropdown')&&!e.target.closest('#notifBtn'))dd.classList.remove('open');});
 async function doLogout(){
-  try { await sb.auth.signOut(); } catch(e) { console.error('Sign out error:', e); }
+  try { await apiPost('/api/auth/logout', {}); } catch(e) { console.error('Sign out error:', e); }
+  _setAuth(null, null);
   sessionStorage.removeItem('roicrm_user');
   currentUser=null;
   document.getElementById('loginPage').style.display='flex';
@@ -1026,18 +1072,15 @@ async function initApp(){
   updateNotifBadge();
   showPage('dashboard');
   setupRealtime();
-  // Listen for auth state changes (session expiry, token refresh)
-  sb.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' && !session) {
-      // Session expired or user signed out from another tab
-      if (currentUser) {
-        currentUser = null;
-        sessionStorage.removeItem('roicrm_user');
-        document.getElementById('loginPage').style.display='flex';
-        document.getElementById('app').style.display='none';
+  // Token auto-refresh every 50 minutes
+  setInterval(async () => {
+    if (_refreshToken) {
+      const res = await apiPost('/api/auth/refresh', { refresh_token: _refreshToken });
+      if (res.data && res.data.access_token) {
+        _setAuth(res.data.access_token, res.data.refresh_token || _refreshToken);
       }
     }
-  });
+  }, 50 * 60 * 1000);
 }
 
 // ===== NAV =====
@@ -2444,38 +2487,28 @@ setInterval(() => {
   }
 }, 30000);
 
-// ===== APP INITIALIZATION (async with Supabase Auth) =====
+// ===== APP INITIALIZATION (via server proxy) =====
 (async function() {
   try {
-    // First, check for an active Supabase Auth session
-    const { data: { session }, error } = await sb.auth.getSession();
+    // Check for an active auth session using stored token
+    if (_authToken) {
+      const { data: user, error } = await apiGet('/api/auth/session');
 
-    if (session && session.user) {
-      // Extract username from JWT user_metadata
-      const meta = session.user.user_metadata || {};
-      const username = meta.username;
+      if (user && user.user_metadata) {
+        const username = user.user_metadata.username;
 
-      if (username && USERS[username]) {
-        // Restore currentUser from USERS object (authoritative source)
-        currentUser = { ...USERS[username], username: username };
-        await initApp();
-        checkRelevantDates();
-        return;
-      } else {
-        // Session exists but user not in USERS - sign out
-        console.warn('Auth session user not found in USERS:', username);
-        await sb.auth.signOut();
+        if (username && USERS[username]) {
+          currentUser = { ...USERS[username], username: username };
+          await initApp();
+          checkRelevantDates();
+          return;
+        }
       }
+      // Token invalid or user not found - clear
+      _setAuth(null, null);
     }
 
-    // No valid Supabase session - check legacy sessionStorage (migration fallback)
-    var saved = sessionStorage.getItem('roicrm_user');
-    if (saved) {
-      // Legacy session found but no Supabase auth - clear it and show login
-      sessionStorage.removeItem('roicrm_user');
-    }
-
-    // Show login page (default state)
+    // No valid session - show login page (default state)
   } catch(e) {
     console.error('Init error:', e);
   }
