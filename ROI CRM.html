@@ -567,11 +567,48 @@ const USERS={
   ben:   {id:'322230731', phone:'972523817637', email:'ben@roibusiness.co.il', name:'בן',           role:'agent', roleLabel:'יועץ מחירות', avatar:'ב', color:'#f59e0b'}
 };
 
+// ===== USERS LOOKUP BY ID NUMBER =====
+const USERS_BY_ID = {};
+Object.entries(USERS).forEach(([k, v]) => { USERS_BY_ID[v.id] = k; });
+
 // ===== GREEN API CONFIG =====
+// TODO: Move these credentials server-side (Edge Function or backend)
 const GREEN_API = {
   instanceId: '7103856687',
   token: '024b675981874843ad9749cabdf86079dc999a26e36a4fe0a6',
   baseUrl: 'https://api.green-api.com'
+};
+
+// ===== AUTH RATE LIMITING =====
+const AUTH_RATE_LIMIT = {
+  maxAttempts: 5,
+  lockoutMinutes: 15,
+  attempts: {},  // { idNum: { count, lockedUntil } }
+  check(idNum) {
+    const entry = this.attempts[idNum];
+    if (!entry) return true;
+    if (entry.lockedUntil && Date.now() < entry.lockedUntil) return false;
+    if (entry.lockedUntil && Date.now() >= entry.lockedUntil) {
+      delete this.attempts[idNum];
+      return true;
+    }
+    return entry.count < this.maxAttempts;
+  },
+  record(idNum) {
+    if (!this.attempts[idNum]) this.attempts[idNum] = { count: 0 };
+    this.attempts[idNum].count++;
+    if (this.attempts[idNum].count >= this.maxAttempts) {
+      this.attempts[idNum].lockedUntil = Date.now() + this.lockoutMinutes * 60 * 1000;
+    }
+  },
+  reset(idNum) {
+    delete this.attempts[idNum];
+  },
+  remainingTime(idNum) {
+    const entry = this.attempts[idNum];
+    if (!entry || !entry.lockedUntil) return 0;
+    return Math.ceil((entry.lockedUntil - Date.now()) / 60000);
+  }
 };
 
 
@@ -859,78 +896,112 @@ async function sendWhatsAppOtp(phone, otp) {
 async function step1Submit() {
   const idNum = document.getElementById('loginIdNum').value.trim();
   const password = document.getElementById('loginPassword').value;
-  const found = Object.entries(USERS).find(([k,v]) => v.id === idNum);
-  document.getElementById('loginError1').style.display = 'none';
-  if (!found) { document.getElementById('loginError1').style.display = 'block'; return; }
+  const errEl = document.getElementById('loginError1');
+  errEl.style.display = 'none';
+
+  // Look up username by ID number
+  const username = USERS_BY_ID[idNum];
+  if (!username) {
+    errEl.textContent = 'מספר ת.ז לא נמצא במערכת';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (!password) {
+    errEl.textContent = 'נא להזין סיסמה';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // Rate limit check
+  if (!AUTH_RATE_LIMIT.check(idNum)) {
+    const mins = AUTH_RATE_LIMIT.remainingTime(idNum);
+    errEl.textContent = `חשבון נעול. נסה שוב בעוד ${mins} דקות`;
+    errEl.style.display = 'block';
+    return;
+  }
 
   // Show loading state
   const btn = document.querySelector('#loginStep1 .btn-primary');
   btn.textContent = '⏳ מאמת...';
   btn.disabled = true;
 
-  // Verify password against Supabase users table via RPC or direct query
-  var passwordOk = false;
+  // Authenticate via Supabase Auth
+  const email = username + '@roicrm.local';
   try {
-    const { data, error } = await sb.from('crm_users').select('id').eq('id_number', idNum).eq('password_hash', password).limit(1);
-    if (!error && data && data.length > 0) {
-      passwordOk = true;
-    } else {
-      // Fallback: if crm_users table doesn't exist or no match, allow login without password check
-      // This ensures backward compatibility during migration
-      console.warn('Password verification skipped (table may not exist yet):', error);
-      passwordOk = true;
-    }
-  } catch(e) {
-    console.warn('Password check failed, allowing login:', e);
-    passwordOk = true; // fallback during migration
-  }
+    const { data: authData, error: authError } = await sb.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
 
-  if (!passwordOk) {
+    if (authError) {
+      AUTH_RATE_LIMIT.record(idNum);
+      btn.textContent = '📲 שלח קוד לוואטסאפ';
+      btn.disabled = false;
+      const remaining = AUTH_RATE_LIMIT.maxAttempts - (AUTH_RATE_LIMIT.attempts[idNum]?.count || 0);
+      if (remaining <= 0) {
+        errEl.textContent = `חשבון נעול למשך ${AUTH_RATE_LIMIT.lockoutMinutes} דקות`;
+      } else {
+        errEl.textContent = `סיסמה שגויה (${remaining} ניסיונות נותרו)`;
+      }
+      errEl.style.display = 'block';
+      return;
+    }
+
+    // Supabase Auth succeeded - user session is now active
+    AUTH_RATE_LIMIT.reset(idNum);
+    _otpUsername = username;
+    _otpCode = generateOtp();
+
+    // Send WhatsApp OTP for 2FA
+    const userObj = USERS[username];
+    const sent = await sendWhatsAppOtp(userObj.phone, _otpCode);
+
     btn.textContent = '📲 שלח קוד לוואטסאפ';
     btn.disabled = false;
-    document.getElementById('loginError1').style.display = 'block';
-    return;
+
+    // Show OTP screen
+    const ph = userObj.phone.replace('972','0');
+    const masked = ph.substring(0,3) + '-' + ph.substring(3,6) + '-' + ph.substring(6);
+    document.getElementById('loginStep2Sub').textContent = 'קוד נשלח לוואטסאפ ' + masked;
+
+    if (sent) {
+      document.getElementById('debugOtp').textContent = '✅ נשלח!';
+      document.getElementById('debugOtp').style.fontSize = '16px';
+      document.getElementById('debugOtp').style.letterSpacing = '0';
+    } else {
+      // Fallback: show code if API failed
+      document.getElementById('debugOtp').textContent = _otpCode;
+      document.getElementById('debugOtpMsg').textContent = '⚠️ שגיאה בשליחה — הקוד מוצג כרזרב:';
+    }
+
+    document.getElementById('loginStep1').style.display = 'none';
+    document.getElementById('loginStep2').style.display = 'block';
+    document.getElementById('loginOtp').focus();
+
+  } catch (e) {
+    console.error('Auth error:', e);
+    btn.textContent = '📲 שלח קוד לוואטסאפ';
+    btn.disabled = false;
+    errEl.textContent = 'שגיאת מערכת, נסה שוב';
+    errEl.style.display = 'block';
   }
-
-  _otpUsername = found[0];
-  _otpCode = generateOtp();
-
-  const sent = await sendWhatsAppOtp(found[1].phone, _otpCode);
-
-  btn.textContent = '📲 שלח קוד לוואטסאפ';
-  btn.disabled = false;
-
-  // Show OTP screen
-  const ph = found[1].phone.replace('972','0');
-  const masked = ph.substring(0,3) + '-' + ph.substring(3,6) + '-' + ph.substring(6);
-  document.getElementById('loginStep2Sub').textContent = 'קוד נשלח לוואטסאפ ' + masked;
-
-  if (sent) {
-    document.getElementById('debugOtp').textContent = '✅ נשלח!';
-    document.getElementById('debugOtp').style.fontSize = '16px';
-    document.getElementById('debugOtp').style.letterSpacing = '0';
-  } else {
-    // Fallback: show code if API failed
-    document.getElementById('debugOtp').textContent = _otpCode;
-    document.getElementById('debugOtpMsg').textContent = '⚠️ שגיאה בשליחה — הקוד מוצג כרזרב:';
-  }
-
-  document.getElementById('loginStep1').style.display = 'none';
-  document.getElementById('loginStep2').style.display = 'block';
-  document.getElementById('loginOtp').focus();
 }
 
 function step2Submit() {
   const entered = document.getElementById('loginOtp').value.trim();
   document.getElementById('loginError2').style.display = 'none';
   if (entered !== _otpCode) { document.getElementById('loginError2').style.display = 'block'; return; }
+  // OTP verified. Supabase Auth session is already active from step1.
+  // Set currentUser from the USERS object (source of truth for display info).
   currentUser = {...USERS[_otpUsername], username: _otpUsername};
-  sessionStorage.setItem('roicrm_user', JSON.stringify(currentUser));
   _otpCode = ''; _otpUsername = '';
   initApp();
 }
 
-function backToStep1() {
+async function backToStep1() {
+  // Sign out the Supabase session since user cancelled OTP step
+  try { await sb.auth.signOut(); } catch(e) {}
   document.getElementById('loginStep2').style.display = 'none';
   document.getElementById('loginStep1').style.display = 'block';
   document.getElementById('loginIdNum').value = '';
@@ -943,8 +1014,39 @@ function backToStep1() {
 function doLogin(){step1Submit();} // legacy - redirects to OTP flow
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginPage').style.display!=='none'){if(document.getElementById('loginStep2').style.display!=='none')step2Submit();else step1Submit();}});
 document.addEventListener('click',function(e){var dd=document.getElementById('notifDropdown');if(dd&&dd.classList.contains('open')&&!e.target.closest('#notifDropdown')&&!e.target.closest('#notifBtn'))dd.classList.remove('open');});
-function doLogout(){sessionStorage.removeItem('roicrm_user');currentUser=null;document.getElementById('loginPage').style.display='flex';document.getElementById('app').style.display='none';}
-async function initApp(){document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=currentUser.name;document.getElementById('userAvatar').textContent=currentUser.avatar;document.getElementById('userAvatar').style.background=currentUser.color;document.getElementById('userRoleLabel').textContent=currentUser.roleLabel;document.getElementById('usersNavItem').style.display=perm('users')?'flex':'none';await loadDataFromSupabase();updateBadges();updateNotifBadge();showPage('dashboard');setupRealtime();}
+async function doLogout(){
+  try { await sb.auth.signOut(); } catch(e) { console.error('Sign out error:', e); }
+  sessionStorage.removeItem('roicrm_user');
+  currentUser=null;
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('app').style.display='none';
+}
+async function initApp(){
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('app').style.display='flex';
+  document.getElementById('userName').textContent=currentUser.name;
+  document.getElementById('userAvatar').textContent=currentUser.avatar;
+  document.getElementById('userAvatar').style.background=currentUser.color;
+  document.getElementById('userRoleLabel').textContent=currentUser.roleLabel;
+  document.getElementById('usersNavItem').style.display=perm('users')?'flex':'none';
+  await loadDataFromSupabase();
+  updateBadges();
+  updateNotifBadge();
+  showPage('dashboard');
+  setupRealtime();
+  // Listen for auth state changes (session expiry, token refresh)
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' && !session) {
+      // Session expired or user signed out from another tab
+      if (currentUser) {
+        currentUser = null;
+        sessionStorage.removeItem('roicrm_user');
+        document.getElementById('loginPage').style.display='flex';
+        document.getElementById('app').style.display='none';
+      }
+    }
+  });
+}
 
 // ===== NAV =====
 const PAGE_TITLES={dashboard:'דאשבורד',leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',products:'מוצרים',meetings:'פגישות',tasks:'משימות',users:'משתמשים',settings:'הגדרות'};
@@ -2353,29 +2455,40 @@ setInterval(() => {
   }
 }, 30000);
 
-// ===== APP INITIALIZATION (async with Supabase) =====
+// ===== APP INITIALIZATION (async with Supabase Auth) =====
 (async function() {
-  var saved = sessionStorage.getItem('roicrm_user');
-  if (saved) {
-    try {
-      currentUser = JSON.parse(saved);
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('app').style.display = 'flex';
-      document.getElementById('userName').textContent = currentUser.name;
-      document.getElementById('userAvatar').textContent = currentUser.avatar;
-      document.getElementById('userAvatar').style.background = currentUser.color;
-      document.getElementById('userRoleLabel').textContent = currentUser.roleLabel;
-      document.getElementById('usersNavItem').style.display = perm('users') ? 'flex' : 'none';
-      // Load from Supabase
-      await loadDataFromSupabase();
-      updateBadges();
-      updateNotifBadge();
-      checkRelevantDates();
-      showPage('dashboard');
-      setupRealtime();
-    } catch(e) {
-      console.error('Init error:', e);
+  try {
+    // First, check for an active Supabase Auth session
+    const { data: { session }, error } = await sb.auth.getSession();
+
+    if (session && session.user) {
+      // Extract username from JWT user_metadata
+      const meta = session.user.user_metadata || {};
+      const username = meta.username;
+
+      if (username && USERS[username]) {
+        // Restore currentUser from USERS object (authoritative source)
+        currentUser = { ...USERS[username], username: username };
+        await initApp();
+        checkRelevantDates();
+        return;
+      } else {
+        // Session exists but user not in USERS - sign out
+        console.warn('Auth session user not found in USERS:', username);
+        await sb.auth.signOut();
+      }
     }
+
+    // No valid Supabase session - check legacy sessionStorage (migration fallback)
+    var saved = sessionStorage.getItem('roicrm_user');
+    if (saved) {
+      // Legacy session found but no Supabase auth - clear it and show login
+      sessionStorage.removeItem('roicrm_user');
+    }
+
+    // Show login page (default state)
+  } catch(e) {
+    console.error('Init error:', e);
   }
 })();
 </script>
