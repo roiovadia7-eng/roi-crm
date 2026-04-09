@@ -571,13 +571,9 @@ const USERS={
 const USERS_BY_ID = {};
 Object.entries(USERS).forEach(([k, v]) => { USERS_BY_ID[v.id] = k; });
 
-// ===== GREEN API CONFIG =====
-// TODO: Move these credentials server-side (Edge Function or backend)
-const GREEN_API = {
-  instanceId: '7103856687',
-  token: '024b675981874843ad9749cabdf86079dc999a26e36a4fe0a6',
-  baseUrl: 'https://api.green-api.com'
-};
+// ===== GREEN API =====
+// Credentials stored securely server-side in private.api_keys
+// OTP sending handled by send_whatsapp_otp() RPC function
 
 // ===== AUTH RATE LIMITING =====
 const AUTH_RATE_LIMIT = {
@@ -878,19 +874,11 @@ let _otpCode = '', _otpUsername = '';
 function generateOtp() { return String(Math.floor(100000 + Math.random() * 900000)); }
 
 async function sendWhatsAppOtp(phone, otp) {
-  const url = `${GREEN_API.baseUrl}/waInstance${GREEN_API.instanceId}/sendMessage/${GREEN_API.token}`;
-  const body = {
-    chatId: phone + '@c.us',
-    message: `🔐 קוד הכניסה שלך ל-ROI CRM:\n\n*${otp}*\n\nהקוד תקף ל-5 דקות.\nאל תשתף קוד זה עם אף אחד.`
-  };
   try {
-    const r = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const d = await r.json();
-    return d.idMessage ? true : false;
+    // Send OTP via server-side RPC (Green API credentials stored securely in DB)
+    const { data, error } = await sb.rpc('send_whatsapp_otp', { p_phone: phone, p_otp: otp });
+    if (error) { console.error('OTP RPC error:', error); return false; }
+    return data === true;
   } catch(e) {
     console.error('WhatsApp send error:', e);
     return false;
