@@ -749,8 +749,12 @@ var dbReady = false;
 
 async function loadDataFromSupabase() {
   try {
+    // Encrypted tables use RPC functions for decrypted reads; others use direct select
+    const encryptedRpc = { leads: 'get_leads_decrypted', deals: 'get_deals_decrypted', clients: 'get_clients_decrypted' };
     const types = ['leads','deals','clients','payments','products','meetings','tasks'];
-    const results = await Promise.all(types.map(t => sb.from(t).select('*')));
+    const results = await Promise.all(types.map(t =>
+      encryptedRpc[t] ? sb.rpc(encryptedRpc[t]) : sb.from(t).select('*')
+    ));
     const newDB = {};
     types.forEach((t, i) => {
       if (results[i].error) { console.error('Load error for ' + t, results[i].error); newDB[t] = []; }
