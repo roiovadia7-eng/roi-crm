@@ -295,6 +295,117 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes scaleIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
 
+/* KPI DASHBOARD */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.kpi-card{background:var(--card);border-radius:12px;padding:18px;border:1px solid var(--border);border-top:3px solid #3b82f6;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kpi-card.green{border-top-color:var(--success)}
+.kpi-card.red{border-top-color:var(--danger)}
+.kpi-card .kpi-label{font-size:12px;color:var(--text2);margin-bottom:6px}
+.kpi-card .kpi-value{font-size:26px;font-weight:800}
+.kpi-card .kpi-value.blue{color:#3b82f6}
+.kpi-card .kpi-value.green{color:var(--success)}
+.kpi-card .kpi-value.red{color:var(--danger)}
+
+/* DASHBOARD LAYOUT */
+.dash-layout{display:flex;height:100%;min-height:calc(100vh - 140px)}
+.dash-sidebar{width:180px;border-left:1px solid var(--border);background:var(--white);padding:0;overflow-y:auto;flex-shrink:0;border-radius:12px 0 0 12px}
+.dash-sidebar .view-item{padding:8px 14px;cursor:pointer;font-size:12.5px;display:flex;align-items:center;gap:6px;transition:background .1s;border-right:3px solid transparent}
+.dash-sidebar .view-item:hover{background:var(--hover)}
+.dash-sidebar .view-item.active{background:#fef9e7;color:var(--accent-dark);font-weight:700;border-right-color:var(--accent)}
+.dash-main{flex:1;overflow-y:auto;padding:20px}
+
+/* SALES TABLE */
+.sales-table{width:100%;border-collapse:collapse;font-size:12px}
+.sales-table th,.sales-table td{padding:8px 12px;border:1px solid var(--border);text-align:right}
+.sales-table th{background:var(--hover);font-weight:700;font-size:11px}
+.sales-table td{font-size:12px}
+.sales-table tr:hover td{background:#fef9e7}
+
+/* CONVERSION TABLE */
+.conv-table{width:100%;border-collapse:collapse;font-size:12px}
+.conv-table th,.conv-table td{padding:8px 12px;border:1px solid var(--border);text-align:right}
+.conv-table th{background:var(--hover);font-weight:700;font-size:11px}
+
+/* BAR CHART */
+.bar-chart{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-label{font-size:12px;min-width:120px;text-align:right;color:var(--text)}
+.bar-track{flex:1;height:24px;background:var(--hover);border-radius:6px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;color:#fff;min-width:fit-content;transition:width .3s}
+.bar-count{font-size:12px;font-weight:700;min-width:40px;text-align:center}
+
+/* CARD VIEW */
+.card-view-layout{display:flex;height:100%;overflow:hidden}
+.card-list{width:320px;overflow-y:auto;border-left:1px solid var(--border);padding:8px;display:flex;flex-direction:column;gap:6px}
+.mini-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:all .15s}
+.mini-card:hover{border-color:var(--accent);background:#fef9e7}
+.mini-card.selected{border-color:var(--accent);background:#fef9e7;box-shadow:0 0 0 2px rgba(238,189,42,.3)}
+.mini-card-name{font-size:13px;font-weight:700}
+.mini-card-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.card-detail{flex:1;overflow-y:auto;padding:20px}
+
+/* BULK ACTIONS */
+.bulk-bar{display:flex;align-items:center;gap:10px;padding:8px 16px;background:#fef9e7;border-bottom:1px solid var(--accent);flex-wrap:wrap}
+.bulk-bar .bulk-count{font-size:13px;font-weight:700;color:var(--accent-dark)}
+.row-checkbox{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+
+/* VIEW TABS */
+.view-mode-tabs{display:flex;gap:0;margin-bottom:0;border-bottom:1px solid var(--border);padding:0 12px;background:var(--white)}
+.view-mode-tab{padding:8px 14px;font-size:12px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit}
+.view-mode-tab.active{color:var(--accent-dark);border-bottom-color:var(--accent)}
+.view-mode-tab:hover{color:var(--accent-dark)}
+
+/* STAR VIEWS */
+.star-btn{cursor:pointer;font-size:14px;margin-left:4px;background:none;border:none;padding:0}
+
+/* CUSTOM VIEW MODAL */
+.custom-view-form{padding:8px}
+.custom-view-form input,.custom-view-form select{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;margin-bottom:8px;font-family:inherit}
+
+/* QUICK ACTION BUTTONS */
+.quick-actions{display:flex;gap:6px;flex-wrap:wrap;padding:8px 16px;background:var(--white);border-bottom:1px solid var(--border)}
+.quick-action-btn{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--hover);cursor:pointer;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;transition:all .15s;font-family:inherit}
+.quick-action-btn:hover{border-color:var(--accent);background:#fef9e7}
+
+/* CALL LOG FORM */
+.call-log-form{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;margin-bottom:10px}
+.call-log-form input,.call-log-form textarea{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;margin-bottom:6px;font-family:inherit;direction:rtl}
+
+/* HISTORY ITEM */
+.history-badge{background:#e0e7ff;border:1px solid #c7d2fe}
+
+/* RECORD NAV */
+.record-nav-btn{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--hover);cursor:pointer;font-size:14px;font-weight:700;transition:all .15s}
+.record-nav-btn:hover{border-color:var(--accent);background:#fef9e7}
+.record-nav-btn:disabled{opacity:.3;cursor:default}
+
+/* GLOBAL SEARCH */
+.global-search-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;justify-content:center;padding-top:80px}
+.global-search-overlay.open{display:flex}
+.global-search-box{background:var(--white);border-radius:16px;width:560px;max-width:95vw;max-height:70vh;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2);display:flex;flex-direction:column}
+.global-search-input{padding:16px 20px;border:none;border-bottom:1px solid var(--border);font-size:16px;font-family:inherit;outline:none;direction:rtl}
+.global-search-results{overflow-y:auto;padding:8px}
+.search-group-title{font-size:11px;font-weight:700;color:var(--text2);padding:8px 12px;text-transform:uppercase}
+.search-result-item{padding:10px 16px;cursor:pointer;border-radius:8px;display:flex;align-items:center;gap:10px;transition:background .1s}
+.search-result-item:hover{background:var(--hover)}
+.search-result-name{font-size:13px;font-weight:600}
+.search-result-sub{font-size:11px;color:var(--text2)}
+
+/* NOTIFICATIONS */
+.notif-dropdown{position:absolute;top:100%;left:0;background:var(--white);border:1px solid var(--border);border-radius:12px;width:340px;max-height:400px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:300;display:none}
+.notif-dropdown.open{display:block}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--hover);cursor:pointer;transition:background .1s}
+.notif-item:hover{background:var(--hover)}
+.notif-item.unread{background:#fef9e7}
+.notif-title{font-size:13px;font-weight:600}
+.notif-time{font-size:11px;color:var(--text2);margin-top:2px}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-size:9px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* REPORTS POPUP */
+.reports-popup{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:250;display:none;align-items:center;justify-content:center}
+.reports-popup.open{display:flex}
+.reports-panel{background:var(--white);border-radius:16px;padding:28px;width:640px;max-width:95vw;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+
 </style>
 </head>
 <body>
@@ -358,6 +469,8 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
   <div class="topbar">
     <div class="page-title" id="pageTitle">דאשבורד</div>
     <div class="topbar-actions">
+      <button class="btn btn-secondary btn-sm btn-icon" onclick="openGlobalSearch()" title="חיפוש">🔍</button>
+      <div style="position:relative"><button class="btn btn-secondary btn-sm btn-icon" onclick="toggleNotifications()" title="התראות" id="notifBtn">🔔<span class="notif-badge" id="notifBadge" style="display:none">0</span></button><div class="notif-dropdown" id="notifDropdown"></div></div>
       <button class="btn btn-secondary btn-sm" id="exportBtn" onclick="exportData()" style="display:none">⬇️ ייצוא</button>
       <button class="btn btn-primary" id="addBtn" onclick="openAddModal()" style="display:none">+ הוסף</button>
       <button class="btn btn-secondary btn-sm" onclick="doLogout()">🚪 יציאה</button>
@@ -376,7 +489,9 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
         <span class="record-type-badge" id="recordTypeBadge">—</span>
         <span class="record-name" id="recordName">—</span>
       </div>
-      <div style="display:flex;gap:8px;flex-shrink:0">
+      <div style="display:flex;gap:8px;flex-shrink:0;align-items:center">
+        <button class="record-nav-btn" id="recNavPrev" onclick="recNav(-1)" title="הקודם">▶</button>
+        <button class="record-nav-btn" id="recNavNext" onclick="recNav(1)" title="הבא">◀</button>
         <button class="btn btn-success btn-sm" onclick="saveRecord()">💾 שמור</button>
         <button class="btn btn-danger btn-sm" id="recordDeleteBtn" onclick="deleteRecord()">🗑️ מחק</button>
       </div>
@@ -396,6 +511,15 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
   </div>
 </div>
 <div class="toast" id="toast"><span id="toastMsg">נשמר ✅</span></div>
+<div class="global-search-overlay" id="globalSearchOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="global-search-box">
+    <input class="global-search-input" id="globalSearchInput" placeholder="חפש בכל המודולים..." oninput="doGlobalSearch(this.value)">
+    <div class="global-search-results" id="globalSearchResults"></div>
+  </div>
+</div>
+<div class="reports-popup" id="reportsPopup" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="reports-panel" id="reportsPanel"></div>
+</div>
 
 <script>
 // ===== USERS & PERMISSIONS =====
@@ -551,8 +675,9 @@ function backToStep1() {
 
 function doLogin(){step1Submit();} // legacy - redirects to OTP flow
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginPage').style.display!=='none'){if(document.getElementById('loginStep2').style.display!=='none')step2Submit();else step1Submit();}});
+document.addEventListener('click',function(e){var dd=document.getElementById('notifDropdown');if(dd&&dd.classList.contains('open')&&!e.target.closest('#notifDropdown')&&!e.target.closest('#notifBtn'))dd.classList.remove('open');});
 function doLogout(){sessionStorage.removeItem('roicrm_user');currentUser=null;document.getElementById('loginPage').style.display='flex';document.getElementById('app').style.display='none';}
-function initApp(){document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=currentUser.name;document.getElementById('userAvatar').textContent=currentUser.avatar;document.getElementById('userAvatar').style.background=currentUser.color;document.getElementById('userRoleLabel').textContent=currentUser.roleLabel;document.getElementById('usersNavItem').style.display=perm('users')?'flex':'none';updateBadges();showPage('dashboard');}
+function initApp(){document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('userName').textContent=currentUser.name;document.getElementById('userAvatar').textContent=currentUser.avatar;document.getElementById('userAvatar').style.background=currentUser.color;document.getElementById('userRoleLabel').textContent=currentUser.roleLabel;document.getElementById('usersNavItem').style.display=perm('users')?'flex':'none';updateBadges();updateNotifBadge();showPage('dashboard');}
 
 // ===== NAV =====
 const PAGE_TITLES={dashboard:'דאשבורד',leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',products:'מוצרים',meetings:'פגישות',tasks:'משימות',users:'משתמשים',settings:'הגדרות'};
@@ -563,10 +688,117 @@ function showPage(page){currentPage=page;document.querySelectorAll('.nav-item').
 function updateBadges(){['leads','deals','clients','payments','products','meetings','tasks'].forEach(k=>{const el=document.getElementById('badge-'+k);if(el)el.textContent=(DB[k]||[]).length;});}
 
 // ===== RENDER =====
-function renderPage(page){const c=document.getElementById('mainContent');if(page==='dashboard'){c.innerHTML=renderDashboard();return;}if(page==='users'){c.innerHTML=renderUsers();return;}if(page==='settings'){c.innerHTML=renderSettings();return;}if(DB[page]!==undefined){c.innerHTML=renderList(page);return;}c.innerHTML='<div class="empty-state"><div class="es-icon">🚧</div><div class="es-title">בקרוב</div></div>';}
-function renderDashboard(){const tL=DB.leads.length,oD=DB.deals.filter(d=>d.status!=='סגורה').length,rev=DB.payments.filter(p=>p.status==='שולם').reduce((s,p)=>s+(Number(p.amount)||0),0),tasks=[...DB.tasks,...DB.leads.flatMap(l=>l.tasks||[]),...DB.deals.flatMap(d=>d.tasks||[])].filter(t=>!t.done).length;
-return `<div class="stats-grid"><div class="stat-card"><div class="stat-label">⭐ מתעניינים</div><div class="stat-value accent">${tL}</div><div class="stat-sub">ממתינים לטיפול</div></div><div class="stat-card"><div class="stat-label">💼 עסקאות פתוחות</div><div class="stat-value warn">${oD}</div><div class="stat-sub">ממתינות לסגירה</div></div><div class="stat-card"><div class="stat-label">💰 גביה שנתית</div><div class="stat-value success">${fmtMoney(rev)}</div><div class="stat-sub">תשלומים שהתקבלו</div></div><div class="stat-card"><div class="stat-label">✅ משימות פתוחות</div><div class="stat-value danger">${tasks}</div><div class="stat-sub">מחכות לביצוע</div></div></div>
-<div class="dash-grid"><div class="dash-card"><div class="dash-card-title">סטטוס לידים</div>${['לידים חדשים 🎉','לידים זהב ⭐','פולאופ איכותי 😊','נוצר קשר ראשוני 📞','לא נסגר 😊','ליד לא תקין ❌','חיפוש חופשי 🔍'].map(s=>`<div class="status-row"><span class="status-label">${s}</span><span class="status-count">${DB.leads.filter(l=>l.status===s).length}</span></div>`).join('')}</div><div class="dash-card"><div class="dash-card-title">מחזור לפי מוצר</div>${DB.products.map(p=>{const r=DB.payments.filter(x=>x.productId===p.id&&x.status==='שולם').reduce((s,x)=>s+(Number(x.amount)||0),0);return`<div class="status-row"><span class="status-label">${p.name}</span><span class="status-count">${fmtMoney(r)}</span></div>`;}).join('')||'<div class="empty-state" style="padding:16px"><div class="es-sub">אין מוצרים</div></div>'}</div></div>`;}
+function renderPage(page){const c=document.getElementById('mainContent');var isDashOrList=(page==='dashboard'||DB[page]!==undefined);c.style.padding=isDashOrList?'0':'24px';c.style.overflow=isDashOrList?'hidden':'auto';if(page==='dashboard'){c.innerHTML=renderDashboard();return;}if(page==='users'){c.innerHTML=renderUsers();return;}if(page==='settings'){c.innerHTML=renderSettings();return;}if(DB[page]!==undefined){c.innerHTML=renderList(page);return;}c.innerHTML='<div class="empty-state"><div class="es-icon">🚧</div><div class="es-title">בקרוב</div></div>';}
+var currentDashTab=0;
+function renderDashboard(){
+  var tabs=[{name:'ראשי',icon:'📊'},{name:'טבלת יחסי המרה',icon:'🔄'},{name:'ניתוח לידים',icon:'📈'}];
+  var sidebar='<div class="dash-sidebar"><div class="views-title">דאשבורדים</div>';
+  tabs.forEach(function(t,i){sidebar+='<div class="view-item'+(i===currentDashTab?' active':'')+'" onclick="currentDashTab='+i+';renderPage(\'dashboard\')">'+t.icon+' '+t.name+'</div>';});
+  sidebar+='</div>';
+  var main='<div class="dash-main">';
+  if(currentDashTab===0)main+=renderDashMain();
+  else if(currentDashTab===1)main+=renderConversionTable();
+  else if(currentDashTab===2)main+=renderLeadAnalysis();
+  main+='</div>';
+  return '<div class="dash-layout">'+sidebar+main+'</div>';
+}
+function renderDashMain(){
+  var n=new Date(),wStart=new Date(n);wStart.setDate(n.getDate()-n.getDay());wStart.setHours(0,0,0,0);
+  var mStart=new Date(n.getFullYear(),n.getMonth(),1);
+  var leadsWeek=DB.leads.filter(function(l){return l.created&&new Date(l.created)>=wStart}).length;
+  var dealsWeek=DB.deals.filter(function(d){return d.created&&new Date(d.created)>=wStart}).length;
+  var dealValWeek=DB.deals.filter(function(d){return d.created&&new Date(d.created)>=wStart}).reduce(function(s,d){return s+(Number(d.dealTotal)||0)},0);
+  var leadsMonth=DB.leads.filter(function(l){return _isThisMonth(l.created)}).length;
+  var moneyMonth=DB.payments.filter(function(p){return p.status==='שולם'&&_isThisMonth(p.paymentDate)}).reduce(function(s,p){return s+(Number(p.amount)||0)},0);
+  var dealValMonth=DB.deals.filter(function(d){return _isThisMonth(d.created)}).reduce(function(s,d){return s+(Number(d.dealTotal)||0)},0);
+  var dealsMonth=DB.deals.filter(function(d){return _isThisMonth(d.created)}).length;
+  var totalDealVal=DB.deals.reduce(function(s,d){return s+(Number(d.dealTotal)||0)},0);
+  var totalCollected=DB.payments.filter(function(p){return p.status==='שולם'}).reduce(function(s,p){return s+(Number(p.amount)||0)},0);
+  var remaining=totalDealVal-totalCollected;if(remaining<0)remaining=0;
+  var avgDeal=dealsMonth>0?Math.round(dealValMonth/dealsMonth):0;
+  var h='<div class="kpi-grid">';
+  h+=kpiCard('לידים השבוע',leadsWeek,'blue');
+  h+=kpiCard('עסקאות השבוע',dealsWeek,'blue');
+  h+=kpiCard('שווי עסקאות השבוע',fmtMoney(dealValWeek),'blue');
+  h+=kpiCard('לידים החודש',leadsMonth,'blue');
+  h+=kpiCard('כסף בבנק החודש',fmtMoney(moneyMonth),'green');
+  h+=kpiCard('שווי עסקאות החודש',fmtMoney(dealValMonth),'blue');
+  h+=kpiCard('עסקאות החודש',dealsMonth,'blue');
+  h+=kpiCard('גביה שנותר לעשות',fmtMoney(remaining),'red');
+  h+=kpiCard('ממוצע עסקה חודשי',fmtMoney(avgDeal),'blue');
+  h+='</div>';
+  h+=renderSalesTurnoverTable();
+  h+='<div style="margin-top:16px">'+renderConversionTable()+'</div>';
+  return h;
+}
+function kpiCard(label,val,color){
+  var cc=color==='green'?' green':color==='red'?' red':'';
+  return '<div class="kpi-card'+cc+'"><div class="kpi-label">'+label+'</div><div class="kpi-value '+color+'">'+val+'</div></div>';
+}
+function renderSalesTurnoverTable(){
+  var n=new Date();var months=[];
+  for(var mi=2;mi>=0;mi--){var d=new Date(n.getFullYear(),n.getMonth()-mi,1);months.push({m:d.getMonth(),y:d.getFullYear(),label:d.toLocaleDateString('he-IL',{month:'short',year:'2-digit'})});}
+  var h='<div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">מחזור מכירות לפי מוצר</div>';
+  h+='<table class="sales-table"><thead><tr><th>מוצר</th>';
+  months.forEach(function(m){h+='<th>'+m.label+'</th>';});
+  h+='<th>סה"כ</th></tr></thead><tbody>';
+  DB.products.forEach(function(p){
+    h+='<tr><td><b>'+p.name+'</b></td>';
+    var total=0;
+    months.forEach(function(m){
+      var amt=DB.payments.filter(function(pay){
+        if(pay.status!=='שולם')return false;
+        var pd=pay.paymentDate||pay.created;if(!pd)return false;
+        var dt=new Date(pd);
+        if(dt.getMonth()!==m.m||dt.getFullYear()!==m.y)return false;
+        if(pay.productId===p.id)return true;
+        var deal=DB.deals.find(function(d){return d.id===pay.dealId||d.name===pay.dealName});
+        return deal&&deal.productId===p.id;
+      }).reduce(function(s,x){return s+(Number(x.amount)||0)},0);
+      total+=amt;
+      h+='<td>'+fmtMoney(amt)+'</td>';
+    });
+    h+='<td><b>'+fmtMoney(total)+'</b></td></tr>';
+  });
+  h+='</tbody></table></div>';
+  return h;
+}
+function renderConversionTable(){
+  var sources=['אינסטגרם אורגני','אינסטגרם רועי','אינסטגרם נתן','קמפיין ממומן','לקוחות חוזרים','אפיליאציה','פייסבוק','גוגל','המלצה','אחר'];
+  var monthLeads=DB.leads.filter(function(l){return _isThisMonth(l.created)});
+  var h='<div class="dash-card"><div class="dash-card-title">טבלת יחסי המרה - החודש</div>';
+  h+='<table class="conv-table"><thead><tr><th>מקור</th><th>נכנסו</th><th>ענו</th><th>רלוונטיים</th><th>המרה %</th></tr></thead><tbody>';
+  sources.forEach(function(src){
+    var entered=monthLeads.filter(function(l){return l.source===src}).length;
+    var answered=monthLeads.filter(function(l){return l.source===src&&l.status!=='לידים חדשים 🎉'&&l.status!=='אין מענה 📞'}).length;
+    var relevant=monthLeads.filter(function(l){return l.source===src&&(l.status==='פולאופ איכותי 🌟'||l.status==='סגר ✔️')}).length;
+    var pct=entered>0?Math.round(relevant/entered*100):0;
+    h+='<tr><td>'+src+'</td><td>'+entered+'</td><td>'+answered+'</td><td>'+relevant+'</td><td>'+pct+'%</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  return h;
+}
+function renderLeadAnalysis(){
+  var statuses=['לידים חדשים 🎉','אין מענה 📞','נוצר קשר ראשוני 😊','פולאופ איכותי 🌟','סגר ✔️','לא נסגר 😔','ליד לא תקין ❌'];
+  var total=DB.leads.length||1;
+  var h='<div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">פילוח לפי סטטוס</div><div class="bar-chart">';
+  var colors=['#3b82f6','#f59e0b','#10b981','#8b5cf6','#059669','#ef4444','#6b7280'];
+  statuses.forEach(function(s,i){
+    var c=DB.leads.filter(function(l){return l.status===s}).length;
+    var pct=Math.round(c/total*100);
+    h+='<div class="bar-row"><span class="bar-label">'+s+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.max(pct,2)+'%;background:'+colors[i%colors.length]+'">'+pct+'%</div></div><span class="bar-count">'+c+'</span></div>';
+  });
+  h+='</div></div>';
+  var sources=['אינסטגרם אורגני','אינסטגרם רועי','אינסטגרם נתן','קמפיין ממומן','לקוחות חוזרים','אפיליאציה','פייסבוק','גוגל','המלצה','אחר'];
+  h+='<div class="dash-card"><div class="dash-card-title">פילוח לפי מקור</div><div class="bar-chart">';
+  sources.forEach(function(s,i){
+    var c=DB.leads.filter(function(l){return l.source===s}).length;
+    var pct=Math.round(c/total*100);
+    h+='<div class="bar-row"><span class="bar-label">'+s+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.max(pct,2)+'%;background:'+colors[i%colors.length]+'">'+pct+'%</div></div><span class="bar-count">'+c+'</span></div>';
+  });
+  h+='</div></div>';
+  return h;
+}
 
 function renderUsers(){if(!perm('users'))return'<div class="empty-state"><div class="es-icon">🔒</div><div class="es-title">אין הרשאה</div></div>';
 return`<div class="users-grid">${Object.entries(USERS).map(([k,u])=>{const p=PERMS[u.role];return`<div class="user-card"><div class="user-card-avatar" style="background:${u.color}">${u.avatar}</div><div class="user-card-name">${u.name}</div><div class="user-card-role">${u.roleLabel}</div><div style="border-top:1px solid var(--border);padding-top:12px;text-align:right"><div class="perm-row"><span>יצירת לידים/עסקאות</span><span class="perm-yes">✓</span></div><div class="perm-row"><span>יצירת לקוחות/תשלומים</span><span class="${p.canCreate.includes('clients')?'perm-yes':'perm-no'}">${p.canCreate.includes('clients')?'✓':'✗'}</span></div><div class="perm-row"><span>מחיקת רשומות</span><span class="${p.canDelete?'perm-yes':'perm-no'}">${p.canDelete?'✓':'✗'}</span></div><div class="perm-row"><span>ייצוא נתונים</span><span class="${p.canExport?'perm-yes':'perm-no'}">${p.canExport?'✓':'✗'}</span></div><div class="perm-row"><span>ניהול משתמשים</span><span class="${p.canManageUsers?'perm-yes':'perm-no'}">${p.canManageUsers?'✓':'✗'}</span></div></div></div>`;}).join('')}</div>`;}
@@ -764,36 +996,123 @@ function applyCustomFilters(items,page){
   });
 }
 
+var currentViewMode={};var selectedRows={};var cardSelectedId={};
+var customViewsData=JSON.parse(localStorage.getItem('roicrm_custom_views')||'{}');
+var favViews=JSON.parse(localStorage.getItem('roicrm_fav_views')||'{}');
+
+function toggleFavView(page,idx){
+  if(!favViews[page])favViews[page]=[];
+  var i=favViews[page].indexOf(idx);
+  if(i>=0)favViews[page].splice(i,1);else favViews[page].push(idx);
+  localStorage.setItem('roicrm_fav_views',JSON.stringify(favViews));
+  renderPage(page);
+}
+function addCustomView(page){
+  var name=prompt('שם התצוגה:');if(!name)return;
+  if(!customViewsData[page])customViewsData[page]=[];
+  customViewsData[page].push({name:name,field:'',op:'contains',value:''});
+  localStorage.setItem('roicrm_custom_views',JSON.stringify(customViewsData));
+  renderPage(page);
+}
+function editCustomView(page,idx){
+  var cv=customViewsData[page][idx];if(!cv)return;
+  var fields=getFilterFields(page);
+  var h='<div class="custom-view-form"><input id="cv-name" value="'+cv.name+'" placeholder="שם"><select id="cv-field"><option value="">-- שדה --</option>';
+  fields.forEach(function(f){h+='<option value="'+f.k+'"'+(cv.field===f.k?' selected':'')+'>'+f.l+'</option>';});
+  h+='</select><select id="cv-op"><option value="contains"'+(cv.op==='contains'?' selected':'')+'>מכיל</option><option value="equals"'+(cv.op==='equals'?' selected':'')+'>שווה ל</option><option value="not"'+(cv.op==='not'?' selected':'')+'>לא מכיל</option></select>';
+  h+='<input id="cv-val" value="'+(cv.value||'')+'" placeholder="ערך"></div>';
+  document.getElementById('modalTitle').textContent='עריכת תצוגה';
+  document.getElementById('modalBody').innerHTML=h;
+  modalType='_customView';modalParent={page:page,idx:idx};
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function deleteCustomView(page,idx){
+  customViewsData[page].splice(idx,1);
+  localStorage.setItem('roicrm_custom_views',JSON.stringify(customViewsData));
+  renderPage(page);
+}
+function getListItems(page){
+  var views=VIEWS[page]||[];
+  var allItems=DB[page]||[];
+  var cvs=customViewsData[page]||[];
+  var totalViews=views.length+cvs.length;
+  var viewIdx=currentViewIdx[page]||0;
+  var items;
+  if(viewIdx<views.length){
+    var activeView=views[viewIdx];
+    items=activeView?allItems.filter(activeView.filter):allItems;
+  } else {
+    var cv=cvs[viewIdx-views.length];
+    if(cv&&cv.field&&cv.value){
+      items=allItems.filter(function(r){
+        var val=String(r[cv.field]||'').toLowerCase(),fval=cv.value.toLowerCase();
+        if(cv.op==='contains')return val.indexOf(fval)>=0;
+        if(cv.op==='equals')return val===fval;
+        if(cv.op==='not')return val.indexOf(fval)<0;
+        return true;
+      });
+    } else items=allItems;
+  }
+  items=applyCustomFilters(items,page);
+  return items;
+}
+
 function renderList(page){
   var cfg=LIST_CONFIGS[page];
   var views=VIEWS[page]||[];
   var allItems=DB[page]||[];
+  var cvs=customViewsData[page]||[];
   var viewIdx=currentViewIdx[page]||0;
-  var activeView=views[viewIdx];
-  var items=activeView?allItems.filter(activeView.filter):allItems;
-  items=applyCustomFilters(items,page);
+  var items=getListItems(page);
   var vc=getVisibleCols(page);
   var filters=customFilters[page]||[];
   var filterFields=getFilterFields(page);
+  var mode=currentViewMode[page]||'table';
+  if(!selectedRows[page])selectedRows[page]={};
 
-  // Views sidebar
+  // Update page title with count
+  var viewName='';
+  if(viewIdx<views.length&&views[viewIdx])viewName=views[viewIdx].name;
+  else if(cvs[viewIdx-views.length])viewName=cvs[viewIdx-views.length].name;
+  document.getElementById('pageTitle').textContent='('+items.length+') '+(viewName||PAGE_TITLES[page]||page);
+
+  // Views sidebar with favorites and custom views
   var sidebar='';
-  if(views.length){
+  if(views.length||cvs.length){
     sidebar='<div class="views-sidebar"><div class="views-title">תצוגות</div>';
     sidebar+='<input class="views-search" placeholder="חפש תצוגות..." oninput="filterViews(this)">';
-    views.forEach(function(v,i){
-      var count=allItems.filter(v.filter).length;
-      sidebar+='<div class="view-item'+(i===viewIdx?' active':'')+'" onclick="setView(\''+page+'\','+i+')" data-view-name="'+v.name+'">';
-      sidebar+=(v.icon?v.icon+' ':'')+v.name;
-      sidebar+='<span class="view-count">'+count+'</span></div>';
+    var favs=favViews[page]||[];
+    // Starred views first
+    var allViewItems=[];
+    views.forEach(function(v,i){allViewItems.push({v:v,i:i,custom:false});});
+    cvs.forEach(function(v,i){allViewItems.push({v:v,i:views.length+i,custom:true});});
+    allViewItems.sort(function(a,b){var af=favs.indexOf(a.i)>=0?0:1,bf=favs.indexOf(b.i)>=0?0:1;return af-bf;});
+    allViewItems.forEach(function(item){
+      var v=item.v,i=item.i,isFav=favs.indexOf(i)>=0;
+      var count=item.custom?'':allItems.filter(v.filter||function(){return true}).length;
+      sidebar+='<div class="view-item'+(i===viewIdx?' active':'')+'" data-view-name="'+(v.name||'')+'" style="display:flex;align-items:center">';
+      sidebar+='<button class="star-btn" onclick="event.stopPropagation();toggleFavView(\''+page+'\','+i+')">'+(isFav?'⭐':'☆')+'</button>';
+      sidebar+='<span onclick="setView(\''+page+'\','+i+')" style="flex:1;cursor:pointer">'+(v.icon?v.icon+' ':'')+v.name+'</span>';
+      if(typeof count==='number')sidebar+='<span class="view-count">'+count+'</span>';
+      if(item.custom)sidebar+='<span onclick="event.stopPropagation();deleteCustomView(\''+page+'\','+(i-views.length)+')" style="cursor:pointer;color:var(--danger);font-size:11px;margin-right:4px">✕</span>';
+      sidebar+='</div>';
     });
+    sidebar+='<div class="view-item" onclick="addCustomView(\''+page+'\')" style="color:var(--accent-dark);font-weight:600">+ תצוגה מותאמת</div>';
     sidebar+='</div>';
   }
+
+  // View mode tabs
+  var viewTabs='<div class="view-mode-tabs">';
+  viewTabs+='<button class="view-mode-tab'+(mode==='table'?' active':'')+'" onclick="currentViewMode[\''+page+'\']=\'table\';renderPage(\''+page+'\')">רשימה</button>';
+  viewTabs+='<button class="view-mode-tab'+(mode==='board'?' active':'')+'" onclick="currentViewMode[\''+page+'\']=\'board\';renderPage(\''+page+'\')">לוח</button>';
+  viewTabs+='<button class="view-mode-tab'+(mode==='card'?' active':'')+'" onclick="currentViewMode[\''+page+'\']=\'card\';renderPage(\''+page+'\')">כרטיסיה</button>';
+  viewTabs+='</div>';
 
   // Toolbar
   var toolbar='<div class="toolbar-row">';
   toolbar+='<div class="search-box" style="flex:1;max-width:280px"><span>🔍</span><input placeholder="חיפוש..." oninput="filterTable(this.value,\''+page+'\')" id="search-'+page+'"></div>';
   toolbar+='<div style="font-size:12px;color:var(--text2)">'+items.length+' רשומות</div>';
+  toolbar+='<button class="toolbar-btn" onclick="openReports(\''+page+'\')">📊 דוחות</button>';
   toolbar+='<div style="position:relative"><button class="toolbar-btn'+(filters.length?' active':'')+'" onclick="togglePanel(\'filter-panel-'+page+'\')">🔽 סינון'+(filters.length?' ('+filters.length+')':'')+'</button>';
   toolbar+='<div class="panel-popup" id="filter-panel-'+page+'">';
   toolbar+='<div style="font-weight:700;margin-bottom:8px;font-size:13px">סינון</div>';
@@ -825,6 +1144,18 @@ function renderList(page){
   toolbar+='</div></div>';
   toolbar+='</div>';
 
+  // Bulk action bar
+  var selCount=Object.keys(selectedRows[page]).filter(function(k){return selectedRows[page][k]}).length;
+  var bulkBar='';
+  if(selCount>0){
+    bulkBar='<div class="bulk-bar"><span class="bulk-count">'+selCount+' מתוך '+items.length+' רשומות נבחרו</span>';
+    bulkBar+='<button class="btn btn-secondary btn-sm" onclick="bulkSelectAll(\''+page+'\')">בחר הכל</button>';
+    bulkBar+='<button class="btn btn-warn btn-sm" onclick="bulkChangeField(\''+page+'\')">שנה שדה</button>';
+    if(perm('delete'))bulkBar+='<button class="btn btn-danger btn-sm" onclick="bulkDelete(\''+page+'\')">מחק</button>';
+    bulkBar+='<button class="btn btn-secondary btn-sm" onclick="selectedRows[\''+page+'\']={}; renderPage(\''+page+'\')">בטל בחירה</button>';
+    bulkBar+='</div>';
+  }
+
   // Active filter tags
   var tags='';
   if(filters.length){
@@ -838,16 +1169,44 @@ function renderList(page){
     tags+='</div>';
   }
 
+  // Card view mode
+  if(mode==='card'){
+    var cardList='<div class="card-list">';
+    items.forEach(function(r){
+      var sel=cardSelectedId[page]===r.id;
+      cardList+='<div class="mini-card'+(sel?' selected':'')+'" onclick="cardSelectedId[\''+page+'\']=\''+r.id+'\';renderPage(\''+page+'\')">';
+      cardList+='<div class="mini-card-name">'+(r.name||r.title||'—')+'</div>';
+      cardList+='<div class="mini-card-sub">'+(r.status||r.clientStatus||'')+(r.phone?' | '+r.phone:'')+'</div>';
+      cardList+='</div>';
+    });
+    cardList+='</div>';
+    var cardDetail='<div class="card-detail">';
+    var selRec=items.find(function(r){return r.id===cardSelectedId[page]});
+    if(selRec){
+      cardDetail+='<div style="margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="openRecord(\''+page+'\',\''+selRec.id+'\')">📂 פתח רשומה מלאה</button></div>';
+      var tempRec=currentRecord,tempType=currentRecordType;
+      currentRecord=selRec;currentRecordType=page;
+      cardDetail+=renderRight();
+      currentRecord=tempRec;currentRecordType=tempType;
+    } else {
+      cardDetail+='<div class="empty-state"><div class="es-icon">👆</div><div class="es-title">בחר רשומה</div></div>';
+    }
+    cardDetail+='</div>';
+    return '<div class="list-layout">'+sidebar+'<div class="list-main">'+viewTabs+toolbar+tags+bulkBar+'<div class="card-view-layout">'+cardList+cardDetail+'</div></div></div>';
+  }
+
   // Table
   var visCols=vc;
-  var table='<div class="table-wrap" style="flex:1;overflow:auto"><table id="tbl-'+page+'"><thead><tr>';
+  var table='<div class="table-wrap" style="flex:1;overflow:auto"><table id="tbl-'+page+'"><thead><tr><th style="width:30px"><input type="checkbox" class="row-checkbox" onchange="bulkToggleAll(\''+page+'\',this.checked)"></th>';
   visCols.forEach(function(ci){table+='<th>'+cfg.cols[ci]+'</th>';});
   table+='<th>פעולות</th></tr></thead><tbody>';
   if(items.length){
     var inlineCfg=INLINE_EDITS[page]||{};
     items.forEach(function(r){
       var allFields=cfg.fields(r);
-      table+='<tr onclick="openRecord(\''+page+'\',\''+r.id+'\')">';
+      var isSel=selectedRows[page][r.id];
+      table+='<tr onclick="openRecord(\''+page+'\',\''+r.id+'\')"'+(isSel?' style="background:#fef9e7"':'')+'>';
+      table+='<td onclick="event.stopPropagation()"><input type="checkbox" class="row-checkbox" '+(isSel?'checked':'')+' onchange="toggleRowSelect(\''+page+'\',\''+r.id+'\',this.checked)"></td>';
       visCols.forEach(function(ci){
         if(inlineCfg[ci]){
           table+='<td style="cursor:pointer" onclick="event.stopPropagation();inlineEdit(event,\''+page+'\',\''+r.id+'\','+ci+')" title="לחץ לעריכה">'+allFields[ci]+'</td>';
@@ -860,11 +1219,69 @@ function renderList(page){
       table+='</td></tr>';
     });
   } else {
-    table+='<tr><td colspan="'+(visCols.length+1)+'"><div class="empty-state"><div class="es-icon">'+(PAGE_ICONS[page]||'📋')+'</div><div class="es-title">אין רשומות</div><div class="es-sub">לחץ + הוסף</div></div></td></tr>';
+    table+='<tr><td colspan="'+(visCols.length+2)+'"><div class="empty-state"><div class="es-icon">'+(PAGE_ICONS[page]||'📋')+'</div><div class="es-title">אין רשומות</div><div class="es-sub">לחץ + הוסף</div></div></td></tr>';
   }
   table+='</tbody></table></div>';
 
-  return '<div class="list-layout">'+sidebar+'<div class="list-main">'+toolbar+tags+table+'</div></div>';
+  return '<div class="list-layout">'+sidebar+'<div class="list-main">'+viewTabs+toolbar+tags+bulkBar+table+'</div></div>';
+}
+
+// Bulk actions
+function toggleRowSelect(page,id,checked){
+  if(!selectedRows[page])selectedRows[page]={};
+  if(checked)selectedRows[page][id]=true;else delete selectedRows[page][id];
+  renderPage(page);
+}
+function bulkToggleAll(page,checked){
+  var items=getListItems(page);
+  if(!selectedRows[page])selectedRows[page]={};
+  items.forEach(function(r){if(checked)selectedRows[page][r.id]=true;else delete selectedRows[page][r.id];});
+  renderPage(page);
+}
+function bulkSelectAll(page){
+  var items=getListItems(page);
+  if(!selectedRows[page])selectedRows[page]={};
+  items.forEach(function(r){selectedRows[page][r.id]=true;});
+  renderPage(page);
+}
+function bulkDelete(page){
+  if(!perm('delete'))return;
+  var ids=Object.keys(selectedRows[page]||{}).filter(function(k){return selectedRows[page][k]});
+  if(!ids.length)return;
+  if(!confirm('למחוק '+ids.length+' רשומות?'))return;
+  DB[page]=DB[page].filter(function(r){return ids.indexOf(r.id)<0});
+  selectedRows[page]={};saveData();renderPage(page);showToast(ids.length+' רשומות נמחקו ✅');
+}
+function bulkChangeField(page){
+  var fields=getFilterFields(page);
+  var h='<div style="direction:rtl"><select id="bulk-field" class="form-control" style="margin-bottom:8px"><option value="">-- בחר שדה --</option>';
+  fields.forEach(function(f){h+='<option value="'+f.k+'">'+f.l+'</option>';});
+  h+='</select><input id="bulk-value" class="form-control" placeholder="ערך חדש"></div>';
+  document.getElementById('modalTitle').textContent='שינוי שדה לרשומות נבחרות';
+  document.getElementById('modalBody').innerHTML=h;
+  modalType='_bulkChange';modalParent={page:page};
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+// Reports
+function openReports(page){
+  var items=DB[page]||[];
+  var statusKey=page==='leads'?'status':page==='deals'?'status':page==='payments'?'status':page==='tasks'?'done':page==='meetings'?'status':'status';
+  var groups={};
+  items.forEach(function(r){var s=r[statusKey]||'אחר';if(statusKey==='done')s=r.done?'סגור':'פתוח';if(!groups[s])groups[s]=0;groups[s]++;});
+  var total=items.length||1;
+  var colors=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#059669','#ec4899','#6b7280'];
+  var h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3>📊 דוח סטטוסים - '+PAGE_TITLES[page]+'</h3><button class="btn btn-secondary btn-sm" onclick="document.getElementById(\'reportsPopup\').classList.remove(\'open\')">✕ סגור</button></div>';
+  h+='<div class="bar-chart">';
+  var ci=0;
+  Object.keys(groups).forEach(function(s){
+    var c=groups[s],pct=Math.round(c/total*100);
+    h+='<div class="bar-row"><span class="bar-label">'+s+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.max(pct,3)+'%;background:'+colors[ci%colors.length]+'">'+pct+'%</div></div><span class="bar-count">'+c+'</span></div>';
+    ci++;
+  });
+  h+='</div>';
+  document.getElementById('reportsPanel').innerHTML=h;
+  document.getElementById('reportsPopup').classList.add('open');
 }
 
 function filterTable(q,page){document.querySelectorAll('#tbl-'+page+' tbody tr').forEach(function(r){r.style.display=r.textContent.toLowerCase().indexOf(q.toLowerCase())>=0?'':'none';});}
@@ -887,7 +1304,11 @@ function _takeSnapshot(){
   els.forEach(function(el){var k=el.id.replace('fld_','');snap[k]=el.type==='checkbox'?el.checked:el.value;});
   _recordSnapshot=JSON.stringify(snap);_recordDirty=false;
 }
-function openRecord(type,id,push){const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;if(push&&currentRecord){recordStack.push({type:currentRecordType,id:currentRecord.id,name:currentRecord.name||currentRecord.title||'—'});}else if(!push){recordStack=[];}currentRecord={...item,notes:item.notes||[],tasks:item.tasks||[],files:item.files||[]};currentRecordType=type;_recordDirty=false;renderRec();document.getElementById('recordOverlay').classList.add('open');setTimeout(_takeSnapshot,100);}
+function openRecord(type,id,push){const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;if(push&&currentRecord){recordStack.push({type:currentRecordType,id:currentRecord.id,name:currentRecord.name||currentRecord.title||'—'});}else if(!push){recordStack=[];}currentRecord={...item,notes:item.notes||[],tasks:item.tasks||[],files:item.files||[],history:item.history||[]};currentRecordType=type;_recordDirty=false;
+  // Setup nav list
+  var listItems=getListItems(type);
+  recNavList=listItems;recNavIdx=listItems.findIndex(function(r){return r.id===id});
+  renderRec();document.getElementById('recordOverlay').classList.add('open');updateRecNavBtns();setTimeout(_takeSnapshot,100);}
 function _doClose(){if(recordStack.length>0){const p=recordStack.pop(),st=[...recordStack];openRecord(p.type,p.id,false);recordStack=st;}else{document.getElementById('recordOverlay').classList.remove('open');currentRecord=null;currentRecordType=null;recordStack=[];_recordDirty=false;renderPage(currentPage);}}
 function closeRecord(){
   if(_checkDirty()){
@@ -1131,7 +1552,13 @@ ${fv('price','מחיר',r.price)}
 ${fv('desc','תיאור',r.desc,{textarea:true,full:true})}
 </div></div>`;}
 
-function updateField(key,val){if(currentRecord){currentRecord[key]=val;if(key==='status_task')currentRecord.done=(val==='סגור');saveRS();}}
+function updateField(key,val){if(currentRecord){
+  // Track history for status changes
+  if((key==='status'||key==='clientStatus'||key==='status_task')&&currentRecord[key]!==val){
+    if(!currentRecord.history)currentRecord.history=[];
+    currentRecord.history.push({id:genId(),field:key,oldVal:currentRecord[key]||'',newVal:val,user:currentUser.username,created:now()});
+  }
+  currentRecord[key]=val;if(key==='status_task')currentRecord.done=(val==='סגור');saveRS();}}
 function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();runAutomations(currentRecordType,currentRecord,false);showToast('נשמר ✅');}_recordDirty=false;_doClose();}
 function deleteRecord() {
   var page = currentPage;
@@ -1168,22 +1595,39 @@ function markDealClosed(id){const deal=DB.deals.find(d=>d.id===id);if(deal){deal
 function copyBankDetails(){navigator.clipboard?.writeText('בנק לאומי | סניף 900 | חשבון 12345678 | על שם ROI').then(()=>showToast('פרטי העברה הועתקו ✅')).catch(()=>showToast('לא ניתן להעתיק'));}
 
 // ===== LEFT PANEL =====
-var activeLeftTab='activity';var activeAddMode='note';
+var activeLeftTab='activity';var activeAddMode='note';var showCallLogForm=false;
 function renderLeft(){const r=currentRecord,type=currentRecordType;
-var totalActivity=(r.notes||[]).length+(r.tasks||[]).length;
+var totalActivity=(r.notes||[]).length+(r.tasks||[]).length+(r.history||[]).length;
+// Quick action buttons
+var qa='<div class="quick-actions">';
+qa+='<button class="quick-action-btn" onclick="switchAddMode(\'note\');switchLeftTab(\'activity\');setTimeout(function(){var el=document.getElementById(\'noteInput\');if(el){el.scrollIntoView();el.focus();}},100)">📝 הערה</button>';
+qa+='<button class="quick-action-btn" onclick="switchAddMode(\'task\');switchLeftTab(\'activity\')">✅ משימה</button>';
+qa+='<button class="quick-action-btn" onclick="showCallLogForm=true;switchLeftTab(\'activity\');renderRec()">📞 לוג שיחה</button>';
+qa+='<button class="quick-action-btn" onclick="relAdd(\'meetings\',\''+r.id+'\',\''+(r.name||'').replace(/'/g,'&#39;')+'\')">📅 פגישה</button>';
+qa+='<button class="quick-action-btn" onclick="document.getElementById(\'fInput\')&&document.getElementById(\'fInput\').click()">📎 קובץ</button>';
+var phone=r.phone||r.clientPhone||'';
+if(phone)qa+='<button class="quick-action-btn" onclick="window.open(\'https://wa.me/972'+phone.replace(/^0/,'')+'\',\'_blank\')">💬 WhatsApp</button>';
+qa+='</div>';
 var tabs=[{id:'activity',icon:'📋',label:'פעולות',count:totalActivity}];
 if(type==='leads'){tabs.push({id:'rel_deals',icon:'💼',label:'עסקאות',count:(DB.deals||[]).filter(i=>i.leadId===r.id).length});tabs.push({id:'rel_meetings',icon:'📅',label:'פגישות',count:(DB.meetings||[]).filter(i=>i.leadId===r.id).length});}
 if(type==='deals'){tabs.push({id:'rel_clients',icon:'👥',label:'לקוחות',count:(DB.clients||[]).filter(i=>i.dealId===r.id).length});tabs.push({id:'rel_payments',icon:'💰',label:'תשלומים',count:(DB.payments||[]).filter(i=>i.dealId===r.id).length});}
 if(type==='clients'){tabs.push({id:'rel_meetings',icon:'📅',label:'פגישות',count:(DB.meetings||[]).filter(i=>i.clientId===r.id).length});tabs.push({id:'rel_payments',icon:'💰',label:'תשלומים',count:(DB.payments||[]).filter(i=>i.clientId===r.id).length});}
 tabs.push({id:'files',icon:'📎',label:'קבצים',count:(r.files||[]).length});
 if(!tabs.find(t=>t.id===activeLeftTab))activeLeftTab='activity';
-var h='<div class="left-tabs">';
+var h=qa+'<div class="left-tabs">';
 tabs.forEach(function(t){h+='<button class="left-tab'+(t.id===activeLeftTab?' active':'')+'" onclick="switchLeftTab(\''+t.id+'\')">'+t.icon+' '+t.label+(t.count?'<span class="tab-count">'+t.count+'</span>':'')+'</button>';});
 h+='</div><div class="left-tab-content">';
 tabs.forEach(function(t){
 h+='<div class="left-tab-pane'+(t.id===activeLeftTab?' active':'')+'" id="ltab_'+t.id+'">';
 if(t.id==='activity'){
 h+='<div class="add-toggle"><button class="add-toggle-btn'+(activeAddMode==='note'?' active':'')+'" onclick="switchAddMode(\'note\')">📝 הערה</button><button class="add-toggle-btn'+(activeAddMode==='task'?' active':'')+'" onclick="switchAddMode(\'task\')">✅ משימה</button></div>';
+if(showCallLogForm){
+  h+='<div class="call-log-form"><div style="font-size:12px;font-weight:700;margin-bottom:6px;direction:rtl">📞 לוג שיחה</div>';
+  h+='<input id="call-date" type="date" value="'+todayVal()+'">';
+  h+='<input id="call-duration" placeholder="משך (דקות)" type="number">';
+  h+='<textarea id="call-summary" placeholder="סיכום השיחה..." rows="2"></textarea>';
+  h+='<div style="display:flex;gap:6px"><button class="btn btn-primary btn-sm" onclick="saveCallLog()">שמור</button><button class="btn btn-secondary btn-sm" onclick="showCallLogForm=false;renderRec()">ביטול</button></div></div>';
+}
 h+='<div class="add-form" id="addNoteForm" style="'+(activeAddMode==='note'?'':'display:none')+'"><div class="add-note-box"><textarea id="noteInput" placeholder="כתוב הערה..."></textarea><div class="add-note-actions"><button class="btn btn-primary btn-sm" onclick="addNote()">+ הוסף</button></div></div></div>';
 h+='<div class="add-form" id="addTaskForm" style="'+(activeAddMode==='task'?'':'display:none')+'"><div class="add-task-box"><div class="task-grid"><div class="task-full"><input class="tinput" id="nt-name" placeholder="תיאור המשימה"></div><select class="tinput" id="nt-executor">'+userOpts()+'</select><input class="tinput" id="nt-due" type="date" value="'+todayVal()+'"><input class="tinput" id="nt-reminder" type="date" title="תזכורת"></div><div style="display:flex"><button class="btn btn-primary btn-sm" onclick="addTask()">+ הוסף</button></div></div></div>';
 h+='<div id="timelineFeed">'+renderTimeline(r)+'</div>';
@@ -1205,7 +1649,7 @@ h+='</div>';
 return h;}
 function switchLeftTab(tabId){activeLeftTab=tabId;document.querySelectorAll('.left-tab').forEach(function(el){el.classList.remove('active');});document.querySelectorAll('.left-tab-pane').forEach(function(el){el.classList.remove('active');});var activePane=document.getElementById('ltab_'+tabId);if(activePane)activePane.classList.add('active');document.querySelectorAll('.left-tab').forEach(function(el){if(el.getAttribute('onclick')&&el.getAttribute('onclick').indexOf("'"+tabId+"'")>-1)el.classList.add('active');});}
 function switchAddMode(mode){activeAddMode=mode;document.querySelectorAll('.add-toggle-btn').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.add-form').forEach(function(f){f.style.display='none';});if(mode==='note'){document.getElementById('addNoteForm').style.display='';document.querySelector('.add-toggle-btn').classList.add('active');}else{document.getElementById('addTaskForm').style.display='';document.querySelectorAll('.add-toggle-btn')[1].classList.add('active');}}
-function renderTimeline(r){var items=[];(r.notes||[]).forEach(function(n){items.push({type:'note',id:n.id,text:n.text,author:n.author,created:n.created});});(r.tasks||[]).forEach(function(t){items.push({type:'task',id:t.id,name:t.name,done:t.done,executor:t.executor||t.assignee,dueDate:t.dueDate,reminderDate:t.reminderDate,created:t.created,createdBy:t.createdBy});});items.sort(function(a,b){return(b.created||'').localeCompare(a.created||'');});if(!items.length)return'<div class="empty-state" style="padding:20px"><div class="es-sub">אין פעולות עדיין</div></div>';return items.map(function(item){if(item.type==='note')return'<div class="timeline-item note-item"><div class="timeline-badge note-badge">📝</div><div class="timeline-content"><div class="note-text">'+(item.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')+'</div><div class="note-meta"><span class="creator-badge"><span class="creator-av" style="background:'+uCol(item.author)+'">'+uAv(item.author)+'</span>'+uName(item.author)+'</span><span>'+fmtDT(item.created)+'</span>'+(perm('delete')?'<span class="note-del" onclick="delNote(\''+item.id+'\')">🗑️</span>':'')+'</div></div></div>';else return'<div class="timeline-item task-item"><div class="timeline-badge task-badge">✅</div><div class="timeline-content"><div style="display:flex;align-items:flex-start;gap:8px"><input type="checkbox" class="task-check" '+(item.done?'checked':'')+' onchange="toggleTask(\''+item.id+'\',this.checked)"><div class="task-info"><div class="task-name'+(item.done?' done':'')+'">'+item.name+'</div><div class="task-meta-row">'+(item.executor?'<span>👤 '+uName(item.executor)+'</span>':'')+' '+(item.dueDate?'<span>📅 '+fmt(item.dueDate)+'</span>':'')+' '+(item.reminderDate?'<span>🔔 '+fmt(item.reminderDate)+'</span>':'')+'</div></div><span class="task-del" onclick="delTask(\''+item.id+'\')">🗑️</span></div></div></div>';}).join('');}
+function renderTimeline(r){var items=[];(r.notes||[]).forEach(function(n){items.push({type:'note',id:n.id,text:n.text,author:n.author,created:n.created});});(r.tasks||[]).forEach(function(t){items.push({type:'task',id:t.id,name:t.name,done:t.done,executor:t.executor||t.assignee,dueDate:t.dueDate,reminderDate:t.reminderDate,created:t.created,createdBy:t.createdBy});});(r.history||[]).forEach(function(h){items.push({type:'history',id:h.id,field:h.field,oldVal:h.oldVal,newVal:h.newVal,user:h.user,created:h.created});});items.sort(function(a,b){return(b.created||'').localeCompare(a.created||'');});if(!items.length)return'<div class="empty-state" style="padding:20px"><div class="es-sub">אין פעולות עדיין</div></div>';return items.map(function(item){if(item.type==='history')return'<div class="timeline-item"><div class="timeline-badge history-badge">🔄</div><div class="timeline-content"><div class="note-text" style="font-size:12px;color:var(--text2)">שדה <b>'+(item.field==='status'?'סטטוס':item.field)+'</b> שונה מ-<b>'+(item.oldVal||'ריק')+'</b> ל-<b>'+item.newVal+'</b></div><div class="note-meta"><span class="creator-badge"><span class="creator-av" style="background:'+uCol(item.user)+'">'+uAv(item.user)+'</span>'+uName(item.user)+'</span><span>'+fmtDT(item.created)+'</span></div></div></div>';if(item.type==='note')return'<div class="timeline-item note-item"><div class="timeline-badge note-badge">📝</div><div class="timeline-content"><div class="note-text">'+(item.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')+'</div><div class="note-meta"><span class="creator-badge"><span class="creator-av" style="background:'+uCol(item.author)+'">'+uAv(item.author)+'</span>'+uName(item.author)+'</span><span>'+fmtDT(item.created)+'</span>'+(perm('delete')?'<span class="note-del" onclick="delNote(\''+item.id+'\')">🗑️</span>':'')+'</div></div></div>';else return'<div class="timeline-item task-item"><div class="timeline-badge task-badge">✅</div><div class="timeline-content"><div style="display:flex;align-items:flex-start;gap:8px"><input type="checkbox" class="task-check" '+(item.done?'checked':'')+' onchange="toggleTask(\''+item.id+'\',this.checked)"><div class="task-info"><div class="task-name'+(item.done?' done':'')+'">'+item.name+'</div><div class="task-meta-row">'+(item.executor?'<span>👤 '+uName(item.executor)+'</span>':'')+' '+(item.dueDate?'<span>📅 '+fmt(item.dueDate)+'</span>':'')+' '+(item.reminderDate?'<span>🔔 '+fmt(item.reminderDate)+'</span>':'')+'</div></div><span class="task-del" onclick="delTask(\''+item.id+'\')">🗑️</span></div></div></div>';}).join('');}
 
 function renderRelated(type,r){let h='';
 if(type==='leads'){h+=relSec('💼 עסקאות','deals',r.id,'leadId','deals',r);h+=relSec('📅 פגישות','meetings',r.id,'leadId','meetings',r);}
@@ -1217,6 +1661,17 @@ return`<div class="left-section"><div class="left-section-header"><div class="le
 function relAdd(type,pid,pname){saveRecord();modalParent={id:pid,name:pname,type:currentRecordType};openAddModal(type);}
 
 function renderNotes(notes){if(!notes.length)return'<div class="empty-state" style="padding:12px"><div class="es-sub">אין הערות עדיין</div></div>';return notes.slice().reverse().map(n=>`<div class="note-item"><div class="note-text">${(n.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div><div class="note-meta"><span class="creator-badge"><span class="creator-av" style="background:${uCol(n.author)}">${uAv(n.author)}</span>${uName(n.author)}</span><span>${fmtDT(n.created)}</span>${perm('delete')?`<span class="note-del" onclick="delNote('${n.id}')">🗑️</span>`:''}</div></div>`).join('');}
+function saveCallLog(){
+  var dt=document.getElementById('call-date').value||todayVal();
+  var dur=document.getElementById('call-duration').value||'';
+  var sum=document.getElementById('call-summary').value||'';
+  if(!sum){showToast('הכנס סיכום ❌');return;}
+  var text='📞 שיחה ('+dt+(dur?' | '+dur+' דקות':'')+'):\n'+sum;
+  currentRecord.notes=currentRecord.notes||[];
+  currentRecord.notes.push({id:genId(),text:text,author:currentUser.username,created:now()});
+  showCallLogForm=false;
+  refreshTimeline();saveRS();renderRec();showToast('שיחה נרשמה ✅');
+}
 function refreshTimeline(){var el=document.getElementById('timelineFeed');if(el)el.innerHTML=renderTimeline(currentRecord);}
 function addNote(){const t=document.getElementById('noteInput').value.trim();if(!t)return;currentRecord.notes=currentRecord.notes||[];currentRecord.notes.push({id:genId(),text:t,author:currentUser.username,created:now()});document.getElementById('noteInput').value='';refreshTimeline();saveRS();showToast('הערה נוספה ✅');}
 function delNote(id){currentRecord.notes=(currentRecord.notes||[]).filter(n=>n.id!==id);refreshTimeline();saveRS();}
@@ -1243,7 +1698,24 @@ if(type==='meetings')return`<div class="form-group"><label class="form-label">נ
 if(type==='tasks')return`<div class="form-group"><label class="form-label">נושא המשימה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">מבצע</label><select class="form-control" id="f-executor">${uo}</select></div><div class="form-group"><label class="form-label">תחסיום</label><input class="form-control" id="f-dueDate" type="date" value="${td}"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תזכורת</label><input class="form-control" id="f-reminderDate" type="date"></div><div class="form-group"><label class="form-label">מתעניין משויך</label><input class="form-control" id="f-leadRef" value="${modalParent?.name||''}"></div></div>`;
 return'';}
 
-function saveModal(){const type=modalType;if(!type)return;const id=genId(),ts=now();let item={id,created:ts,updated:ts,createdBy:currentUser.username,notes:[],tasks:[],files:[]};const req=(fid,msg)=>{const v=g(fid).trim();if(!v){showToast(msg+' ❌');return null;}return v;};
+function saveModal(){const type=modalType;if(!type)return;
+if(type==='_customView'){
+  var pg=modalParent.page,idx=modalParent.idx;
+  customViewsData[pg][idx].name=g('cv-name')||'תצוגה';
+  customViewsData[pg][idx].field=g('cv-field');
+  customViewsData[pg][idx].op=g('cv-op');
+  customViewsData[pg][idx].value=g('cv-val');
+  localStorage.setItem('roicrm_custom_views',JSON.stringify(customViewsData));
+  closeModal();renderPage(pg);return;
+}
+if(type==='_bulkChange'){
+  var pg2=modalParent.page,fld=g('bulk-field'),val=g('bulk-value');
+  if(!fld){showToast('בחר שדה ❌');return;}
+  var ids=Object.keys(selectedRows[pg2]||{}).filter(function(k){return selectedRows[pg2][k]});
+  ids.forEach(function(id){var r=DB[pg2].find(function(x){return x.id===id});if(r){r[fld]=val;r.updated=now();r.updatedBy=currentUser.username;}});
+  saveData();selectedRows[pg2]={};closeModal();renderPage(pg2);showToast(ids.length+' רשומות עודכנו ✅');return;
+}
+const id=genId(),ts=now();let item={id,created:ts,updated:ts,createdBy:currentUser.username,notes:[],tasks:[],files:[]};const req=(fid,msg)=>{const v=g(fid).trim();if(!v){showToast(msg+' ❌');return null;}return v;};
 if(type==='leads'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,phone:g('f-phone'),email:g('f-email'),status:g('f-status'),agent:g('f-agent'),source:g('f-source'),whyContact:g('f-whyContact')};}
 else if(type==='deals'){const n=req('f-name','שם חובה');if(!n)return;const prod=DB.products.find(p=>p.id===g('f-product'));item={...item,name:n,leadName:g('f-leadName'),executor:g('f-executor'),status:g('f-status'),productId:g('f-product'),productName:prod?.name||'',paymentType:g('f-paymentType'),dealTotal:g('f-dealTotal')};if(modalParent){item.leadId=modalParent.id;item.leadName=item.leadName||modalParent.name;}}
 else if(type==='clients'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,clientPhone:g('f-clientPhone'),clientEmail:g('f-clientEmail'),advisor:g('f-advisor'),startDate:g('f-startDate')||ts.split('T')[0],clientStatus:g('f-clientStatus')};if(modalParent){item.dealId=modalParent.id;item.dealName=modalParent.name;item.leadName=modalParent.name;}}
@@ -1277,6 +1749,8 @@ function runAutomations(type, record, isNew) {
   if (type === 'deals' && record.leadId && record.status === 'לקוח סגר') {
     var lead = DB.leads.find(function(l) { return l.id === record.leadId; });
     if (lead && lead.status !== 'סגר ✔️') {
+      if(!lead.history)lead.history=[];
+      lead.history.push({id:genId(),field:'status',oldVal:lead.status,newVal:'סגר ✔️',user:'system',created:now()});
       lead.status = 'סגר ✔️';
       lead.updated = now();
       msgs.push('סטטוס מתעניין עודכן ל-סגר ✔️');
@@ -1356,7 +1830,123 @@ function checkRelevantDates() {
 }
 
 function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+// ===== RECORD NAVIGATION =====
+var recNavList=[];var recNavIdx=-1;
+function recNav(dir){
+  if(!recNavList.length)return;
+  var newIdx=recNavIdx+dir;
+  if(newIdx<0||newIdx>=recNavList.length)return;
+  recNavIdx=newIdx;
+  var item=recNavList[recNavIdx];
+  var saved=recNavList.slice();var si=recNavIdx;
+  openRecord(currentRecordType,item.id,false);
+  recNavList=saved;recNavIdx=si;
+  updateRecNavBtns();
+}
+function updateRecNavBtns(){
+  var prev=document.getElementById('recNavPrev'),next=document.getElementById('recNavNext');
+  if(prev)prev.disabled=recNavIdx<=0;
+  if(next)next.disabled=recNavIdx>=recNavList.length-1;
+}
+
+// ===== GLOBAL SEARCH =====
+function openGlobalSearch(){
+  document.getElementById('globalSearchOverlay').classList.add('open');
+  var inp=document.getElementById('globalSearchInput');inp.value='';inp.focus();
+  document.getElementById('globalSearchResults').innerHTML='';
+}
+function doGlobalSearch(q){
+  var res=document.getElementById('globalSearchResults');
+  if(!q||q.length<2){res.innerHTML='';return;}
+  q=q.toLowerCase();
+  var types=['leads','deals','clients','payments','meetings','tasks'];
+  var labels={leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',meetings:'פגישות',tasks:'משימות'};
+  var icons={leads:'⭐',deals:'💼',clients:'👥',payments:'💰',meetings:'📅',tasks:'✅'};
+  var h='';
+  types.forEach(function(t){
+    var matches=(DB[t]||[]).filter(function(r){
+      return (r.name||'').toLowerCase().indexOf(q)>=0||(r.title||'').toLowerCase().indexOf(q)>=0||(r.phone||'').indexOf(q)>=0||(r.clientName||'').toLowerCase().indexOf(q)>=0||(r.email||'').toLowerCase().indexOf(q)>=0;
+    }).slice(0,5);
+    if(matches.length){
+      h+='<div class="search-group-title">'+icons[t]+' '+labels[t]+'</div>';
+      matches.forEach(function(r){
+        h+='<div class="search-result-item" onclick="document.getElementById(\'globalSearchOverlay\').classList.remove(\'open\');openRecord(\''+t+'\',\''+r.id+'\')">';
+        h+='<div><div class="search-result-name">'+(r.name||r.title||'—')+'</div>';
+        h+='<div class="search-result-sub">'+(r.phone||r.status||r.clientName||'')+'</div></div></div>';
+      });
+    }
+  });
+  if(!h)h='<div class="empty-state" style="padding:20px"><div class="es-sub">לא נמצאו תוצאות</div></div>';
+  res.innerHTML=h;
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    document.getElementById('globalSearchOverlay').classList.remove('open');
+    document.getElementById('reportsPopup').classList.remove('open');
+  }
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openGlobalSearch();}
+});
+
+// ===== NOTIFICATIONS =====
+function getNotifications(){
+  var notifs=[];
+  var today=todayVal();
+  // Overdue tasks
+  var allTasks=[].concat(DB.tasks);
+  ['leads','deals','clients'].forEach(function(t){(DB[t]||[]).forEach(function(r){(r.tasks||[]).forEach(function(tk){allTasks.push(tk);});});});
+  allTasks.forEach(function(t){
+    if(t.done)return;
+    if(t.dueDate&&t.dueDate<=today){
+      notifs.push({id:'task_'+t.id,title:'משימה באיחור: '+(t.name||''),time:t.dueDate,type:'task',recordId:t.id});
+    } else if(t.dueDate&&t.dueDate===today){
+      notifs.push({id:'task_today_'+t.id,title:'משימה להיום: '+(t.name||''),time:today,type:'task',recordId:t.id});
+    }
+  });
+  // Stale leads (3 days without update)
+  var threeDaysAgo=new Date();threeDaysAgo.setDate(threeDaysAgo.getDate()-3);
+  DB.leads.forEach(function(l){
+    if(l.status==='לידים חדשים 🎉'){
+      var upd=new Date(l.updated||l.created);
+      if(upd<threeDaysAgo){
+        notifs.push({id:'stale_'+l.id,title:'ליד ללא עדכון 3+ ימים: '+l.name,time:l.updated||l.created,type:'lead',recordId:l.id});
+      }
+    }
+  });
+  return notifs;
+}
+function toggleNotifications(){
+  var dd=document.getElementById('notifDropdown');
+  if(dd.classList.contains('open')){dd.classList.remove('open');return;}
+  var notifs=getNotifications();
+  var read=JSON.parse(localStorage.getItem('roicrm_notif_read')||'[]');
+  var h='<div style="padding:12px 16px;font-weight:700;border-bottom:1px solid var(--border)">התראות ('+notifs.length+')</div>';
+  if(notifs.length){
+    notifs.forEach(function(n){
+      var isRead=read.indexOf(n.id)>=0;
+      h+='<div class="notif-item'+(isRead?'':' unread')+'" onclick="markNotifRead(\''+n.id+'\');'+(n.type==='lead'?'openRecord(\'leads\',\''+n.recordId+'\')':'openRecord(\'tasks\',\''+n.recordId+'\')')+'"><div class="notif-title">'+(n.type==='task'?'✅ ':'⭐ ')+n.title+'</div><div class="notif-time">'+fmtDT(n.time)+'</div></div>';
+    });
+  } else {
+    h+='<div style="padding:20px;text-align:center;color:var(--text2);font-size:13px">אין התראות</div>';
+  }
+  dd.innerHTML=h;dd.classList.add('open');
+}
+function markNotifRead(id){
+  var read=JSON.parse(localStorage.getItem('roicrm_notif_read')||'[]');
+  if(read.indexOf(id)<0)read.push(id);
+  localStorage.setItem('roicrm_notif_read',JSON.stringify(read));
+  updateNotifBadge();
+}
+function updateNotifBadge(){
+  var notifs=getNotifications();
+  var read=JSON.parse(localStorage.getItem('roicrm_notif_read')||'[]');
+  var unread=notifs.filter(function(n){return read.indexOf(n.id)<0}).length;
+  var badge=document.getElementById('notifBadge');
+  if(badge){badge.textContent=unread;badge.style.display=unread>0?'flex':'none';}
+}
+
 // INIT
+
 checkRelevantDates();
 updateBadges();
 
