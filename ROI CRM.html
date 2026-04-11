@@ -502,10 +502,10 @@ tbody tr:last-child td{border:none}
 .breadcrumb-item{cursor:pointer;color:var(--accent-dark);font-weight:600}
 .breadcrumb-item:hover{text-decoration:underline}
 .breadcrumb-sep{color:var(--text3)}
-.record-name{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.3px}
-.record-type-badge{font-size:10px;font-weight:700;color:var(--text2);background:var(--hover);padding:3px 10px;border-radius:var(--r-full);margin-right:6px;white-space:nowrap;text-transform:uppercase;letter-spacing:.4px;border:1px solid var(--border)}
-.record-body{flex:1;display:grid;grid-template-columns:540px 1fr;overflow:hidden;direction:rtl}
-.record-right{padding:26px 30px;overflow-y:auto;background:var(--bg-2);border-left:1px solid var(--border)}
+.record-name{font-size:21px;font-weight:800;color:var(--text);letter-spacing:-.3px}
+.record-type-badge{font-size:11px;font-weight:700;color:var(--text2);background:var(--hover);padding:4px 11px;border-radius:var(--r-full);margin-right:6px;white-space:nowrap;text-transform:uppercase;letter-spacing:.4px;border:1px solid var(--border)}
+.record-body{flex:1;display:grid;grid-template-columns:460px 1fr;overflow:hidden;direction:rtl}
+.record-right{padding:22px 24px;overflow-y:auto;background:var(--bg-2);border-left:1px solid var(--border)}
 .record-left{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);direction:ltr}
 .meta-box{
   background:linear-gradient(135deg,var(--accent-bg),var(--accent-bg-2));
@@ -522,8 +522,8 @@ tbody tr:last-child td{border:none}
 .meta-value{font-weight:700;color:var(--text)}
 .creator-badge{display:inline-flex;align-items:center;gap:5px}
 .creator-av{width:18px;height:18px;border-radius:50%;color:var(--accent-text);font-size:9px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.field-section{margin-bottom:16px;direction:rtl}
-.field-section-title{font-size:11px;font-weight:800;color:var(--text2);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:6px}
+.field-section{margin-bottom:18px;direction:rtl}
+.field-section-title{font-size:13px;font-weight:800;color:var(--text2);margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.7px;display:flex;align-items:center;gap:7px}
 .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .field-item{display:flex;flex-direction:column;gap:3px}
 .field-item.full{grid-column:1/-1}
@@ -746,7 +746,7 @@ select.field-value{appearance:auto}
 ::-webkit-scrollbar-thumb:hover{background:var(--border-strong);background-clip:padding-box;border:2px solid transparent}
 * {scrollbar-width:thin;scrollbar-color:var(--border-2) transparent}
 
-@media(max-width:1100px){.record-body{grid-template-columns:440px 1fr}}
+@media(max-width:1100px){.record-body{grid-template-columns:400px 1fr}}
 @media(max-width:900px){.record-body{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
 
 /* ==========================================================
@@ -799,16 +799,16 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 .section-body{padding:4px 0 10px;margin-bottom:8px}
 .section-body.hidden{display:none}
 
-.field-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);min-height:38px}
+.field-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);min-height:46px}
 .field-row:last-child{border-bottom:none}
-.field-row.full-width{flex-direction:column;align-items:stretch;gap:4px}
-.field-label{font-size:12.5px;color:var(--text2);flex-shrink:0;padding-left:12px;min-width:128px;text-align:right;font-weight:500}
-.field-value{font-size:13px;font-weight:700;color:var(--text);text-align:left;flex:1;word-break:break-word}
+.field-row.full-width{flex-direction:column;align-items:stretch;gap:6px}
+.field-label{font-size:14px;color:var(--text2);flex-shrink:0;padding-left:10px;min-width:112px;text-align:right;font-weight:600}
+.field-value{font-size:15px;font-weight:700;color:var(--text);text-align:left;flex:1;word-break:break-word}
 .field-value a{color:var(--accent-dark);text-decoration:none}
 .field-value a:hover{text-decoration:underline}
 .field-value .phone-link{color:var(--success);cursor:pointer}
 .field-value .email-link{color:var(--accent-dark)}
-.field-value input[type="text"],.field-value input[type="date"],.field-value input[type="number"],.field-value input[type="time"],.field-value input[type="email"],.field-value input[type="tel"],.field-value select,.field-value textarea{width:100%;padding:6px 9px;border:1px solid transparent;border-radius:var(--r-sm);font-size:13px;font-family:inherit;direction:rtl;background:transparent;color:var(--text);transition:all var(--dur) var(--ease)}
+.field-value input[type="text"],.field-value input[type="date"],.field-value input[type="number"],.field-value input[type="time"],.field-value input[type="email"],.field-value input[type="tel"],.field-value select,.field-value textarea{width:100%;padding:8px 10px;border:1px solid transparent;border-radius:var(--r-sm);font-size:15px;font-family:inherit;direction:rtl;background:transparent;color:var(--text);transition:all var(--dur) var(--ease)}
 .field-value textarea{min-height:54px;resize:vertical}
 .field-value input:focus,.field-value select:focus,.field-value textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(238,189,42,.16);background:var(--bg-2)}
 .field-value input:hover,.field-value select:hover,.field-value textarea:hover{background:var(--hover);border-color:var(--border)}
@@ -2537,7 +2537,7 @@ function renderLeadFields(r) {
   // Big green WhatsApp button (replaces tiny "פתח" link)
   if (r.phone) {
     var _waUrl = 'https://wa.me/972' + r.phone.replace(/^0/,'');
-    h += '<div class="field-row full-width"><span class="field-label">קישור לוואטסאפ</span><span class="field-value"><a href="'+_waUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 2px 6px rgba(37,211,102,0.35);transition:all .15s" onmouseover="this.style.background=\'#128c7e\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.background=\'#25d366\';this.style.transform=\'translateY(0)\'"><span style="font-size:18px">💬</span> פתח בוואטסאפ</a></span></div>';
+    h += '<div class="field-row"><span class="field-label">קישור לוואטסאפ</span><span class="field-value" style="text-align:left"><a href="'+_waUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;padding:9px 16px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 2px 6px rgba(37,211,102,0.35);transition:all .15s" onmouseover="this.style.background=\'#128c7e\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.background=\'#25d366\';this.style.transform=\'translateY(0)\'"><span style="font-size:17px">💬</span> פתח בוואטסאפ</a></span></div>';
   }
   h += fv('status','סטטוס',r.status,{select:leadStages});
   h += fv('agent','נציג',r.agent,{select:USER_KEYS,selectLabels:USER_NAMES});
