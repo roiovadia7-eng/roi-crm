@@ -1079,10 +1079,6 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
       <div style="display:flex;gap:8px;flex-shrink:0;align-items:center">
         <button class="record-nav-btn" id="recNavPrev" onclick="recNav(-1)" title="הקודם">▶</button>
         <button class="record-nav-btn" id="recNavNext" onclick="recNav(1)" title="הבא">◀</button>
-        <div style="position:relative" id="relAddWrap">
-          <button class="btn btn-primary btn-sm" onclick="toggleRelAddMenu()" id="relAddBtn" style="display:none">⊕</button>
-          <div class="rel-add-dropdown" id="relAddDropdown"></div>
-        </div>
         <button class="btn btn-success btn-sm" onclick="saveRecord()">💾 שמור</button>
         <button class="btn btn-danger btn-sm" id="recordDeleteBtn" onclick="deleteRecord()">🗑️ מחק</button>
       </div>
@@ -1167,7 +1163,7 @@ const AUTH_RATE_LIMIT = {
 // ===== API CLIENT (all credentials server-side) =====
 // Trusted-device window: after a successful OTP, skip re-OTP for this long
 // (across page refreshes and even browser restarts on the same machine).
-const OTP_TRUST_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
+const OTP_TRUST_WINDOW_MS = 12 * 60 * 60 * 1000; // 12 hours
 let _authToken = localStorage.getItem('roicrm_token') || null;
 let _refreshToken = localStorage.getItem('roicrm_refresh') || null;
 
@@ -2509,7 +2505,7 @@ function renderPipeline(r, stages, key) {
 }
 function renderLeadFields(r) {
   var leadStages = ['לידים חדשים 🎉','אין מענה 📞','נוצר קשר ראשוני 😊','פולאופ איכותי 🌟','סגר ✔️','לא נסגר 😔','ליד לא תקין ❌'];
-  var h = renderPipeline(r, leadStages, 'status');
+  var h = '';
   h += secHead('פרטי לקוח', 'lead_details', false);
   h += fv('name','שם מתעניין',r.name);
   h += fv('phone','טלפון ראשי',r.phone,{phone:true});
@@ -2786,16 +2782,8 @@ function copyBankDetails(){navigator.clipboard?.writeText('בנק לאומי | �
 var activeLeftTab='activity';var activeAddMode='note';var showCallLogForm=false;
 function renderLeft(){const r=currentRecord,type=currentRecordType;
 var totalActivity=(r.notes||[]).length+(r.tasks||[]).length+(r.history||[]).length;
-// Quick action buttons
-var qa='<div class="quick-actions">';
-qa+='<button class="quick-action-btn" onclick="switchAddMode(\'note\');switchLeftTab(\'activity\');setTimeout(function(){var el=document.getElementById(\'noteInput\');if(el){el.scrollIntoView();el.focus();}},100)">📝 הערה</button>';
-qa+='<button class="quick-action-btn" onclick="switchAddMode(\'task\');switchLeftTab(\'activity\')">✅ משימה</button>';
-qa+='<button class="quick-action-btn" onclick="showCallLogForm=true;switchLeftTab(\'activity\');renderRec()">📞 לוג שיחה</button>';
-qa+='<button class="quick-action-btn" onclick="relAdd(\'meetings\',\''+r.id+'\',\''+(r.name||'').replace(/'/g,'&#39;')+'\')">📅 פגישה</button>';
-qa+='<button class="quick-action-btn" onclick="document.getElementById(\'fInput\')&&document.getElementById(\'fInput\').click()">📎 קובץ</button>';
-var phone=r.phone||r.clientPhone||'';
-if(phone)qa+='<button class="quick-action-btn" onclick="window.open(\'https://wa.me/972'+phone.replace(/^0/,'')+'\',\'_blank\')">💬 WhatsApp</button>';
-qa+='</div>';
+// Quick-actions bar removed — same actions are available in the tabs below.
+var qa='';
 var tabs=[{id:'activity',icon:'📋',label:'פעולות',count:totalActivity}];
 if(type==='leads'){tabs.push({id:'rel_deals',icon:'💼',label:'עסקאות',count:(DB.deals||[]).filter(i=>i.leadId===r.id).length});tabs.push({id:'rel_meetings',icon:'📅',label:'פגישות',count:(DB.meetings||[]).filter(i=>i.leadId===r.id).length});}
 if(type==='deals'){tabs.push({id:'rel_clients',icon:'👥',label:'לקוחות',count:(DB.clients||[]).filter(i=>i.dealId===r.id).length});tabs.push({id:'rel_payments',icon:'💰',label:'תשלומים',count:(DB.payments||[]).filter(i=>i.dealId===r.id).length});}
@@ -3114,17 +3102,7 @@ function updateRecNavBtns(){
 
 // ===== RELATED ADD MENU (FEATURE 3) =====
 var REL_ADD_MAP={leads:[{type:'deals',label:'+ עסקה'},{type:'meetings',label:'+ פגישה'}],deals:[{type:'clients',label:'+ לקוח'},{type:'payments',label:'+ תשלום'}],clients:[{type:'meetings',label:'+ פגישה'},{type:'payments',label:'+ תשלום'}]};
-function updateRelAddBtn(){
-  var btn=document.getElementById('relAddBtn');var dd=document.getElementById('relAddDropdown');
-  if(!btn||!currentRecordType||!currentRecord)return;
-  var opts=REL_ADD_MAP[currentRecordType];
-  if(!opts||!opts.length){btn.style.display='none';return;}
-  btn.style.display='flex';
-  var h='';opts.forEach(function(o){
-    h+='<div class="rel-add-item" onclick="relAddFromMenu(\''+o.type+'\')">'+o.label+'</div>';
-  });
-  dd.innerHTML=h;
-}
+function updateRelAddBtn(){/* button removed — kept as no-op for legacy calls */}
 function toggleRelAddMenu(){var dd=document.getElementById('relAddDropdown');if(dd)dd.classList.toggle('open');}
 function relAddFromMenu(type){
   document.getElementById('relAddDropdown').classList.remove('open');
