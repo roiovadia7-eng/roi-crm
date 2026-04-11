@@ -1245,7 +1245,10 @@ async function apiDelete(path) {
 async function apiPatch(path, body) {
   const r = await fetch(path, { method: 'PATCH', headers: apiHeaders(), body: JSON.stringify(body) });
   if (r.status === 401) { _handleExpired(); return { error: { message: 'unauthorized' } }; }
-  return r.ok ? { error: null } : { error: { message: 'patch failed' } };
+  if (r.ok) return { error: null };
+  const text = await r.text();
+  let err; try { err = text ? JSON.parse(text) : { message: 'patch ' + r.status }; } catch(e) { err = { message: text || ('patch ' + r.status) }; }
+  return { error: err };
 }
 
 function _setAuth(accessToken, refreshToken) {
@@ -1327,6 +1330,10 @@ function toJsRecord(type, row) {
 }
 
 // ===== SERVER-SIDE CRUD (via proxy) =====
+// sbUpsert: used for brand-new rows (POST with merge-duplicates)
+// sbUpdate: used for existing rows (PATCH). Prefer sbUpdate for any edit path —
+// POST merge-duplicates has been observed to silently fail and leave rows at
+// their old values, so any change must never rely on it.
 async function sbUpsert(type, record) {
   try {
     const dbRec = toDbRecord(type, {...record});
@@ -1335,6 +1342,20 @@ async function sbUpsert(type, record) {
     if (error) console.error('Upsert error:', type, error);
     return !error;
   } catch(e) { console.error('sbUpsert exception:', e); return false; }
+}
+
+async function sbUpdate(type, record) {
+  try {
+    if (!record || !record.id) return false;
+    const dbRec = toDbRecord(type, {...record});
+    // never PATCH the primary key or creation timestamp
+    delete dbRec.id;
+    delete dbRec.created_at;
+    dbRec.updated_at = new Date().toISOString();
+    const { error } = await apiPatch('/api/data/' + type + '?id=eq.' + encodeURIComponent(record.id), dbRec);
+    if (error) { console.error('Update error:', type, record.id, error); return false; }
+    return true;
+  } catch(e) { console.error('sbUpdate exception:', e); return false; }
 }
 
 async function sbDelete(type, id) {
@@ -1875,7 +1896,7 @@ function inlineEdit(e,page,recId,colIdx){
     else rec[edit.key]=newVal;
     rec.updated=now();rec.updatedBy=currentUser.username;
     saveData();
-    sbUpsert(page,rec);
+    sbUpdate(page,rec);
     runAutomations(page,rec,false);
     showToast('עודכן ✅');
     setTimeout(function(){renderPage(currentPage);},30);
@@ -2806,7 +2827,7 @@ function _selectCancel(key){
   sel.value=sel.getAttribute('data-orig')||'';
   if(conf)conf.style.display='none';
 }
-function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');if(currentRecordType==='deals'&&currentRecord.productId){var _sp=DB.products.find(function(p){return p.id===currentRecord.productId});if(_sp)currentRecord.productName=_sp.name;}currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();sbUpsert(currentRecordType,currentRecord);runAutomations(currentRecordType,currentRecord,false);showToast('נשמר ✅');}_recordDirty=false;_doClose();}
+function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');if(currentRecordType==='deals'&&currentRecord.productId){var _sp=DB.products.find(function(p){return p.id===currentRecord.productId});if(_sp)currentRecord.productName=_sp.name;}currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();sbUpdate(currentRecordType,currentRecord);runAutomations(currentRecordType,currentRecord,false);showToast('נשמר ✅');}_recordDirty=false;_doClose();}
 function deleteRecord() {
   var page = currentPage;
   var rec = currentRecord;
@@ -2929,7 +2950,7 @@ function renderTasks(tasks){if(!tasks.length)return'';return tasks.map(t=>`<div 
 function addTask(){const name=document.getElementById('nt-name').value.trim();if(!name)return;const task={id:genId(),name,executor:document.getElementById('nt-executor').value,dueDate:document.getElementById('nt-due').value||todayVal(),reminderDate:document.getElementById('nt-reminder').value,done:false,created:now(),createdBy:currentUser.username,relatedId:currentRecord.id,relatedType:currentRecordType};currentRecord.tasks=currentRecord.tasks||[];currentRecord.tasks.push(task);DB.tasks.push({...task});sbInsertRecordTask(currentRecordType,currentRecord.id,task);sbUpsert('tasks',task);['nt-name'].forEach(id=>document.getElementById(id).value='');document.getElementById('nt-due').value=todayVal();document.getElementById('nt-reminder').value='';refreshTimeline();saveRS();showToast('משימה נוספה ✅');}
 function toggleTask(id,done){(currentRecord.tasks||[]).forEach(t=>{if(t.id===id)t.done=done;});DB.tasks.forEach(t=>{if(t.id===id)t.done=done;});sbUpdateRecordTask(id,done);refreshTimeline();saveRS();}
 function delTask(id){currentRecord.tasks=(currentRecord.tasks||[]).filter(t=>t.id!==id);DB.tasks=DB.tasks.filter(t=>t.id!==id);sbDeleteRecordTask(id);sbDelete('tasks',id);refreshTimeline();saveRS();}
-function saveRS(){if(!currentRecord||!currentRecordType)return;currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();sbUpsert(currentRecordType,currentRecord);runAutomations(currentRecordType, currentRecord, false);}}
+function saveRS(){if(!currentRecord||!currentRecordType)return;currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();sbUpdate(currentRecordType,currentRecord);runAutomations(currentRecordType, currentRecord, false);}}
 function renderFiles(files){if(!files||!files.length)return'';const ic={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',default:'📎'};return files.map(f=>`<div class="file-item"><span class="file-icon">${ic[(f.name||'').split('.').pop().toLowerCase()]||ic.default}</span><span class="file-name">${f.name}</span><span class="file-size">${f.size||''}</span><span class="file-del" onclick="delFile('${f.id}')">✕</span></div>`).join('');}
 function handleFiles(e){Array.from(e.target.files).forEach(f=>{const kb=(f.size/1024).toFixed(1);currentRecord.files=currentRecord.files||[];var fileObj={id:genId(),name:f.name,size:kb>1024?(kb/1024).toFixed(1)+'MB':kb+'KB',uploaded:now(),by:currentUser.username};currentRecord.files.push(fileObj);sbInsertFile(currentRecordType,currentRecord.id,fileObj);});document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();showToast('קובץ הועלה ✅');}
 function delFile(id){currentRecord.files=(currentRecord.files||[]).filter(f=>f.id!==id);sbDeleteFile(id);document.getElementById('fileList').innerHTML=renderFiles(currentRecord.files);saveRS();}
@@ -2965,7 +2986,7 @@ if(type==='_bulkChange'){
   var ids=Object.keys(selectedRows[pg2]||{}).filter(function(k){return selectedRows[pg2][k]});
   var promises=ids.map(function(id){
     var r=DB[pg2].find(function(x){return x.id===id});
-    if(r){r[fld]=val;r.updated=now();r.updatedBy=currentUser.username;return sbUpsert(pg2,r);}
+    if(r){r[fld]=val;r.updated=now();r.updatedBy=currentUser.username;return sbUpdate(pg2,r);}
     return Promise.resolve(true);
   });
   saveData();selectedRows[pg2]={};closeModal();
@@ -3084,7 +3105,7 @@ async function runCCScrub(){
         rec.fields.forEach(function(fld){live[fld.field]='';});
         live.updated=new Date().toISOString();
         if(currentUser)live.updatedBy=currentUser.username;
-        try{var r2=await sbUpsert(type,live);if(r2)ok++;else err++;}catch(e){err++;}
+        try{var r2=await sbUpdate(type,live);if(r2)ok++;else err++;}catch(e){err++;}
       }
     }
     saveData();
@@ -3310,7 +3331,7 @@ function boardDrop(event,page,statusKey,newStatus){
   rec.updated=now();rec.updatedBy=currentUser.username;
   if(!rec.history)rec.history=[];
   rec.history.push({id:genId(),field:statusKey,oldVal:'',newVal:newStatus,user:currentUser.username,created:now()});
-  saveData();sbUpsert(page,rec);runAutomations(page,rec,false);renderPage(page);showToast('עודכן ✅');
+  saveData();sbUpdate(page,rec);runAutomations(page,rec,false);renderPage(page);showToast('עודכן ✅');
 }
 
 // ===== GLOBAL SEARCH — inline FireBerry-style dropdown =====
