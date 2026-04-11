@@ -587,6 +587,9 @@ const USERS={
 // ===== USERS LOOKUP BY ID NUMBER =====
 const USERS_BY_ID = {};
 Object.entries(USERS).forEach(([k, v]) => { USERS_BY_ID[v.id] = k; });
+// Helper: ordered usernames + display names for select dropdowns
+const USER_KEYS = Object.keys(USERS);
+const USER_NAMES = USER_KEYS.map(k => USERS[k].name);
 
 // ===== GREEN API =====
 // Credentials stored securely server-side in private.api_keys
@@ -1980,7 +1983,7 @@ function renderLeadFields(r) {
     h += '<div class="field-row full-width"><span class="field-label">קישור לוואטסאפ</span><span class="field-value"><a href="'+_waUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 2px 6px rgba(37,211,102,0.35);transition:all .15s" onmouseover="this.style.background=\'#128c7e\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.background=\'#25d366\';this.style.transform=\'translateY(0)\'"><span style="font-size:18px">💬</span> פתח בוואטסאפ</a></span></div>';
   }
   h += fv('status','סטטוס',r.status,{select:leadStages});
-  h += fv('agent','נציג',r.agent,{select:Object.keys(USERS)});
+  h += fv('agent','נציג',r.agent,{select:USER_KEYS,selectLabels:USER_NAMES});
   h += fv('source','מקור הגעה',r.source,{select:['אינסטגרם אורגני','אינסטגרם רועי','אינסטגרם נתן','קמפיין ממומן','לקוחות חוזרים','אפיליאציה','פייסבוק','גוגל','המלצה','utm_medium','אחר']});
   h += fv('email','דואר אלקטרוני',r.email,{email:true});
   h += fv('whyContact','למה השאיר פרטים',r.whyContact,{textarea:true,full:true});
@@ -1997,7 +2000,7 @@ function renderDealFields(r) {
   var h = renderPipeline(r, dealStages, 'status');
   h += secHead('עסקה', 'deal_info', false);
   h += fv('name','שם העסקה',r.name||leadName);
-  h += fv('executor','מבצע העסקה',r.executor,{select:Object.keys(USERS)});
+  h += fv('executor','מבצע העסקה',r.executor,{select:USER_KEYS,selectLabels:USER_NAMES});
   if(r.leadId){var _ln=r.leadName||leadName||'—';h+='<div class="field-row"><span class="field-label">מתעניין משויך</span><span class="field-value"><a href="#" onclick="openRecord(\'leads\',\''+r.leadId+'\',true);return false" style="color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:4px">'+_ln+' <span style="font-size:11px">🔗</span></a></span></div>';}else if(leadName){h+=fv('leadName','מתעניין משויך',leadName,{readonly:true});}
   // If productId is missing but we have a productName (from historical import), try to match by name
   var _dealProdId = r.productId;
@@ -2039,7 +2042,7 @@ function renderClientFields(r) {
   h += fv('totalMeetings','סה\"כ פגישות לתהליך',r.totalMeetings);
   h += fv('startDate','תאריך תחילת תהליך',r.startDate||(r.created?r.created.split('T')[0]:''),{date:true});
   h += fv('endDate','תאריך סיום תהליך',r.endDate,{date:true});
-  h += fv('advisor','שייך ליועץ',r.advisor,{select:Object.keys(USERS)});
+  h += fv('advisor','שייך ליועץ',r.advisor,{select:USER_KEYS,selectLabels:USER_NAMES});
   h += fv('advisorEmail','דואר אלקטרוני - שייך ליועץ',r.advisorEmail||(USERS[r.advisor]?USERS[r.advisor].email:'')||'',{email:true});
   h += fv('advisorPhone','מספר טלפון עסקי - שייך ליועץ',r.advisorPhone||(USERS[r.advisor]?USERS[r.advisor].phone:'')||'',{phone:true});
   h += secEnd();
@@ -2068,7 +2071,7 @@ function renderPaymentFields(r) {
   var h = '';
   h += secHead('שם מקטע', 'payment_details', false);
   h += fv('name','שם',r.name||r.clientName);
-  h += fv('executor','משתמש',r.executor||r.createdBy,{select:Object.keys(USERS)});
+  h += fv('executor','משתמש',r.executor||r.createdBy,{select:USER_KEYS,selectLabels:USER_NAMES});
   h += fv('setupDate','תאריך גביה',r.setupDate||todayVal(),{date:true});
   // Linked deal (clickable if dealId set)
   var _pDealName='';
@@ -2137,7 +2140,7 @@ function renderMeetingFields(r) {
   else if(r.leadId){_mpId=r.leadId;_mpType='leads';var _ml=DB.leads.find(function(l){return l.id===r.leadId});if(_ml){_mpName=_ml.name;_mpEmail=_ml.email||'';}}
   if(!_mpName)_mpName=r.clientName||r.withName||'';
   if(_mpId&&_mpType){h+='<div class="field-row"><span class="field-label">משייך ל</span><span class="field-value"><a href="#" onclick="openRecord(\''+_mpType+'\',\''+_mpId+'\',true);return false" style="color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:4px">'+(_mpName||'—')+' <span style="font-size:11px">🔗</span></a></span></div>';}else{h+=fv('clientName','משייך ל',_mpName);}
-  h += fv('agent','שם נציג',r.agent,{select:Object.keys(USERS)});
+  h += fv('agent','שם נציג',r.agent,{select:USER_KEYS,selectLabels:USER_NAMES});
   h += fv('meetingNumber','מספר פגישה',r.meetingNumber);
   h += fv('startDate','תאריך התחלה',r.startDate||r.date,{date:true});
   h += fv('startTime','שעת התחלה',r.startTime,{time:true});
@@ -2163,7 +2166,7 @@ function renderTaskFields(r) {
   h += fv('dueDate','תאריך יעד',r.dueDate,{date:true});
   h += fv('dueTime','שעת יעד',r.dueTime,{time:true});
   h += fv('leadRef','משייך ל',r.leadRef||r.relatedName||'');
-  h += fv('executor','מבצע',r.executor||r.assignee,{select:Object.keys(USERS)});
+  h += fv('executor','מבצע',r.executor||r.assignee,{select:USER_KEYS,selectLabels:USER_NAMES});
   h += secEnd();
   h += secHead('פרטי משימה', 'task_details', false);
   h += fv('reminderDate','תאריך תזכורת',r.reminderDate,{date:true});
