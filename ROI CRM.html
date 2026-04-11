@@ -1212,6 +1212,7 @@ const AUTH_RATE_LIMIT = {
 // Trusted-device window: after a successful OTP, skip re-OTP for this long
 // (across page refreshes and even browser restarts on the same machine).
 const OTP_TRUST_WINDOW_MS = 12 * 60 * 60 * 1000; // 12 hours
+const APP_BUILD = 'build 2026-04-11c · session/PATCH fixes';
 let _authToken = localStorage.getItem('roicrm_token') || null;
 let _refreshToken = localStorage.getItem('roicrm_refresh') || null;
 
@@ -1256,8 +1257,32 @@ function _setAuth(accessToken, refreshToken) {
   _refreshToken = refreshToken;
   if (accessToken) { localStorage.setItem('roicrm_token', accessToken); } else { localStorage.removeItem('roicrm_token'); }
   if (refreshToken) { localStorage.setItem('roicrm_refresh', refreshToken); } else { localStorage.removeItem('roicrm_refresh'); }
-  // Clearing auth also clears the trusted-device OTP window
-  if (!accessToken) { localStorage.removeItem('roicrm_otp_verified_at'); localStorage.removeItem('roicrm_otp_username'); }
+  // Do NOT clear the OTP trust window here. The trust window is a device-level
+  // decision ("this user already OTP'd on this device within 12h"), independent
+  // of whether the access token happens to be valid right now. A silent token
+  // refresh should never force the user to re-OTP.
+}
+
+// Read exp (unix seconds) from a JWT without verifying it. Returns 0 on error.
+function _jwtExp(token) {
+  try {
+    const p = token.split('.')[1];
+    const json = atob(p.replace(/-/g, '+').replace(/_/g, '/'));
+    return JSON.parse(json).exp || 0;
+  } catch(e) { return 0; }
+}
+
+// Force a silent refresh of the access token using the stored refresh token.
+async function _refreshAuth() {
+  if (!_refreshToken) return false;
+  try {
+    const res = await apiPost('/api/auth/refresh', { refresh_token: _refreshToken });
+    if (res.data && res.data.access_token) {
+      _setAuth(res.data.access_token, res.data.refresh_token || _refreshToken);
+      return true;
+    }
+  } catch(e) { /* ignore */ }
+  return false;
 }
 
 // Marks the current device as OTP-trusted for OTP_TRUST_WINDOW_MS.
@@ -1277,20 +1302,15 @@ function _isOtpTrusted(username) {
 }
 
 function _handleExpired() {
-  // Try refresh once, then logout
-  if (_refreshToken) {
-    apiPost('/api/auth/refresh', { refresh_token: _refreshToken }).then(res => {
-      if (res.data && res.data.access_token) {
-        _setAuth(res.data.access_token, res.data.refresh_token || _refreshToken);
-      } else {
-        _setAuth(null, null);
-        if (currentUser) doLogout();
-      }
-    });
-  } else {
-    _setAuth(null, null);
-    if (currentUser) doLogout();
-  }
+  // Try refresh once, then logout. The OTP trust window survives this — if the
+  // refresh fails we only need the user to re-enter the password, not re-OTP
+  // (as long as they're still inside the 12h device-trust window).
+  _refreshAuth().then(function(ok){
+    if (!ok) {
+      _setAuth(null, null);
+      if (currentUser) doLogout();
+    }
+  });
 }
 
 // ===== FIELD NAME MAPPING (JS camelCase <-> DB snake_case) =====
@@ -1696,7 +1716,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementB
 document.addEventListener('click',function(e){var dd=document.getElementById('notifDropdown');if(dd&&dd.classList.contains('open')&&!e.target.closest('#notifDropdown')&&!e.target.closest('#notifBtn'))dd.classList.remove('open');var ad=document.getElementById('agendaDropdown');if(ad&&ad.classList.contains('open')&&!e.target.closest('#agendaDropdown')&&!e.target.closest('#agendaBtn'))ad.classList.remove('open');});
 async function doLogout(){
   try { await apiPost('/api/auth/logout', {}); } catch(e) { console.error('Sign out error:', e); }
-  _setAuth(null, null); // also clears OTP trust marker
+  _setAuth(null, null);
+  // Explicit logout is the ONLY place we forget the trusted device marker.
+  localStorage.removeItem('roicrm_otp_verified_at');
+  localStorage.removeItem('roicrm_otp_username');
   sessionStorage.removeItem('roicrm_user');
   currentUser=null;
   document.getElementById('loginPage').style.display='flex';
@@ -1717,15 +1740,19 @@ async function initApp(){
   checkTaskReminders();
   showPage('dashboard');
   setupRealtime();
-  // Token auto-refresh every 50 minutes
-  setInterval(async () => {
-    if (_refreshToken) {
-      const res = await apiPost('/api/auth/refresh', { refresh_token: _refreshToken });
-      if (res.data && res.data.access_token) {
-        _setAuth(res.data.access_token, res.data.refresh_token || _refreshToken);
-      }
-    }
-  }, 50 * 60 * 1000);
+  // Proactively refresh the access token well before Supabase's expiry.
+  // Default Supabase access tokens are 1h, but some projects set 30m — so we
+  // refresh every 10 minutes to give ourselves multiple attempts per lifetime.
+  setInterval(function(){ _refreshAuth(); }, 10 * 60 * 1000);
+
+  // Also refresh when the tab regains focus after being hidden, so a user who
+  // came back after lunch doesn't see any hiccup on their next click.
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState !== 'visible' || !_authToken) return;
+    var exp = _jwtExp(_authToken);
+    // If the token expires in under 5 minutes (or has expired), refresh now.
+    if (exp && (exp * 1000 - Date.now()) < 5 * 60 * 1000) _refreshAuth();
+  });
 }
 
 // ===== NAV =====
@@ -3116,7 +3143,7 @@ async function runCCScrub(){
 function renderSettings(){
   var isAdmin=currentUser&&currentUser.role==='admin';
   var scrubBlock=isAdmin?('<div class="dash-card" style="margin-bottom:16px;border:1px solid var(--danger-bg)"><div class="dash-card-title">🔒 פרטיות ואבטחת מידע</div><div style="font-size:14px;color:var(--text2);margin:8px 0 14px;line-height:1.5">סריקה של כל המתעניינים, עסקאות, תשלומים וההערות שלהם. אם יימצאו מספרי אשראי תקינים (עוברים Luhn) — ההערה תימחק או השדה יתרוקן.</div><button class="btn btn-danger" onclick="runCCScrub()">🔍 סרוק ומחק מספרי אשראי</button></div>'):'';
-  return '<div style="max-width:600px">'+scrubBlock+'<div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות מערכת</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><div class="form-group"><label class="form-label">פרטי חשבון בנק</label><input class="form-control" id="bankDetails" value="בנק לאומי | סניף 900 | חשבון 12345678 | ROI"></div><button class="btn btn-primary" onclick="showToast(\'נשמר ✅\')" style="margin-top:8px">שמור</button></div><div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>'+Object.keys(DB).map(function(k){return Array.isArray(DB[k])?'<div class="status-row"><span class="status-label">'+(PAGE_ICONS[k]||'📋')+' '+(PAGE_TITLES[k]||k)+'</span><span class="status-count">'+DB[k].length+'</span></div>':'';}).filter(Boolean).join('')+'</div></div>';
+  return '<div style="max-width:600px">'+scrubBlock+'<div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות מערכת</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><div class="form-group"><label class="form-label">פרטי חשבון בנק</label><input class="form-control" id="bankDetails" value="בנק לאומי | סניף 900 | חשבון 12345678 | ROI"></div><button class="btn btn-primary" onclick="showToast(\'נשמר ✅\')" style="margin-top:8px">שמור</button></div><div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>'+Object.keys(DB).map(function(k){return Array.isArray(DB[k])?'<div class="status-row"><span class="status-label">'+(PAGE_ICONS[k]||'📋')+' '+(PAGE_TITLES[k]||k)+'</span><span class="status-count">'+DB[k].length+'</span></div>':'';}).filter(Boolean).join('')+'</div><div style="text-align:center;color:var(--text3);font-size:12px;margin-top:14px">'+APP_BUILD+'</div></div>';
 }
 // ===== AUTOMATIONS =====
 function runAutomations(type, record, isNew) {
@@ -3691,32 +3718,43 @@ setInterval(() => {
 // ===== APP INITIALIZATION (via server proxy) =====
 (async function() {
   try {
-    // Check for an active auth session using stored token
+    // 1. Try to establish a valid access token. If the stored one is expired
+    //    (or near-expiry) and we have a refresh token, use it silently. This
+    //    is what keeps the user signed in across the 12h OTP trust window
+    //    even if the short-lived access token dies in the middle.
     if (_authToken) {
-      const { data: user, error } = await apiGet('/api/auth/session');
+      var exp = _jwtExp(_authToken);
+      if (exp && (exp * 1000 - Date.now()) < 60 * 1000) {
+        await _refreshAuth();
+      }
+    } else if (_refreshToken) {
+      await _refreshAuth();
+    }
 
-      if (user && user.user_metadata) {
-        const username = user.user_metadata.username;
+    if (_authToken) {
+      const { data: user } = await apiGet('/api/auth/session');
 
-        if (username && USERS[username]) {
-          // Auto-login only if a valid OTP was entered within the trust window.
-          // Otherwise the device must re-verify via OTP (token is kept so the
-          // user only re-enters the WhatsApp code, not their password).
-          if (_isOtpTrusted(username)) {
-            currentUser = { ...USERS[username], username: username };
-            await initApp();
-            checkRelevantDates();
-            return;
-          }
-          // Token still valid but OTP trust window expired — show login page
-          // for full re-auth (password + OTP). Drop tokens to keep it simple.
-          _setAuth(null, null);
-        } else {
-          _setAuth(null, null);
+      // If the session call failed but we still have a refresh token, try
+      // once more — prevents a dead access token from dumping the user back
+      // to the password screen.
+      let effectiveUser = user;
+      if (!effectiveUser && _refreshToken) {
+        if (await _refreshAuth()) {
+          const r2 = await apiGet('/api/auth/session');
+          effectiveUser = r2.data;
         }
-      } else {
-        // Token invalid or user not found - clear
-        _setAuth(null, null);
+      }
+
+      if (effectiveUser && effectiveUser.user_metadata) {
+        const username = effectiveUser.user_metadata.username;
+        if (username && USERS[username] && _isOtpTrusted(username)) {
+          currentUser = { ...USERS[username], username: username };
+          await initApp();
+          checkRelevantDates();
+          return;
+        }
+        // OTP trust expired or unknown user — fall through to login page.
+        // Do NOT clear tokens here; logout is the only place that does that.
       }
     }
 
