@@ -609,8 +609,11 @@ const AUTH_RATE_LIMIT = {
 
 
 // ===== API CLIENT (all credentials server-side) =====
-let _authToken = sessionStorage.getItem('roicrm_token') || null;
-let _refreshToken = sessionStorage.getItem('roicrm_refresh') || null;
+// Trusted-device window: after a successful OTP, skip re-OTP for this long
+// (across page refreshes and even browser restarts on the same machine).
+const OTP_TRUST_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
+let _authToken = localStorage.getItem('roicrm_token') || null;
+let _refreshToken = localStorage.getItem('roicrm_refresh') || null;
 
 function apiHeaders() {
   const h = { 'Content-Type': 'application/json' };
@@ -648,8 +651,26 @@ async function apiPatch(path, body) {
 function _setAuth(accessToken, refreshToken) {
   _authToken = accessToken;
   _refreshToken = refreshToken;
-  if (accessToken) { sessionStorage.setItem('roicrm_token', accessToken); } else { sessionStorage.removeItem('roicrm_token'); }
-  if (refreshToken) { sessionStorage.setItem('roicrm_refresh', refreshToken); } else { sessionStorage.removeItem('roicrm_refresh'); }
+  if (accessToken) { localStorage.setItem('roicrm_token', accessToken); } else { localStorage.removeItem('roicrm_token'); }
+  if (refreshToken) { localStorage.setItem('roicrm_refresh', refreshToken); } else { localStorage.removeItem('roicrm_refresh'); }
+  // Clearing auth also clears the trusted-device OTP window
+  if (!accessToken) { localStorage.removeItem('roicrm_otp_verified_at'); localStorage.removeItem('roicrm_otp_username'); }
+}
+
+// Marks the current device as OTP-trusted for OTP_TRUST_WINDOW_MS.
+function _markOtpVerified(username) {
+  localStorage.setItem('roicrm_otp_verified_at', String(Date.now()));
+  if (username) localStorage.setItem('roicrm_otp_username', username);
+}
+
+// True if a valid OTP was entered within the trust window for the given user.
+function _isOtpTrusted(username) {
+  const ts = parseInt(localStorage.getItem('roicrm_otp_verified_at') || '0', 10);
+  if (!ts) return false;
+  if (Date.now() - ts > OTP_TRUST_WINDOW_MS) return false;
+  const storedUser = localStorage.getItem('roicrm_otp_username');
+  if (storedUser && username && storedUser !== username) return false;
+  return true;
 }
 
 function _handleExpired() {
@@ -1031,6 +1052,7 @@ function step2Submit() {
   // OTP verified. Supabase Auth session is already active from step1.
   // Set currentUser from the USERS object (source of truth for display info).
   currentUser = {...USERS[_otpUsername], username: _otpUsername};
+  _markOtpVerified(_otpUsername);
   _otpCode = ''; _otpUsername = '';
   initApp();
 }
@@ -1053,7 +1075,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementB
 document.addEventListener('click',function(e){var dd=document.getElementById('notifDropdown');if(dd&&dd.classList.contains('open')&&!e.target.closest('#notifDropdown')&&!e.target.closest('#notifBtn'))dd.classList.remove('open');});
 async function doLogout(){
   try { await apiPost('/api/auth/logout', {}); } catch(e) { console.error('Sign out error:', e); }
-  _setAuth(null, null);
+  _setAuth(null, null); // also clears OTP trust marker
   sessionStorage.removeItem('roicrm_user');
   currentUser=null;
   document.getElementById('loginPage').style.display='flex';
@@ -2564,14 +2586,25 @@ setInterval(() => {
         const username = user.user_metadata.username;
 
         if (username && USERS[username]) {
-          currentUser = { ...USERS[username], username: username };
-          await initApp();
-          checkRelevantDates();
-          return;
+          // Auto-login only if a valid OTP was entered within the trust window.
+          // Otherwise the device must re-verify via OTP (token is kept so the
+          // user only re-enters the WhatsApp code, not their password).
+          if (_isOtpTrusted(username)) {
+            currentUser = { ...USERS[username], username: username };
+            await initApp();
+            checkRelevantDates();
+            return;
+          }
+          // Token still valid but OTP trust window expired — show login page
+          // for full re-auth (password + OTP). Drop tokens to keep it simple.
+          _setAuth(null, null);
+        } else {
+          _setAuth(null, null);
         }
+      } else {
+        // Token invalid or user not found - clear
+        _setAuth(null, null);
       }
-      // Token invalid or user not found - clear
-      _setAuth(null, null);
     }
 
     // No valid session - show login page (default state)
