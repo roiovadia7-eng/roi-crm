@@ -815,6 +815,17 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 .field-checkbox{display:flex;align-items:center;gap:8px}
 .field-checkbox input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent)}
 
+/* Select-confirm: small ✓/✕ pair that appears when a dropdown value is staged but not yet committed */
+.field-value{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.field-value > select{flex:1;min-width:0}
+.select-confirm{display:none;align-items:center;gap:4px;flex-shrink:0;animation:scaleIn .12s}
+.select-confirm[style*="inline-flex"]{display:inline-flex!important}
+.select-confirm button{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;padding:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:all .12s}
+.select-confirm .sc-ok{background:var(--success-bg);color:var(--success);border-color:var(--success)}
+.select-confirm .sc-ok:hover{background:var(--success);color:#fff;transform:scale(1.05)}
+.select-confirm .sc-x{background:var(--danger-bg);color:var(--danger);border-color:var(--danger)}
+.select-confirm .sc-x:hover{background:var(--danger);color:#fff;transform:scale(1.05)}
+
 .confirm-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(8,10,14,.55);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
 .confirm-dialog{background:var(--bg-2);border-radius:var(--r-xl);padding:34px;max-width:420px;width:90%;text-align:center;box-shadow:var(--shadow-xl);border:1px solid var(--border);animation:scaleIn .2s}
 .confirm-dialog .confirm-icon{font-size:48px;margin-bottom:16px}
@@ -1281,7 +1292,7 @@ function _handleExpired() {
 
 // ===== FIELD NAME MAPPING (JS camelCase <-> DB snake_case) =====
 const FIELD_MAP = {
-  leads: {whyContact:'why_contact', isGold:'is_gold', whatsappLink:'whatsapp_link', relevantDate:'relevant_date', createdBy:'created_by', updatedBy:'updated_by'},
+  leads: {whyContact:'why_contact', whatsappLink:'whatsapp_link', relevantDate:'relevant_date', createdBy:'created_by', updatedBy:'updated_by'},
   deals: {leadId:'lead_id', leadName:'lead_name', productId:'product_id', productName:'product_name', paymentType:'payment_type', numPayments:'num_payments', dealTotal:'deal_total', creditDetails:'credit_details', contractLink:'contract_link', creditFrameLink:'credit_frame_link', standingOrderLink:'standing_order_link', futureCollectionDate:'future_collection_date', invoiceIssued:'invoice_issued', createdBy:'created_by', updatedBy:'updated_by'},
   clients: {clientPhone:'client_phone', clientEmail:'client_email', clientStatus:'client_status', startDate:'start_date', endDate:'end_date', doneMeetings:'done_meetings', totalMeetings:'total_meetings', dealId:'deal_id', dealName:'deal_name', dealRef:'deal_ref', leadId:'lead_id', leadName:'lead_name', avgMonthsInProcess:'avg_months_in_process', advisorEmail:'advisor_email', advisorPhone:'advisor_phone', createdBy:'created_by', updatedBy:'updated_by'},
   payments: {dealId:'deal_id', dealName:'deal_name', paymentType:'payment_type', numPayments:'num_payments', paymentNumber:'payment_number', setupDate:'setup_date', paymentDate:'payment_date', invoiceIssued:'invoice_issued', productId:'product_id', createdBy:'created_by', updatedBy:'updated_by'},
@@ -1877,7 +1888,7 @@ function inlineEdit(e,page,recId,colIdx){
 
 // ===== LIST CONFIGS =====
 const LIST_CONFIGS={
-  leads:{cols:['שם','טלפון','סטטוס','נציג','מקור','זהב','נוצר בתאריך','עודכן','נוצר ע"י'],fields:r=>[r.name,r.phone||'—',`<span class="badge badge-blue">${r.status||'חדש'}</span>`,uName(r.agent),r.source||'—',r.isGold?'⭐ זהב':'—',fmt(r.created),fmt(r.updated),crBadge(r.createdBy)],defaultCols:[0,1,2,3,4,5,8]},
+  leads:{cols:['שם','טלפון','סטטוס','נציג','מקור','נוצר בתאריך','עודכן','נוצר ע"י'],fields:r=>[r.name,r.phone||'—',`<span class="badge badge-blue">${r.status||'חדש'}</span>`,uName(r.agent),r.source||'—',fmt(r.created),fmt(r.updated),crBadge(r.createdBy)],defaultCols:[0,1,2,3,4,7]},
   deals:{cols:['שם עסקה','מתעניין','מוצר','סטטוס','שווי','סוג תשלום','מבצע','נוצר בתאריך','נוצר ע"י','טלפון מתעניין'],fields:r=>{var _lp='—';if(r.leadId){var _ld=DB.leads.find(function(l){return l.id===r.leadId});if(_ld)_lp=_ld.phone||'—';}var _pn=(r.productName||'').trim();if(!_pn&&r.productId){var _pp=DB.products.find(function(p){return p.id===r.productId});if(_pp)_pn=_pp.name||'';}var _st=(r.status||'').trim();return[r.name,r.leadName||r.clientName||'—',_pn||'—',_st?`<span class="badge badge-${_st==='לקוח סגר'?'green':_st==='בתהליך'?'yellow':'blue'}">${_st}</span>`:'—',fmtMoney(r.dealTotal),r.paymentType||'—',uName(r.executor),fmt(r.created),crBadge(r.createdBy),_lp];},defaultCols:[0,1,2,3,4,6,8,9]},
   clients:{cols:['שם','טלפון','יועץ','סטטוס','תחילת תהליך','סיום תהליך','פגישות שבוצעו','סה"כ פגישות','נוצר ע"י','שם עסקה'],fields:r=>{var _dn='—';if(r.dealId){var _dd=DB.deals.find(function(d){return d.id===r.dealId});if(_dd)_dn=_dd.name||'—';}else if(r.dealName)_dn=r.dealName;return[r.name,r.clientPhone||r.phone||'—',uName(r.advisor),r.clientStatus||'פעיל',fmt(r.startDate),fmt(r.endDate),r.doneMeetings||'—',r.totalMeetings||'—',crBadge(r.createdBy),_dn];},defaultCols:[0,1,2,3,4,8,9]},
   payments:{cols:['שם','עסקה','צורת תשלום','סכום','תאריך גביה','תאריך כסף בבנק','מס תשלום','סטטוס','חשבונית','שווי עסקה'],fields:r=>{var _dt='—';if(r.dealId){var _dd=DB.deals.find(function(d){return d.id===r.dealId});if(_dd)_dt=fmtMoney(_dd.dealTotal);}return[r.name||r.clientName||'—',r.dealName||'—',r.paymentType||'—',fmtMoney(r.amount),fmt(r.setupDate),fmt(r.paymentDate),r.paymentNumber||'—',`<span class="badge badge-${r.status==='שולם'?'green':r.status==='בדיקה'?'yellow':'red'}">${r.status||'ממתין'}</span>`,r.invoiceIssued?'✅':'❌',_dt];},defaultCols:[0,1,2,3,4,6,7,9]},
@@ -1898,7 +1909,6 @@ function _isThisWeek(d){if(!d)return false;var dt=new Date(d),n=new Date(),dow=n
 const VIEWS={
   leads:[
     {name:'לידים חדשים 🎉',icon:'⭐',filter:function(r){return r.status==='לידים חדשים 🎉';}},
-    {name:'לידים זהב 🤑',icon:'⭐',filter:function(r){return r.isGold;}},
     {name:'פולואפ איכותי 💥',filter:function(r){return r.status==='פולאופ איכותי 🌟';}},
     {name:'נוצר קשר ראשוני 😉',filter:function(r){return r.status==='נוצר קשר ראשוני 😊';}},
     {name:'אין מענה 📞',filter:function(r){return r.status==='אין מענה 📞';}},
@@ -2493,7 +2503,8 @@ function fv(key, label, val, opts) {
   } else if (opts.checkbox) {
     h += '<label class="field-checkbox"><input type="checkbox" id="' + id + '" ' + (val ? 'checked' : '') + ' onchange="updateField(\'' + key + '\',this.checked)"> ' + (opts.checkLabel || '') + '</label>';
   } else if (opts.select) {
-    h += '<select id="' + id + '" onchange="updateField(\'' + key + '\',this.value)">';
+    var _orig = String(val || '');
+    h += '<select id="' + id + '" data-orig="' + _orig.replace(/"/g,'&quot;') + '" onchange="_selectPending(\'' + key + '\')">';
     h += '<option value="">-- בחר --</option>';
     var labels = opts.selectLabels || opts.select;
     for (var i = 0; i < opts.select.length; i++) {
@@ -2502,6 +2513,7 @@ function fv(key, label, val, opts) {
       h += '<option value="' + sv.replace(/"/g,'&quot;') + '"' + (String(val) === sv ? ' selected' : '') + '>' + sl + '</option>';
     }
     h += '</select>';
+    h += '<span class="select-confirm" id="conf_' + key + '" style="display:none"><button type="button" class="sc-ok" onclick="_selectConfirm(\'' + key + '\')" title="אישור">✓</button><button type="button" class="sc-x" onclick="_selectCancel(\'' + key + '\')" title="ביטול">✕</button></span>';
   } else if (opts.textarea) {
     h += '<textarea id="' + id + '" onchange="updateField(\'' + key + '\',this.value)">' + (val || '') + '</textarea>';
   } else if (opts.date) {
@@ -2770,6 +2782,30 @@ function updateField(key,val){if(currentRecord){
   // When product changes, also sync productName
   if(key==='productId'){var _p=DB.products.find(function(p){return p.id===val});currentRecord.productName=_p?_p.name:'';}
   if(key==='status_task')currentRecord.done=(val==='סגור');saveRS();}}
+// ===== SELECT CONFIRMATION (prevent accidental dropdown changes) =====
+function _selectPending(key){
+  var sel=document.getElementById('fld_'+key);
+  var conf=document.getElementById('conf_'+key);
+  if(!sel||!conf)return;
+  var orig=sel.getAttribute('data-orig')||'';
+  conf.style.display=(sel.value===orig)?'none':'inline-flex';
+}
+function _selectConfirm(key){
+  var sel=document.getElementById('fld_'+key);
+  var conf=document.getElementById('conf_'+key);
+  if(!sel)return;
+  var v=sel.value;
+  sel.setAttribute('data-orig',v);
+  if(conf)conf.style.display='none';
+  updateField(key,v);
+}
+function _selectCancel(key){
+  var sel=document.getElementById('fld_'+key);
+  var conf=document.getElementById('conf_'+key);
+  if(!sel)return;
+  sel.value=sel.getAttribute('data-orig')||'';
+  if(conf)conf.style.display='none';
+}
 function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');if(currentRecordType==='deals'&&currentRecord.productId){var _sp=DB.products.find(function(p){return p.id===currentRecord.productId});if(_sp)currentRecord.productName=_sp.name;}currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();sbUpsert(currentRecordType,currentRecord);runAutomations(currentRecordType,currentRecord,false);showToast('נשמר ✅');}_recordDirty=false;_doClose();}
 function deleteRecord() {
   var page = currentPage;
@@ -2903,7 +2939,7 @@ function openAddModal(to){const type=to||currentPage;modalType=type;if(!perm('cr
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open');modalType=null;modalParent=null;}
 function g(id){const el=document.getElementById(id);return el?el.value:'';}
 function getForm(type){const td=todayVal();const po=DB.products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');const uo=userOpts();const leadOpts=DB.leads.map(l=>`<option value="${l.id}">${l.name}</option>`).join('');const dealOpts=DB.deals.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');const clientOpts=DB.clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-if(type==='leads')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מתעניין *</label><input class="form-control" id="f-name" placeholder="שם מלא"></div><div class="form-group"><label class="form-label">טלפון ראשי</label><input class="form-control" id="f-phone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>לידים חדשים 🎉</option><option>לידים זהב ⭐</option><option>פולאופ איכותי 😊</option><option>נוצר קשר ראשוני 📞</option><option>לא נסגר 😊</option><option>ליד לא תקין ❌</option></select></div><div class="form-group"><label class="form-label">נציג</label><select class="form-control" id="f-agent">${uo}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">מקור</label><select class="form-control" id="f-source"><option>אינסטגרם אורגני</option><option>אינסטגרם רועי</option><option>אינסטגרם נתן</option><option>קמפיין ממומן</option><option>לקוחות חוזרים</option><option>אפיליאציה</option><option>פייסבוק</option><option>גוגל</option><option>המלצה</option><option>אחר</option></select></div><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-email" type="email"></div></div><div class="form-group"><label class="form-label">למה פנה</label><textarea class="form-control" id="f-whyContact" rows="2" placeholder="תיאור קצר..."></textarea></div>`;
+if(type==='leads')return`<div class="form-row"><div class="form-group"><label class="form-label">שם מתעניין *</label><input class="form-control" id="f-name" placeholder="שם מלא"></div><div class="form-group"><label class="form-label">טלפון ראשי</label><input class="form-control" id="f-phone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>לידים חדשים 🎉</option><option>פולאופ איכותי 😊</option><option>נוצר קשר ראשוני 📞</option><option>לא נסגר 😊</option><option>ליד לא תקין ❌</option></select></div><div class="form-group"><label class="form-label">נציג</label><select class="form-control" id="f-agent">${uo}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">מקור</label><select class="form-control" id="f-source"><option>אינסטגרם אורגני</option><option>אינסטגרם רועי</option><option>אינסטגרם נתן</option><option>קמפיין ממומן</option><option>לקוחות חוזרים</option><option>אפיליאציה</option><option>פייסבוק</option><option>גוגל</option><option>המלצה</option><option>אחר</option></select></div><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-email" type="email"></div></div><div class="form-group"><label class="form-label">למה פנה</label><textarea class="form-control" id="f-whyContact" rows="2" placeholder="תיאור קצר..."></textarea></div>`;
 if(type==='deals')return`<div class="form-group"><label class="form-label">שם עסקה *</label><input class="form-control" id="f-name" value="${modalParent?.name||''}"></div><div class="form-row"><div class="form-group"><label class="form-label">מבצע העסקה</label><select class="form-control" id="f-executor">${uo}</select></div><div class="form-group"><label class="form-label">מוצר</label><select class="form-control" id="f-product">${po}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">מתעניין משויך</label><input class="form-control" id="f-leadName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>חדשה</option><option>בתהליך</option><option>סגורה</option><option>בוטלה</option></select></div></div><div class="form-row"><div class="form-group"><label class="form-label">סוג תשלום</label><select class="form-control" id="f-paymentType"><option>העברה בנקאית</option><option>אשראי תופס מסגרת</option><option>הוראת קבע באשראי</option><option>ביט / פייבוקס</option><option>מזומן</option></select></div><div class="form-group"><label class="form-label">שווי עסקה כולל מע"מ</label><input class="form-control" id="f-dealTotal" type="number"></div></div>`;
 if(type==='clients')return`<div class="form-row"><div class="form-group"><label class="form-label">שם לקוח *</label><input class="form-control" id="f-name" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">טלפון</label><input class="form-control" id="f-clientPhone" type="tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">אימייל</label><input class="form-control" id="f-clientEmail" type="email"></div><div class="form-group"><label class="form-label">יועץ משויך</label><select class="form-control" id="f-advisor">${uo}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך תחילת תהליך</label><input class="form-control" id="f-startDate" type="date" value="${td}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-clientStatus"><option>פעיל</option><option>לא פעיל</option><option>בהקפאה</option></select></div></div>`;
 if(type==='payments')return`<div class="form-row"><div class="form-group"><label class="form-label">שם *</label><input class="form-control" id="f-name" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">עסקה משויכת</label><input class="form-control" id="f-dealName" value="${modalParent?.type==='deals'?modalParent?.name||'':''}"></div></div><div class="form-row"><div class="form-group"><label class="form-label">צורת תשלום</label><select class="form-control" id="f-paymentType"><option>הוראת קבע</option><option>אשראי תופס מסגרת</option><option>העברה בנקאית</option><option>ביט</option><option>פייבוקס</option><option>מזומן</option></select></div><div class="form-group"><label class="form-label">סכום</label><input class="form-control" id="f-amount" type="number"></div></div><div class="form-row"><div class="form-group"><label class="form-label">מספר תשלומים</label><input class="form-control" id="f-numPayments" type="number" placeholder="1"></div><div class="form-group"><label class="form-label">מספר תשלום</label><input class="form-control" id="f-paymentNumber" type="number" placeholder="1"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך קביעה</label><input class="form-control" id="f-setupDate" type="date" value="${td}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>ממתין</option><option>שולם</option><option>לא בוצע</option><option>בדיקה</option></select></div></div>`;
