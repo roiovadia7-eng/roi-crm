@@ -486,13 +486,13 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
     <div class="nav-section">ראשי</div>
     <div class="nav-item active" onclick="showPage('dashboard')"><span class="icon">📊</span> דאשבורד</div>
     <div class="nav-section">ניהול</div>
-    <div class="nav-item" onclick="showPage('leads')"><span class="icon">⭐</span> מתעניינים<span class="nav-badge" id="badge-leads">0</span></div>
-    <div class="nav-item" onclick="showPage('deals')"><span class="icon">💼</span> עסקאות<span class="nav-badge" id="badge-deals">0</span></div>
-    <div class="nav-item" onclick="showPage('clients')"><span class="icon">👥</span> לקוחות<span class="nav-badge" id="badge-clients">0</span></div>
-    <div class="nav-item" onclick="showPage('payments')"><span class="icon">💰</span> תשלומים<span class="nav-badge" id="badge-payments">0</span></div>
-    <div class="nav-item" onclick="showPage('products')"><span class="icon">🛍️</span> מוצרים<span class="nav-badge" id="badge-products">0</span></div>
-    <div class="nav-item" onclick="showPage('meetings')"><span class="icon">📅</span> פגישות<span class="nav-badge" id="badge-meetings">0</span></div>
-    <div class="nav-item" onclick="showPage('tasks')"><span class="icon">✅</span> משימות<span class="nav-badge" id="badge-tasks">0</span></div>
+    <div class="nav-item" onclick="showPage('leads')"><span class="icon">⭐</span> מתעניינים</div>
+    <div class="nav-item" onclick="showPage('deals')"><span class="icon">💼</span> עסקאות</div>
+    <div class="nav-item" onclick="showPage('clients')"><span class="icon">👥</span> לקוחות</div>
+    <div class="nav-item" onclick="showPage('payments')"><span class="icon">💰</span> תשלומים</div>
+    <div class="nav-item" onclick="showPage('products')"><span class="icon">🛍️</span> מוצרים</div>
+    <div class="nav-item" onclick="showPage('meetings')"><span class="icon">📅</span> פגישות</div>
+    <div class="nav-item" onclick="showPage('tasks')"><span class="icon">✅</span> משימות</div>
     <div class="nav-section">מערכת</div>
     <div class="nav-item" onclick="showPage('users')" id="usersNavItem" style="display:none"><span class="icon">👤</span> משתמשים</div>
     <div class="nav-item" onclick="showPage('settings')"><span class="icon">⚙️</span> הגדרות</div>
@@ -512,6 +512,23 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
   </div>
   <div class="content" id="mainContent"></div>
 </div>
+</div>
+
+<!-- Task reminder banner -->
+<div id="taskReminderBanner" style="display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;background:linear-gradient(135deg,#fff5e6 0%,#ffe7c4 100%);border:2px solid #ff9500;border-radius:14px;padding:16px 22px;box-shadow:0 8px 30px rgba(255,149,0,.25);min-width:360px;max-width:520px;font-family:inherit;direction:rtl">
+  <div style="display:flex;align-items:flex-start;gap:12px">
+    <div style="font-size:28px;line-height:1">⏰</div>
+    <div style="flex:1">
+      <div style="font-size:15px;font-weight:800;color:#7a3d00;margin-bottom:4px">תזכורת משימה להיום</div>
+      <div id="taskReminderTitle" style="font-size:14px;color:#4a2600;font-weight:600;margin-bottom:2px">—</div>
+      <div id="taskReminderTime" style="font-size:12px;color:#7a3d00;opacity:.85">—</div>
+    </div>
+    <button onclick="dismissTaskReminder()" style="background:transparent;border:none;font-size:20px;cursor:pointer;color:#7a3d00;padding:0;line-height:1" title="סגור">✕</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button onclick="openTaskFromReminder()" class="btn btn-primary" style="flex:1">פתח משימה</button>
+    <button onclick="snoozeTaskReminder()" class="btn btn-secondary">נודניק 10 דק'</button>
+  </div>
 </div>
 
 <div class="record-overlay" id="recordOverlay">
@@ -562,9 +579,9 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 <script>
 // ===== USERS & PERMISSIONS =====
 const USERS={
-  roi:   {id:'318686540', phone:'972526569844', email:'roi@roibusiness.co.il', name:'רועי עובדיה', role:'admin', roleLabel:'מנהל מערכת',  avatar:'ר', color:'#EEBD2A'},
-  natan: {id:'211870100', phone:'972504744114', email:'natan@roibusiness.co.il', name:'נתן',          role:'agent', roleLabel:'יועץ מחירות', avatar:'נ', color:'#10b981'},
-  ben:   {id:'322230731', phone:'972523817637', email:'ben@roibusiness.co.il', name:'בן',           role:'agent', roleLabel:'יועץ מחירות', avatar:'ב', color:'#f59e0b'}
+  roi:   {id:'318686540', phone:'972526569844', email:'roiovadia7@gmail.com',    name:'רועי עובדיה', role:'admin', roleLabel:'מנהל מערכת',  avatar:'ר', color:'#EEBD2A'},
+  natan: {id:'211870100', phone:'972504744114', email:'nathanielasraf@gmail.com',name:'נתנאל אסרף',  role:'agent', roleLabel:'יועץ מחירות', avatar:'נ', color:'#10b981'},
+  ben:   {id:'322230731', phone:'972523817637', email:'benab052@gmail.com',      name:'בן אברגל',    role:'agent', roleLabel:'יועץ מחירות', avatar:'ב', color:'#f59e0b'}
 };
 
 // ===== USERS LOOKUP BY ID NUMBER =====
@@ -698,7 +715,7 @@ const FIELD_MAP = {
   payments: {dealId:'deal_id', dealName:'deal_name', paymentType:'payment_type', numPayments:'num_payments', paymentNumber:'payment_number', setupDate:'setup_date', paymentDate:'payment_date', invoiceIssued:'invoice_issued', productId:'product_id', createdBy:'created_by', updatedBy:'updated_by'},
   products: {createdBy:'created_by', updatedBy:'updated_by'},
   meetings: {clientName:'client_name', clientId:'client_id', meetingNumber:'meeting_number', startDate:'start_date', endDate:'end_date', startTime:'start_time', endTime:'end_time', roiEmail:'roi_email', notesField:'notes_field', leadId:'lead_id', dealId:'deal_id', createdBy:'created_by', updatedBy:'updated_by'},
-  tasks: {dueDate:'due_date', reminderDate:'reminder_date', leadRef:'lead_ref', relatedId:'related_id', relatedName:'related_name', relatedType:'related_type', taskType:'task_type', createdBy:'created_by', updatedBy:'updated_by'}
+  tasks: {dueDate:'due_date', dueTime:'due_time', reminderDate:'reminder_date', leadRef:'lead_ref', relatedId:'related_id', relatedName:'related_name', relatedType:'related_type', taskType:'task_type', createdBy:'created_by', updatedBy:'updated_by'}
 };
 
 function toDbRecord(type, obj) {
@@ -1092,6 +1109,7 @@ async function initApp(){
   await loadDataFromSupabase();
   updateBadges();
   updateNotifBadge();
+  checkTaskReminders();
   showPage('dashboard');
   setupRealtime();
   // Token auto-refresh every 50 minutes
@@ -1287,7 +1305,7 @@ function inlineEdit(e,page,recId,colIdx){
 // ===== LIST CONFIGS =====
 const LIST_CONFIGS={
   leads:{cols:['שם','טלפון','סטטוס','נציג','מקור','זהב','נוצר בתאריך','עודכן','נוצר ע"י'],fields:r=>[r.name,r.phone||'—',`<span class="badge badge-blue">${r.status||'חדש'}</span>`,uName(r.agent),r.source||'—',r.isGold?'⭐ זהב':'—',fmt(r.created),fmt(r.updated),crBadge(r.createdBy)],defaultCols:[0,1,2,3,4,5,8]},
-  deals:{cols:['שם עסקה','מתעניין','מוצר','סטטוס','שווי','סוג תשלום','מבצע','נוצר בתאריך','נוצר ע"י','טלפון מתעניין'],fields:r=>{var _lp='—';if(r.leadId){var _ld=DB.leads.find(function(l){return l.id===r.leadId});if(_ld)_lp=_ld.phone||'—';}return[r.name,r.leadName||r.clientName||'—',r.productName||'—',`<span class="badge badge-${r.status==='לקוח סגר'?'green':r.status==='בתהליך'?'yellow':'blue'}">${r.status||'חדשה'}</span>`,fmtMoney(r.dealTotal),r.paymentType||'—',uName(r.executor),fmt(r.created),crBadge(r.createdBy),_lp];},defaultCols:[0,1,2,3,4,6,8,9]},
+  deals:{cols:['שם עסקה','מתעניין','מוצר','סטטוס','שווי','סוג תשלום','מבצע','נוצר בתאריך','נוצר ע"י','טלפון מתעניין'],fields:r=>{var _lp='—';if(r.leadId){var _ld=DB.leads.find(function(l){return l.id===r.leadId});if(_ld)_lp=_ld.phone||'—';}var _pn=(r.productName||'').trim();if(!_pn&&r.productId){var _pp=DB.products.find(function(p){return p.id===r.productId});if(_pp)_pn=_pp.name||'';}var _st=(r.status||'').trim();return[r.name,r.leadName||r.clientName||'—',_pn||'—',_st?`<span class="badge badge-${_st==='לקוח סגר'?'green':_st==='בתהליך'?'yellow':'blue'}">${_st}</span>`:'—',fmtMoney(r.dealTotal),r.paymentType||'—',uName(r.executor),fmt(r.created),crBadge(r.createdBy),_lp];},defaultCols:[0,1,2,3,4,6,8,9]},
   clients:{cols:['שם','טלפון','יועץ','סטטוס','תחילת תהליך','סיום תהליך','פגישות שבוצעו','סה"כ פגישות','נוצר ע"י','שם עסקה'],fields:r=>{var _dn='—';if(r.dealId){var _dd=DB.deals.find(function(d){return d.id===r.dealId});if(_dd)_dn=_dd.name||'—';}else if(r.dealName)_dn=r.dealName;return[r.name,r.clientPhone||r.phone||'—',uName(r.advisor),r.clientStatus||'פעיל',fmt(r.startDate),fmt(r.endDate),r.doneMeetings||'—',r.totalMeetings||'—',crBadge(r.createdBy),_dn];},defaultCols:[0,1,2,3,4,8,9]},
   payments:{cols:['שם','עסקה','צורת תשלום','סכום','תאריך גביה','תאריך כסף בבנק','מס תשלום','סטטוס','חשבונית','שווי עסקה'],fields:r=>{var _dt='—';if(r.dealId){var _dd=DB.deals.find(function(d){return d.id===r.dealId});if(_dd)_dt=fmtMoney(_dd.dealTotal);}return[r.name||r.clientName||'—',r.dealName||'—',r.paymentType||'—',fmtMoney(r.amount),fmt(r.setupDate),fmt(r.paymentDate),r.paymentNumber||'—',`<span class="badge badge-${r.status==='שולם'?'green':r.status==='בדיקה'?'yellow':'red'}">${r.status||'ממתין'}</span>`,r.invoiceIssued?'✅':'❌',_dt];},defaultCols:[0,1,2,3,4,6,7,9]},
   products:{cols:['שם מוצר','מחיר','תיאור'],fields:r=>[r.name,fmtMoney(r.price),r.desc||'—'],defaultCols:[0,1,2]},
@@ -1917,6 +1935,8 @@ function fv(key, label, val, opts) {
     var dv = val || '';
     if (dv && dv.includes('/')) { var p = dv.split('/'); if(p.length===3) dv = p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); }
     h += '<input type="date" id="' + id + '" value="' + dv + '" onchange="updateField(\'' + key + '\',this.value)">';
+  } else if (opts.time) {
+    h += '<input type="time" id="' + id + '" value="' + (val||'') + '" onchange="updateField(\'' + key + '\',this.value)">';
   } else if (opts.link) {
     h += '<input type="text" id="' + id + '" value="' + (val||'').replace(/"/g,'&quot;') + '" placeholder="הזן קישור" onchange="updateField(\'' + key + '\',this.value)">';
     if (val) h += '<a href="' + val + '" target="_blank" style="font-size:11px;color:var(--accent);display:block;margin-top:2px">🔗 פתח</a>';
@@ -1954,7 +1974,11 @@ function renderLeadFields(r) {
   h += fv('name','שם מתעניין',r.name);
   h += fv('phone','טלפון ראשי',r.phone,{phone:true});
   h += fv('isGold','ליד זהב?',r.isGold,{checkbox:true,checkLabel:'ליד זהב ⭐'});
-  h += fv('whatsappLink','קישור לוואטסאפ',r.phone?'https://wa.me/972'+r.phone.replace(/^0/,''):'',{link:true});
+  // Big green WhatsApp button (replaces tiny "פתח" link)
+  if (r.phone) {
+    var _waUrl = 'https://wa.me/972' + r.phone.replace(/^0/,'');
+    h += '<div class="field-row full-width"><span class="field-label">קישור לוואטסאפ</span><span class="field-value"><a href="'+_waUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 2px 6px rgba(37,211,102,0.35);transition:all .15s" onmouseover="this.style.background=\'#128c7e\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.background=\'#25d366\';this.style.transform=\'translateY(0)\'"><span style="font-size:18px">💬</span> פתח בוואטסאפ</a></span></div>';
+  }
   h += fv('status','סטטוס',r.status,{select:leadStages});
   h += fv('agent','נציג',r.agent,{select:Object.keys(USERS)});
   h += fv('source','מקור הגעה',r.source,{select:['אינסטגרם אורגני','אינסטגרם רועי','אינסטגרם נתן','קמפיין ממומן','לקוחות חוזרים','אפיליאציה','פייסבוק','גוגל','המלצה','utm_medium','אחר']});
@@ -1975,8 +1999,18 @@ function renderDealFields(r) {
   h += fv('name','שם העסקה',r.name||leadName);
   h += fv('executor','מבצע העסקה',r.executor,{select:Object.keys(USERS)});
   if(r.leadId){var _ln=r.leadName||leadName||'—';h+='<div class="field-row"><span class="field-label">מתעניין משויך</span><span class="field-value"><a href="#" onclick="openRecord(\'leads\',\''+r.leadId+'\',true);return false" style="color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:4px">'+_ln+' <span style="font-size:11px">🔗</span></a></span></div>';}else if(leadName){h+=fv('leadName','מתעניין משויך',leadName,{readonly:true});}
-  h += fv('productId','מוצר',r.productId,{select:DB.products.map(function(p){return p.id}),selectLabels:DB.products.map(function(p){return p.name})});
-  h += fv('status','סטטוס',r.status,{select:['חדשה','בתהליך','לקוח סגר','בוטלה']});
+  // If productId is missing but we have a productName (from historical import), try to match by name
+  var _dealProdId = r.productId;
+  if (!_dealProdId && r.productName) {
+    var _matchP = DB.products.find(function(p){return (p.name||'').trim()===(r.productName||'').trim()});
+    if (_matchP) { _dealProdId = _matchP.id; r.productId = _matchP.id; }
+  }
+  if (_dealProdId || DB.products.length) {
+    h += fv('productId','מוצר',_dealProdId,{select:DB.products.map(function(p){return p.id}),selectLabels:DB.products.map(function(p){return p.name})});
+  } else if (r.productName) {
+    h += fv('productName','מוצר',r.productName);
+  }
+  h += fv('status','סטטוס',(r.status||'').trim(),{select:['חדשה','בתהליך','לקוח סגר','בוטלה']});
   h += fv('created','נוצר בתאריך',r.created||'',{readonly:true});
   h += fv('contractLink','קישור לחוזה',r.contractLink,{link:true});
   h += secEnd();
@@ -2051,22 +2085,68 @@ function renderPaymentFields(r) {
   return h;
 }
 
+// ===== GOOGLE CALENDAR =====
+var OFFICE_LOCATION = 'משרד רועי';
+var OFFICE_DESCRIPTION = 'משרדי Regus שרונה תל אביב\nמנחם בגין 121, תל אביב, ישראל\nקומה 30\nחייב להגיע עם תעודה מזהה לכניסה (לא לשכוח)\n\nדרכי הגעה:\nרכבת: תחנת השלום (כ-8 דק׳ הליכה)\nאוטובוס: קווים רבים בציר בגין/השלום\nחניה: חניונים ציבוריים סמוכים (ספינוזה, עזריאלי)\n\nבכל בעיה/עיכוב תרגישו חופשי ליצור קשר 👍';
+function _fmtGCalDateTime(dateStr, timeStr) {
+  // Returns YYYYMMDDTHHMMSS (local time, no Z — Google treats as floating)
+  if (!dateStr) return '';
+  var d = dateStr.split('T')[0].replace(/-/g,'');
+  var t = (timeStr || '09:00').replace(':','') + '00';
+  return d + 'T' + t;
+}
+function _addMinutesToHM(hm, mins) {
+  var p = (hm||'09:00').split(':');
+  var d = new Date(); d.setHours(parseInt(p[0],10)||9, (parseInt(p[1],10)||0)+mins, 0, 0);
+  return d.toTimeString().slice(0,5);
+}
+function buildGoogleCalUrl(r, parentName, clientEmail) {
+  var title = r.title || r.name || 'פגישה';
+  if (parentName) title += ' - ' + parentName;
+  var startD = (r.startDate || '').split('T')[0];
+  if (!startD) { var d = new Date(); startD = d.toISOString().slice(0,10); }
+  var startT = r.startTime || '09:00';
+  var endT = r.endTime || _addMinutesToHM(startT, 60);
+  var endD = (r.endDate || '').split('T')[0] || startD;
+  var startStr = _fmtGCalDateTime(startD, startT);
+  var endStr = _fmtGCalDateTime(endD, endT);
+  var attendees = [];
+  if (clientEmail) attendees.push(clientEmail);
+  if (r.agent && USERS[r.agent] && USERS[r.agent].email) attendees.push(USERS[r.agent].email);
+  var params = {
+    action: 'TEMPLATE',
+    text: title,
+    dates: startStr + '/' + endStr,
+    details: OFFICE_DESCRIPTION,
+    location: OFFICE_LOCATION,
+    ctz: 'Asia/Jerusalem'
+  };
+  var qs = Object.keys(params).map(function(k){return k+'='+encodeURIComponent(params[k]);}).join('&');
+  if (attendees.length) qs += '&' + attendees.map(function(e){return 'add='+encodeURIComponent(e);}).join('&');
+  return 'https://calendar.google.com/calendar/render?' + qs;
+}
+
 function renderMeetingFields(r) {
   var h = '';
   h += secHead('פרטי פעילות', 'meeting_details', false);
   h += fv('title','שם',r.title||r.name);
   // Linked parent (client/deal/lead) — meeting is polymorphic
-  var _mpName='',_mpType='',_mpId='';
-  if(r.clientId){_mpId=r.clientId;_mpType='clients';var _mc=DB.clients.find(function(c){return c.id===r.clientId});if(_mc)_mpName=_mc.name;}
-  else if(r.dealId){_mpId=r.dealId;_mpType='deals';var _md=DB.deals.find(function(d){return d.id===r.dealId});if(_md)_mpName=_md.name;}
-  else if(r.leadId){_mpId=r.leadId;_mpType='leads';var _ml=DB.leads.find(function(l){return l.id===r.leadId});if(_ml)_mpName=_ml.name;}
+  var _mpName='',_mpType='',_mpId='',_mpEmail='';
+  if(r.clientId){_mpId=r.clientId;_mpType='clients';var _mc=DB.clients.find(function(c){return c.id===r.clientId});if(_mc){_mpName=_mc.name;_mpEmail=_mc.clientEmail||_mc.email||'';}}
+  else if(r.dealId){_mpId=r.dealId;_mpType='deals';var _md=DB.deals.find(function(d){return d.id===r.dealId});if(_md){_mpName=_md.name;if(_md.leadId){var _ml2=DB.leads.find(function(l){return l.id===_md.leadId});if(_ml2)_mpEmail=_ml2.email||'';}}}
+  else if(r.leadId){_mpId=r.leadId;_mpType='leads';var _ml=DB.leads.find(function(l){return l.id===r.leadId});if(_ml){_mpName=_ml.name;_mpEmail=_ml.email||'';}}
   if(!_mpName)_mpName=r.clientName||r.withName||'';
   if(_mpId&&_mpType){h+='<div class="field-row"><span class="field-label">משייך ל</span><span class="field-value"><a href="#" onclick="openRecord(\''+_mpType+'\',\''+_mpId+'\',true);return false" style="color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:4px">'+(_mpName||'—')+' <span style="font-size:11px">🔗</span></a></span></div>';}else{h+=fv('clientName','משייך ל',_mpName);}
   h += fv('agent','שם נציג',r.agent,{select:Object.keys(USERS)});
   h += fv('meetingNumber','מספר פגישה',r.meetingNumber);
   h += fv('startDate','תאריך התחלה',r.startDate||r.date,{date:true});
+  h += fv('startTime','שעת התחלה',r.startTime,{time:true});
+  h += fv('endTime','שעת סיום',r.endTime,{time:true});
   h += fv('endDate','תאריך סיום',r.endDate,{date:true});
-  h += fv('roiEmail','מייל של התוכן - משייך ל',r.roiEmail||'',{email:true});
+  h += fv('roiEmail','מייל הלקוח',r.roiEmail||_mpEmail||'',{email:true});
+  // Google Calendar invite button
+  var _gcUrl=buildGoogleCalUrl(r,_mpName,_mpEmail);
+  h += '<div class="field-row full-width"><span class="field-label">זימון ליומן</span><span class="field-value"><a href="'+_gcUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#4285f4;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 2px 6px rgba(66,133,244,0.35);transition:all .15s" onmouseover="this.style.background=\'#3367d6\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.background=\'#4285f4\';this.style.transform=\'translateY(0)\'"><span style="font-size:18px">📅</span> צור זימון בגוגל קלנדר</a></span></div>';
   h += secEnd();
   h += secHead('תיאור', 'meeting_desc', true);
   h += fv('notes_field','תיאור',r.notes_field,{textarea:true,full:true});
@@ -2080,7 +2160,8 @@ function renderTaskFields(r) {
   h += fv('name','שם',r.name);
   h += fv('description','תיאור',r.description||r.notes_field,{textarea:true,full:true});
   h += fv('status_task','סטטוס',r.done?'סגור':'פתוח',{select:['פתוח','סגור']});
-  h += fv('dueDate','תאריך סיום',r.dueDate,{date:true});
+  h += fv('dueDate','תאריך יעד',r.dueDate,{date:true});
+  h += fv('dueTime','שעת יעד',r.dueTime,{time:true});
   h += fv('leadRef','משייך ל',r.leadRef||r.relatedName||'');
   h += fv('executor','מבצע',r.executor||r.assignee,{select:Object.keys(USERS)});
   h += secEnd();
@@ -2113,8 +2194,11 @@ function updateField(key,val){if(currentRecord){
     currentRecord.history.push(histEntry);
     sbInsertHistory(currentRecordType,currentRecord.id,histEntry);
   }
-  currentRecord[key]=val;if(key==='status_task')currentRecord.done=(val==='סגור');saveRS();}}
-function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();sbUpsert(currentRecordType,currentRecord);runAutomations(currentRecordType,currentRecord,false);showToast('נשמר ✅');}_recordDirty=false;_doClose();}
+  currentRecord[key]=val;
+  // When product changes, also sync productName
+  if(key==='productId'){var _p=DB.products.find(function(p){return p.id===val});currentRecord.productName=_p?_p.name:'';}
+  if(key==='status_task')currentRecord.done=(val==='סגור');saveRS();}}
+function saveRecord(){if(!currentRecord||!currentRecordType)return;document.querySelectorAll('#recordRight [id^="fld_"]').forEach(el=>{const key=el.id.replace('fld_','');if(el.type==='checkbox')currentRecord[key]=el.checked;else if(el.value!==undefined)currentRecord[key]=el.value;});if(currentRecord.status_task)currentRecord.done=(currentRecord.status_task==='סגור');if(currentRecordType==='deals'&&currentRecord.productId){var _sp=DB.products.find(function(p){return p.id===currentRecord.productId});if(_sp)currentRecord.productName=_sp.name;}currentRecord.updated=now();currentRecord.updatedBy=currentUser.username;const idx=DB[currentRecordType].findIndex(r=>r.id===currentRecord.id);if(idx>=0){DB[currentRecordType][idx]={...currentRecord};saveData();sbUpsert(currentRecordType,currentRecord);runAutomations(currentRecordType,currentRecord,false);showToast('נשמר ✅');}_recordDirty=false;_doClose();}
 function deleteRecord() {
   var page = currentPage;
   var rec = currentRecord;
@@ -2143,7 +2227,16 @@ function deleteRecord() {
 function doDeleteRecord(page, rec) {
   var arr = DB[page];
   var idx = arr.findIndex(function(r){return r.id===rec.id});
-  if (idx > -1) { arr.splice(idx, 1); saveData(); sbDelete(page, rec.id); closeRecord(); renderPage(); }
+  if (idx > -1) {
+    arr.splice(idx, 1);
+    saveData();
+    sbDelete(page, rec.id);
+    // Return to previous screen: if we came from another record via
+    // breadcrumb navigation, go back to it; otherwise close the panel
+    // and re-render the list page the user was on.
+    _recordDirty = false;
+    _doClose();
+  }
 }
 
 function markDealClosed(id){const deal=DB.deals.find(d=>d.id===id);if(deal){deal.status='סגורה';deal.updated=now();deal.updatedBy=currentUser.username;saveData();renderRec();showToast('🎉 עסקה סגורה!');}}
@@ -2252,7 +2345,7 @@ if(type==='clients')return`<div class="form-row"><div class="form-group"><label 
 if(type==='payments')return`<div class="form-row"><div class="form-group"><label class="form-label">שם *</label><input class="form-control" id="f-name" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">עסקה משויכת</label><input class="form-control" id="f-dealName" value="${modalParent?.type==='deals'?modalParent?.name||'':''}"></div></div><div class="form-row"><div class="form-group"><label class="form-label">צורת תשלום</label><select class="form-control" id="f-paymentType"><option>הוראת קבע</option><option>אשראי תופס מסגרת</option><option>העברה בנקאית</option><option>ביט</option><option>פייבוקס</option><option>מזומן</option></select></div><div class="form-group"><label class="form-label">סכום</label><input class="form-control" id="f-amount" type="number"></div></div><div class="form-row"><div class="form-group"><label class="form-label">מספר תשלומים</label><input class="form-control" id="f-numPayments" type="number" placeholder="1"></div><div class="form-group"><label class="form-label">מספר תשלום</label><input class="form-control" id="f-paymentNumber" type="number" placeholder="1"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך קביעה</label><input class="form-control" id="f-setupDate" type="date" value="${td}"></div><div class="form-group"><label class="form-label">סטטוס</label><select class="form-control" id="f-status"><option>ממתין</option><option>שולם</option><option>לא בוצע</option><option>בדיקה</option></select></div></div>`;
 if(type==='products')return`<div class="form-row"><div class="form-group"><label class="form-label">שם *</label><input class="form-control" id="f-name"></div><div class="form-group"><label class="form-label">מחיר</label><input class="form-control" id="f-price" type="number"></div></div><div class="form-group"><label class="form-label">תיאור</label><textarea class="form-control" id="f-desc" rows="3"></textarea></div>`;
 if(type==='meetings')return`<div class="form-group"><label class="form-label">נושא *</label><input class="form-control" id="f-title"></div><div class="form-row"><div class="form-group"><label class="form-label">לקוח משויך</label><input class="form-control" id="f-clientName" value="${modalParent?.name||''}"></div><div class="form-group"><label class="form-label">נציג מעביר</label><select class="form-control" id="f-agent">${uo}</select></div></div><div class="form-row"><div class="form-group"><label class="form-label">מספר פגישה</label><input class="form-control" id="f-meetingNumber" type="number" placeholder="1"></div><div class="form-group"><label class="form-label">שעת התחלה</label><input class="form-control" id="f-startTime" type="time"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תאריך</label><input class="form-control" id="f-startDate" type="date" value="${td}"></div><div class="form-group"><label class="form-label">שעת סיום</label><input class="form-control" id="f-endTime" type="time"></div></div>`;
-if(type==='tasks')return`<div class="form-group"><label class="form-label">נושא המשימה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">מבצע</label><select class="form-control" id="f-executor">${uo}</select></div><div class="form-group"><label class="form-label">תחסיום</label><input class="form-control" id="f-dueDate" type="date" value="${td}"></div></div><div class="form-row"><div class="form-group"><label class="form-label">תזכורת</label><input class="form-control" id="f-reminderDate" type="date"></div><div class="form-group"><label class="form-label">מתעניין משויך</label><input class="form-control" id="f-leadRef" value="${modalParent?.name||''}"></div></div>`;
+if(type==='tasks')return`<div class="form-group"><label class="form-label">נושא המשימה *</label><input class="form-control" id="f-name"></div><div class="form-row"><div class="form-group"><label class="form-label">מבצע</label><select class="form-control" id="f-executor">${uo}</select></div><div class="form-group"><label class="form-label">תאריך יעד</label><input class="form-control" id="f-dueDate" type="date" value="${td}"></div></div><div class="form-row"><div class="form-group"><label class="form-label">שעת יעד</label><input class="form-control" id="f-dueTime" type="time" value="09:00"></div><div class="form-group"><label class="form-label">מתעניין משויך</label><input class="form-control" id="f-leadRef" value="${modalParent?.name||''}"></div></div>`;
 return'';}
 
 function saveModal(){const type=modalType;if(!type)return;
@@ -2270,8 +2363,19 @@ if(type==='_bulkChange'){
   if(!fld){showToast('בחר שדה ❌');return;}
   if(val===''||val==null){showToast('בחר ערך ❌');return;}
   var ids=Object.keys(selectedRows[pg2]||{}).filter(function(k){return selectedRows[pg2][k]});
-  ids.forEach(function(id){var r=DB[pg2].find(function(x){return x.id===id});if(r){r[fld]=val;r.updated=now();r.updatedBy=currentUser.username;sbUpsert(pg2,r);}});
-  saveData();selectedRows[pg2]={};closeModal();renderPage(pg2);showToast(ids.length+' רשומות עודכנו ✅');return;
+  var promises=ids.map(function(id){
+    var r=DB[pg2].find(function(x){return x.id===id});
+    if(r){r[fld]=val;r.updated=now();r.updatedBy=currentUser.username;return sbUpsert(pg2,r);}
+    return Promise.resolve(true);
+  });
+  saveData();selectedRows[pg2]={};closeModal();
+  Promise.all(promises).then(function(results){
+    var failed=results.filter(function(x){return x===false}).length;
+    renderPage(pg2);
+    if(failed>0){showToast('⚠ '+(ids.length-failed)+' נשמרו, '+failed+' נכשלו');}
+    else{showToast(ids.length+' רשומות עודכנו ✅');}
+  });
+  return;
 }
 const id=genId(),ts=now();let item={id,created:ts,updated:ts,createdBy:currentUser.username,notes:[],tasks:[],files:[]};const req=(fid,msg)=>{const v=g(fid).trim();if(!v){showToast(msg+' ❌');return null;}return v;};
 if(type==='leads'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,phone:g('f-phone'),email:g('f-email'),status:g('f-status'),agent:g('f-agent'),source:g('f-source'),whyContact:g('f-whyContact')};}
@@ -2279,8 +2383,8 @@ else if(type==='deals'){const n=req('f-name','שם חובה');if(!n)return;const
 else if(type==='clients'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,clientPhone:g('f-clientPhone'),clientEmail:g('f-clientEmail'),advisor:g('f-advisor'),startDate:g('f-startDate')||ts.split('T')[0],clientStatus:g('f-clientStatus')};if(modalParent){item.dealId=modalParent.id;item.dealName=modalParent.name;item.leadName=modalParent.name;}}
 else if(type==='payments'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,dealName:g('f-dealName'),paymentType:g('f-paymentType'),amount:g('f-amount'),numPayments:g('f-numPayments'),paymentNumber:g('f-paymentNumber'),setupDate:g('f-setupDate')||ts.split('T')[0],status:g('f-status'),executor:currentUser.username};if(modalParent){item.dealId=modalParent.id;item.dealName=modalParent.name||item.dealName;}}
 else if(type==='products'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,price:g('f-price'),desc:g('f-desc')};}
-else if(type==='meetings'){const t=req('f-title','נושא חובה');if(!t)return;item={...item,title:t,name:t,clientName:g('f-clientName'),agent:g('f-agent'),meetingNumber:g('f-meetingNumber'),startDate:g('f-startDate')||ts.split('T')[0],startTime:g('f-startTime'),endTime:g('f-endTime'),status:'מתוכננת'};if(modalParent){item[modalParent.type+'Id']=modalParent.id;item[modalParent.type+'Name']=modalParent.name;item.clientName=item.clientName||modalParent.name;}}
-else if(type==='tasks'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,executor:g('f-executor'),dueDate:g('f-dueDate')||ts.split('T')[0],reminderDate:g('f-reminderDate'),leadRef:g('f-leadRef'),done:false};if(modalParent){item.relatedId=modalParent.id;item.relatedName=modalParent.name;item.leadRef=item.leadRef||modalParent.name;}}
+else if(type==='meetings'){const t=req('f-title','נושא חובה');if(!t)return;item={...item,title:t,name:t,clientName:g('f-clientName'),agent:g('f-agent'),meetingNumber:g('f-meetingNumber'),startDate:g('f-startDate')||ts.split('T')[0],startTime:g('f-startTime'),endTime:g('f-endTime'),status:'מתוכננת'};if(modalParent){var _pMap={leads:'leadId',deals:'dealId',clients:'clientId'};var _fk=_pMap[modalParent.type];if(_fk){item[_fk]=modalParent.id;}item[modalParent.type==='leads'?'leadName':modalParent.type==='deals'?'dealName':'clientName']=modalParent.name;item.clientName=item.clientName||modalParent.name;}}
+else if(type==='tasks'){const n=req('f-name','שם חובה');if(!n)return;item={...item,name:n,executor:g('f-executor'),dueDate:g('f-dueDate')||ts.split('T')[0],dueTime:g('f-dueTime'),reminderDate:g('f-reminderDate'),leadRef:g('f-leadRef'),done:false};if(modalParent){item.relatedId=modalParent.id;item.relatedName=modalParent.name;item.leadRef=item.leadRef||modalParent.name;}}
 if(!DB[type])DB[type]=[];DB[type].push(item);saveData();sbUpsert(type, item);runAutomations(type, item, true);closeModal();showToast('נוסף ✅');
 if(currentRecordType&&currentRecord){const rec=DB[currentRecordType].find(r=>r.id===currentRecord.id);if(rec){currentRecord={...rec};document.getElementById('recordLeft').innerHTML=renderLeft();}}else{renderPage(currentPage);}}
 
@@ -2387,6 +2491,67 @@ function checkRelevantDates() {
 }
 
 function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+// ===== TASK REMINDERS =====
+var _currentReminderTaskId = null;
+function _reminderKey(){var u=currentUser?currentUser.username:'guest';return 'roicrm_reminders_'+u+'_'+todayVal();}
+function _getReminderState(){try{return JSON.parse(localStorage.getItem(_reminderKey())||'{}');}catch(e){return{};}}
+function _setReminderState(s){localStorage.setItem(_reminderKey(),JSON.stringify(s));}
+function checkTaskReminders(){
+  if(!currentUser)return;
+  var today=todayVal();
+  var nowHM=(new Date()).toTimeString().slice(0,5); // HH:MM
+  var state=_getReminderState();
+  var myTasks=(DB.tasks||[]).filter(function(t){
+    if(t.done)return false;
+    if(t.dueDate!==today)return false;
+    if((t.executor||'')!==currentUser.username&&currentUser.role!=='admin')return false;
+    return true;
+  });
+  // Find a task whose dueTime has passed (or no time and not shown yet)
+  var due=null;
+  myTasks.forEach(function(t){
+    var k='t_'+t.id;
+    var snoozeTil=state[k]&&state[k].snoozeUntil;
+    if(snoozeTil&&nowHM<snoozeTil)return;
+    if(state[k]&&state[k].dismissed)return;
+    var tTime=(t.dueTime||'00:00');
+    if(tTime<=nowHM){
+      if(!due)due=t;
+    }
+  });
+  var banner=document.getElementById('taskReminderBanner');
+  if(!banner)return;
+  if(due){
+    _currentReminderTaskId=due.id;
+    document.getElementById('taskReminderTitle').textContent=due.name||'משימה';
+    document.getElementById('taskReminderTime').textContent=(due.dueTime?'שעה: '+due.dueTime+'  •  ':'')+'משייך: '+(due.leadRef||due.relatedName||'—');
+    banner.style.display='block';
+  } else {
+    banner.style.display='none';
+  }
+  updateNotifBadge();
+}
+function dismissTaskReminder(){
+  if(!_currentReminderTaskId)return;
+  var s=_getReminderState();s['t_'+_currentReminderTaskId]={dismissed:true};_setReminderState(s);
+  document.getElementById('taskReminderBanner').style.display='none';
+  _currentReminderTaskId=null;
+}
+function snoozeTaskReminder(){
+  if(!_currentReminderTaskId)return;
+  var d=new Date();d.setMinutes(d.getMinutes()+10);
+  var hm=d.toTimeString().slice(0,5);
+  var s=_getReminderState();s['t_'+_currentReminderTaskId]={snoozeUntil:hm};_setReminderState(s);
+  document.getElementById('taskReminderBanner').style.display='none';
+  _currentReminderTaskId=null;
+}
+function openTaskFromReminder(){
+  if(!_currentReminderTaskId)return;
+  var id=_currentReminderTaskId;
+  dismissTaskReminder();
+  openRecord('tasks',id,true);
+}
 
 // ===== RECORD NAVIGATION =====
 var recNavList=[];var recNavIdx=-1;
@@ -2559,6 +2724,8 @@ function updateNotifBadge(){
 
 checkRelevantDates();
 updateBadges();
+// Run task reminders after DB loads / on interval
+setInterval(function(){ if(currentUser) checkTaskReminders(); }, 60*1000);
 
 // ===== AUTO REFRESH (Supabase Realtime replaces interval for live updates) =====
 // Keep a fallback interval for localStorage-only scenario

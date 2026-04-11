@@ -197,6 +197,7 @@ CREATE TABLE IF NOT EXISTS public.tasks (
   description     TEXT,
   executor        TEXT,
   due_date        DATE,
+  due_time        TEXT,                -- HH:MM for reminder pop-up
   reminder_date   DATE,
   lead_ref        TEXT,                -- display name of related record
   related_id      TEXT,                -- generic FK to any parent record
