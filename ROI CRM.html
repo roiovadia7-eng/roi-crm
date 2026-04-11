@@ -673,7 +673,7 @@ function _handleExpired() {
 const FIELD_MAP = {
   leads: {whyContact:'why_contact', isGold:'is_gold', whatsappLink:'whatsapp_link', relevantDate:'relevant_date', createdBy:'created_by', updatedBy:'updated_by'},
   deals: {leadId:'lead_id', leadName:'lead_name', productId:'product_id', productName:'product_name', paymentType:'payment_type', numPayments:'num_payments', dealTotal:'deal_total', creditDetails:'credit_details', contractLink:'contract_link', creditFrameLink:'credit_frame_link', standingOrderLink:'standing_order_link', futureCollectionDate:'future_collection_date', invoiceIssued:'invoice_issued', createdBy:'created_by', updatedBy:'updated_by'},
-  clients: {clientPhone:'client_phone', clientEmail:'client_email', clientStatus:'client_status', startDate:'start_date', endDate:'end_date', doneMeetings:'done_meetings', totalMeetings:'total_meetings', dealId:'deal_id', dealName:'deal_name', dealRef:'deal_ref', leadName:'lead_name', avgMonthsInProcess:'avg_months_in_process', advisorEmail:'advisor_email', advisorPhone:'advisor_phone', createdBy:'created_by', updatedBy:'updated_by'},
+  clients: {clientPhone:'client_phone', clientEmail:'client_email', clientStatus:'client_status', startDate:'start_date', endDate:'end_date', doneMeetings:'done_meetings', totalMeetings:'total_meetings', dealId:'deal_id', dealName:'deal_name', dealRef:'deal_ref', leadId:'lead_id', leadName:'lead_name', avgMonthsInProcess:'avg_months_in_process', advisorEmail:'advisor_email', advisorPhone:'advisor_phone', createdBy:'created_by', updatedBy:'updated_by'},
   payments: {dealId:'deal_id', dealName:'deal_name', paymentType:'payment_type', numPayments:'num_payments', paymentNumber:'payment_number', setupDate:'setup_date', paymentDate:'payment_date', invoiceIssued:'invoice_issued', productId:'product_id', createdBy:'created_by', updatedBy:'updated_by'},
   products: {createdBy:'created_by', updatedBy:'updated_by'},
   meetings: {clientName:'client_name', clientId:'client_id', meetingNumber:'meeting_number', startDate:'start_date', endDate:'end_date', startTime:'start_time', endTime:'end_time', roiEmail:'roi_email', notesField:'notes_field', leadId:'lead_id', dealId:'deal_id', createdBy:'created_by', updatedBy:'updated_by'},
@@ -1718,11 +1718,57 @@ function bulkDelete(page){
   ids.forEach(function(delId){sbDelete(page,delId);});
   selectedRows[page]={};saveData();renderPage(page);showToast(ids.length+' רשומות נמחקו ✅');
 }
+var BULK_FIELD_META={
+  leads:{
+    status:{type:'select',opts:['לידים חדשים 🎉','אין מענה 📞','נוצר קשר ראשוני 😊','פולאופ איכותי 🌟','סגר ✔️','לא נסגר 😔','ליד לא תקין ❌']},
+    agent:{type:'user'},
+    source:{type:'select',opts:['אינסטגרם אורגני','אינסטגרם רועי','אינסטגרם נתן','קמפיין ממומן','לקוחות חוזרים','אפיליאציה','פייסבוק','גוגל','המלצה','אחר']}
+  },
+  deals:{
+    status:{type:'select',opts:['חדשה','בתהליך','לקוח סגר','בוטלה']},
+    executor:{type:'user'},
+    paymentType:{type:'select',opts:['העברה בנקאית','אשראי תופס מסגרת','הוראת קבע באשראי','ביט / פייבוקס','מזומן']}
+  },
+  clients:{
+    advisor:{type:'user'},
+    clientStatus:{type:'select',opts:['לקוח פעיל','לא פעיל','בהקפאה','סיים תהליך']}
+  },
+  payments:{
+    status:{type:'select',opts:['עדיין לא','שולם','לא בוצע','בדיקה']},
+    paymentType:{type:'select',opts:['הוראת קבע','אשראי תופס מסגרת','העברה בנקאית','ביט','פייבוקס','מזומן']}
+  },
+  meetings:{
+    status:{type:'select',opts:['מתוכננת','בוצעה','בוטלה']},
+    agent:{type:'user'}
+  },
+  tasks:{
+    executor:{type:'user'}
+  }
+};
+
+function _bulkRenderValueInput(page){
+  var fldEl=document.getElementById('bulk-field');
+  var wrap=document.getElementById('bulk-value-wrap');
+  if(!fldEl||!wrap)return;
+  var fld=fldEl.value;
+  if(!fld){wrap.innerHTML='<input id="bulk-value" class="form-control" placeholder="בחר שדה תחילה" disabled>';return;}
+  var meta=(BULK_FIELD_META[page]||{})[fld];
+  if(meta&&meta.type==='select'){
+    var opts=meta.opts.map(function(o){return '<option value="'+o+'">'+o+'</option>';}).join('');
+    wrap.innerHTML='<select id="bulk-value" class="form-control"><option value="">-- בחר ערך --</option>'+opts+'</select>';
+  }else if(meta&&meta.type==='user'){
+    var uopts=Object.entries(USERS).map(function(e){return '<option value="'+e[0]+'">'+e[1].name+'</option>';}).join('');
+    wrap.innerHTML='<select id="bulk-value" class="form-control"><option value="">-- בחר משתמש --</option>'+uopts+'</select>';
+  }else{
+    wrap.innerHTML='<input id="bulk-value" class="form-control" placeholder="ערך חדש">';
+  }
+}
+
 function bulkChangeField(page){
   var fields=getFilterFields(page);
-  var h='<div style="direction:rtl"><select id="bulk-field" class="form-control" style="margin-bottom:8px"><option value="">-- בחר שדה --</option>';
+  var h='<div style="direction:rtl"><div class="form-group"><label class="form-label">שדה לעדכון</label><select id="bulk-field" class="form-control" onchange="_bulkRenderValueInput(\''+page+'\')"><option value="">-- בחר שדה --</option>';
   fields.forEach(function(f){h+='<option value="'+f.k+'">'+f.l+'</option>';});
-  h+='</select><input id="bulk-value" class="form-control" placeholder="ערך חדש"></div>';
+  h+='</select></div><div class="form-group"><label class="form-label">ערך חדש</label><div id="bulk-value-wrap"><input id="bulk-value" class="form-control" placeholder="בחר שדה תחילה" disabled></div></div></div>';
   document.getElementById('modalTitle').textContent='שינוי שדה לרשומות נבחרות';
   document.getElementById('modalBody').innerHTML=h;
   modalType='_bulkChange';modalParent={page:page};
@@ -1944,7 +1990,16 @@ function renderClientFields(r) {
   h += secHead('פרטי לקוח', 'client_details', false);
   h += fv('name','שם',r.name);
   h += fv('advisorName','שם היועץ',r.advisor?uName(r.advisor):(r.advisorName||''));
-  h += fv('dealRef','עסקה משויכת',r.dealRef||r.name);
+  // Linked lead (read from leadId FK, fallback to leadName text)
+  var _clLeadName='';
+  if(r.leadId){var _lld=DB.leads.find(function(l){return l.id===r.leadId});if(_lld)_clLeadName=_lld.name;}
+  if(!_clLeadName)_clLeadName=r.leadName||'';
+  if(r.leadId){h+='<div class="field-row"><span class="field-label">מתעניין משויך</span><span class="field-value"><a href="#" onclick="openRecord(\'leads\',\''+r.leadId+'\',true);return false" style="color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:4px">'+(_clLeadName||'—')+' <span style="font-size:11px">🔗</span></a></span></div>';}else if(_clLeadName){h+=fv('leadName','מתעניין משויך',_clLeadName,{readonly:true});}
+  // Linked deal (read from dealId FK, fallback to dealRef text)
+  var _clDealName='';
+  if(r.dealId){var _dld=DB.deals.find(function(d){return d.id===r.dealId});if(_dld)_clDealName=_dld.name;}
+  if(!_clDealName)_clDealName=r.dealName||r.dealRef||'';
+  if(r.dealId){h+='<div class="field-row"><span class="field-label">עסקה משויכת</span><span class="field-value"><a href="#" onclick="openRecord(\'deals\',\''+r.dealId+'\',true);return false" style="color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:4px">'+(_clDealName||'—')+' <span style="font-size:11px">🔗</span></a></span></div>';}else{h+=fv('dealRef','עסקה משויכת',_clDealName||r.name);}
   h += fv('clientEmail','דואר אלקטרוני - התמחות משויכת',r.clientEmail||r.email,{email:true});
   h += fv('avgMonthsInProcess','מספר חדשים ממוצע בתהליך',r.avgMonthsInProcess||(r.startDate?Math.round((Date.now()-new Date(r.startDate))/(1000*60*60*24*30)):'')||'');
   h += fv('clientPhone','טלפון ראשי - התמחות משויכת',r.clientPhone||r.phone,{phone:true});
@@ -1959,7 +2014,11 @@ function renderPaymentFields(r) {
   h += fv('name','שם',r.name||r.clientName);
   h += fv('executor','משתמש',r.executor||r.createdBy,{select:Object.keys(USERS)});
   h += fv('setupDate','תאריך גביה',r.setupDate||todayVal(),{date:true});
-  h += fv('dealName','עסקה משויכת',r.dealName);
+  // Linked deal (clickable if dealId set)
+  var _pDealName='';
+  if(r.dealId){var _pd=DB.deals.find(function(d){return d.id===r.dealId});if(_pd)_pDealName=_pd.name;}
+  if(!_pDealName)_pDealName=r.dealName||'';
+  if(r.dealId){h+='<div class="field-row"><span class="field-label">עסקה משויכת</span><span class="field-value"><a href="#" onclick="openRecord(\'deals\',\''+r.dealId+'\',true);return false" style="color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:4px">'+(_pDealName||'—')+' <span style="font-size:11px">🔗</span></a></span></div>';}else{h+=fv('dealName','עסקה משויכת',_pDealName);}
   h += fv('paymentType','סוג תשלום',r.paymentType,{select:['הוראת קבע באשראי','אשראי תופס מסגרת','העברה בנקאית','ביט','פייבוקס','מזומן']});
   h += fv('numPayments','מספר תשלומים',r.numPayments);
   h += fv('paymentDate','תאריך כסף בבנק',r.paymentDate,{date:true});
@@ -1974,7 +2033,13 @@ function renderMeetingFields(r) {
   var h = '';
   h += secHead('פרטי פעילות', 'meeting_details', false);
   h += fv('title','שם',r.title||r.name);
-  h += fv('clientName','משייך ל',r.clientName||r.withName);
+  // Linked parent (client/deal/lead) — meeting is polymorphic
+  var _mpName='',_mpType='',_mpId='';
+  if(r.clientId){_mpId=r.clientId;_mpType='clients';var _mc=DB.clients.find(function(c){return c.id===r.clientId});if(_mc)_mpName=_mc.name;}
+  else if(r.dealId){_mpId=r.dealId;_mpType='deals';var _md=DB.deals.find(function(d){return d.id===r.dealId});if(_md)_mpName=_md.name;}
+  else if(r.leadId){_mpId=r.leadId;_mpType='leads';var _ml=DB.leads.find(function(l){return l.id===r.leadId});if(_ml)_mpName=_ml.name;}
+  if(!_mpName)_mpName=r.clientName||r.withName||'';
+  if(_mpId&&_mpType){h+='<div class="field-row"><span class="field-label">משייך ל</span><span class="field-value"><a href="#" onclick="openRecord(\''+_mpType+'\',\''+_mpId+'\',true);return false" style="color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:4px">'+(_mpName||'—')+' <span style="font-size:11px">🔗</span></a></span></div>';}else{h+=fv('clientName','משייך ל',_mpName);}
   h += fv('agent','שם נציג',r.agent,{select:Object.keys(USERS)});
   h += fv('meetingNumber','מספר פגישה',r.meetingNumber);
   h += fv('startDate','תאריך התחלה',r.startDate||r.date,{date:true});
@@ -2181,6 +2246,7 @@ if(type==='_customView'){
 if(type==='_bulkChange'){
   var pg2=modalParent.page,fld=g('bulk-field'),val=g('bulk-value');
   if(!fld){showToast('בחר שדה ❌');return;}
+  if(val===''||val==null){showToast('בחר ערך ❌');return;}
   var ids=Object.keys(selectedRows[pg2]||{}).filter(function(k){return selectedRows[pg2][k]});
   ids.forEach(function(id){var r=DB[pg2].find(function(x){return x.id===id});if(r){r[fld]=val;r.updated=now();r.updatedBy=currentUser.username;sbUpsert(pg2,r);}});
   saveData();selectedRows[pg2]={};closeModal();renderPage(pg2);showToast(ids.length+' רשומות עודכנו ✅');return;

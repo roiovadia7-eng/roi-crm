@@ -134,6 +134,7 @@ CREATE TABLE IF NOT EXISTS public.clients (
   deal_id                 TEXT REFERENCES public.deals(id) ON DELETE SET NULL,
   deal_name               TEXT,
   deal_ref                TEXT,
+  lead_id                 TEXT REFERENCES public.leads(id) ON DELETE SET NULL,
   lead_name               TEXT,
   avg_months_in_process   NUMERIC(6,1),
   days_in_process         INTEGER,
@@ -338,6 +339,7 @@ CREATE INDEX IF NOT EXISTS idx_deals_created_at    ON public.deals(created_at);
 
 -- Clients
 CREATE INDEX IF NOT EXISTS idx_clients_deal_id     ON public.clients(deal_id);
+CREATE INDEX IF NOT EXISTS idx_clients_lead_id     ON public.clients(lead_id);
 CREATE INDEX IF NOT EXISTS idx_clients_advisor     ON public.clients(advisor);
 CREATE INDEX IF NOT EXISTS idx_clients_status      ON public.clients(client_status);
 CREATE INDEX IF NOT EXISTS idx_clients_created_by  ON public.clients(created_by);

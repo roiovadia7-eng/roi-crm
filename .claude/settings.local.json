@@ -24,7 +24,27 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"Initial commit: ROI CRM from Railway deployment:*)",
       "Bash(git remote:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(npm list:*)",
+      "Bash(curl -fsSL https://railway.com/install.sh)",
+      "Bash(sh)",
+      "Bash(RAILWAY_INSTALL_DIR=\"$HOME/.local/bin\" curl -fsSL https://railway.com/install.sh)",
+      "Bash(RAILWAY_INSTALL_DIR=\"$HOME/.local/bin\" sh)",
+      "Bash(mkdir -p \"$HOME/.local/bin\")",
+      "Bash(sed -i '' 's|/usr/local/bin|'\"$HOME\"'/.local/bin|g' /tmp/railway_install.sh)",
+      "Bash(sh /tmp/railway_install.sh)",
+      "Bash(export PATH=\"$HOME/.local/bin:$PATH\")",
+      "Bash(railway version:*)",
+      "Bash(railway login:*)",
+      "Bash(railway --version)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(git commit:*)",
+      "Bash(SRC=\"/Users/roiovadia/Downloads/backup_77c34235-2a8a-45fc-b832-6a2cefdc5080 2\")",
+      "Bash(DST=\"/Users/roiovadia/crm/import\")",
+      "Bash(for f:*)",
+      "Bash(do)",
+      "Bash(cp \"$SRC/$f\" \"$DST/\")",
+      "Bash(python3 _scan.py)"
     ]
   }
 }
