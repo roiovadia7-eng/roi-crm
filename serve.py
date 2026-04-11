@@ -65,8 +65,29 @@ class CRMHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/api/'):
             self._handle_api_get()
-        else:
-            super().do_GET()
+            return
+        # Serve the CRM HTML at root and always bypass browser cache so edits
+        # show up immediately without needing a manual hard-reload.
+        if self.path in ('/', '/index.html'):
+            self.path = '/ROI CRM.html'
+        if self.path.endswith('.html'):
+            try:
+                fp = self.translate_path(self.path)
+                with open(fp, 'rb') as f:
+                    data = f.read()
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.send_header('Content-Length', str(len(data)))
+                self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+                self.send_header('Pragma', 'no-cache')
+                self.send_header('Expires', '0')
+                self.end_headers()
+                self.wfile.write(data)
+                return
+            except FileNotFoundError:
+                self._send_error(404, 'Not found')
+                return
+        super().do_GET()
 
     def _handle_api_get(self):
         parsed = urllib.parse.urlparse(self.path)

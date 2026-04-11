@@ -267,11 +267,11 @@ a{color:inherit}
   backdrop-filter:saturate(140%);
 }
 .page-title{
-  font-size:23px;
+  font-size:28px;
   font-weight:800;
   flex-shrink:0;
-  margin-left:12px;
-  letter-spacing:-.5px;
+  margin-left:14px;
+  letter-spacing:-.6px;
   color:var(--text);
 }
 .topbar-actions{display:flex;gap:10px;align-items:center}
@@ -394,13 +394,13 @@ a{color:inherit}
 }
 .stat-card:hover{box-shadow:var(--shadow);border-color:var(--border-2);transform:translateY(-1px)}
 .stat-card:hover::before{opacity:1}
-.stat-label{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600;letter-spacing:.2px}
-.stat-value{font-size:30px;font-weight:800;letter-spacing:-.8px;color:var(--text)}
+.stat-label{font-size:13.5px;color:var(--text2);margin-bottom:7px;font-weight:700;letter-spacing:.1px}
+.stat-value{font-size:34px;font-weight:800;letter-spacing:-.9px;color:var(--text)}
 .stat-value.accent{color:var(--accent-dark)}
 .stat-value.success{color:var(--success)}
 .stat-value.warn{color:var(--warn)}
 .stat-value.danger{color:var(--danger)}
-.stat-sub{font-size:11px;color:var(--text3);margin-top:6px;font-weight:500}
+.stat-sub{font-size:12.5px;color:var(--text3);margin-top:7px;font-weight:600}
 
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .dash-card{
@@ -433,7 +433,7 @@ a{color:inherit}
   transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
 }
 .search-box:focus-within{border-color:var(--accent);box-shadow:var(--shadow-xs),0 0 0 3px rgba(238,189,42,.14)}
-.search-box input{border:none;outline:none;font-size:13px;background:transparent;width:100%;color:var(--text)}
+.search-box input{border:none;outline:none;font-size:14.5px;background:transparent;width:100%;color:var(--text)}
 .search-box input::placeholder{color:var(--text3)}
 
 .table-wrap{
@@ -446,28 +446,27 @@ a{color:inherit}
 table{width:100%;border-collapse:collapse}
 thead th{
   background:var(--bg-3);
-  padding:13px 16px;
-  font-size:11px;
-  font-weight:700;
+  padding:15px 18px;
+  font-size:13.5px;
+  font-weight:800;
   color:var(--text2);
   text-align:right;
   border-bottom:1px solid var(--border);
   white-space:nowrap;
-  text-transform:uppercase;
-  letter-spacing:.4px;
+  letter-spacing:.1px;
 }
 tbody tr{cursor:pointer;transition:background var(--dur) var(--ease)}
 tbody tr:hover{background:var(--accent-bg-2)}
-tbody td{padding:13px 16px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text)}
+tbody td{padding:15px 18px;font-size:14.5px;border-bottom:1px solid var(--border);color:var(--text)}
 tbody tr:last-child td{border:none}
 
 /* Badges */
 .badge{
   display:inline-flex;
   align-items:center;
-  padding:3px 10px;
+  padding:4px 12px;
   border-radius:var(--r-full);
-  font-size:11px;
+  font-size:12.5px;
   font-weight:700;
   letter-spacing:.1px;
   border:1px solid transparent;
@@ -835,8 +834,8 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 .kpi-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
 .kpi-card.green{border-top-color:var(--success)}
 .kpi-card.red{border-top-color:var(--danger)}
-.kpi-card .kpi-label{font-size:11px;color:var(--text2);margin-bottom:8px;word-wrap:break-word;overflow-wrap:break-word;line-height:1.4;font-weight:600}
-.kpi-card .kpi-value{font-size:28px;font-weight:800;letter-spacing:-.6px;color:var(--text)}
+.kpi-card .kpi-label{font-size:13px;color:var(--text2);margin-bottom:9px;word-wrap:break-word;overflow-wrap:break-word;line-height:1.4;font-weight:700}
+.kpi-card .kpi-value{font-size:32px;font-weight:800;letter-spacing:-.7px;color:var(--text)}
 .kpi-card .kpi-value.blue{color:var(--info)}
 .kpi-card .kpi-value.green{color:var(--success)}
 .kpi-card .kpi-value.red{color:var(--danger)}
@@ -914,18 +913,29 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 .record-nav-btn:hover{border-color:var(--accent);background:var(--accent-bg-2);color:var(--accent-dark)}
 .record-nav-btn:disabled{opacity:.3;cursor:default}
 
-/* GLOBAL SEARCH */
-.global-search-overlay{position:fixed;inset:0;background:rgba(8,10,14,.55);backdrop-filter:blur(4px);z-index:300;display:none;justify-content:center;padding-top:100px}
-.global-search-overlay.open{display:flex}
-.global-search-box{background:var(--bg-2);border-radius:var(--r-xl);width:600px;max-width:95vw;max-height:70vh;overflow:hidden;box-shadow:var(--shadow-xl);display:flex;flex-direction:column;border:1px solid var(--border)}
-.global-search-input{padding:18px 22px;border:none;border-bottom:1px solid var(--border);font-size:16px;font-family:inherit;outline:none;direction:rtl;background:var(--bg-2);color:var(--text);font-weight:500}
-.global-search-input::placeholder{color:var(--text3)}
-.global-search-results{overflow-y:auto;padding:10px}
-.search-group-title{font-size:10px;font-weight:800;color:var(--text3);padding:10px 14px 6px;text-transform:uppercase;letter-spacing:.6px}
-.search-result-item{padding:11px 14px;cursor:pointer;border-radius:var(--r);display:flex;align-items:center;gap:10px;transition:background var(--dur) var(--ease)}
+/* GLOBAL SEARCH — inline dropdown */
+.search-wrap{position:relative}
+.search-dropdown{position:absolute;top:calc(100% + 8px);left:0;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg);width:440px;max-height:520px;box-shadow:var(--shadow-lg);z-index:310;display:none;flex-direction:column;overflow:hidden}
+.search-dropdown.open{display:flex}
+.search-dropdown-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--bg-2);flex-shrink:0}
+.search-dropdown-ico{font-size:16px;color:var(--text2)}
+.search-dropdown-input{flex:1;border:none;outline:none;font-family:inherit;font-size:15px;font-weight:500;direction:rtl;background:transparent;color:var(--text)}
+.search-dropdown-input::placeholder{color:var(--text3)}
+.search-dropdown-body{overflow-y:auto;padding:8px;flex:1;max-height:440px}
+.search-group-title{font-size:11px;font-weight:800;color:var(--text3);padding:10px 12px 6px;text-transform:uppercase;letter-spacing:.6px}
+.search-result-item{padding:10px 12px;cursor:pointer;border-radius:var(--r);display:flex;align-items:center;gap:11px;transition:background var(--dur) var(--ease)}
 .search-result-item:hover{background:var(--hover)}
-.search-result-name{font-size:13px;font-weight:700;color:var(--text)}
-.search-result-sub{font-size:11px;color:var(--text2)}
+.search-result-icon{width:30px;height:30px;border-radius:var(--r-sm);background:var(--bg-3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.search-result-body{flex:1;min-width:0}
+.search-result-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-result-sub{font-size:12.5px;color:var(--text2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-empty{padding:28px 16px;text-align:center;color:var(--text3);font-size:13px}
+.recent-query-item{padding:9px 12px;cursor:pointer;border-radius:var(--r);display:flex;align-items:center;gap:10px;transition:background var(--dur) var(--ease);font-size:13.5px;color:var(--text2)}
+.recent-query-item:hover{background:var(--hover);color:var(--text)}
+.recent-query-item .rq-ico{opacity:.6}
+.recent-query-item .rq-remove{margin-right:auto;opacity:0;font-size:16px;color:var(--text3);padding:0 4px}
+.recent-query-item:hover .rq-remove{opacity:1}
+.recent-query-item .rq-remove:hover{color:var(--danger)}
 
 /* NOTIFICATIONS */
 .notif-dropdown{position:absolute;top:calc(100% + 8px);left:0;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg);width:360px;max-height:420px;overflow-y:auto;box-shadow:var(--shadow-lg);z-index:300;display:none}
@@ -957,9 +967,9 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 .agenda-empty{padding:48px 20px;text-align:center;color:var(--text2)}
 .agenda-empty .es-icon{font-size:48px;margin-bottom:10px;opacity:.5}
 .agenda-empty .es-sub{font-size:13px;color:var(--text3)}
-.notif-title{font-size:13px;font-weight:700;color:var(--text)}
-.notif-time{font-size:11px;color:var(--text3);margin-top:2px}
-.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-size:9px;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg-2)}
+.notif-title{font-size:14.5px;font-weight:700;color:var(--text)}
+.notif-time{font-size:12.5px;color:var(--text3);margin-top:3px}
+.notif-badge{position:absolute;top:-7px;right:-7px;background:linear-gradient(135deg,#ff5b5b,#e11d1d);color:#fff;font-size:11px;font-weight:800;min-width:22px;height:22px;padding:0 6px;border-radius:999px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg-2);box-shadow:0 2px 8px rgba(225,29,29,.45);letter-spacing:-.2px;line-height:1}
 
 /* REPORTS POPUP */
 .reports-popup{position:fixed;inset:0;background:rgba(8,10,14,.55);backdrop-filter:blur(4px);z-index:250;display:none;align-items:center;justify-content:center}
@@ -1061,7 +1071,16 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
   <div class="topbar">
     <div class="page-title" id="pageTitle">דאשבורד</div>
     <div class="topbar-actions">
-      <button class="btn btn-search" onclick="openGlobalSearch()" title="חיפוש (Ctrl+K)"><span class="search-ico">🔍</span> חיפוש</button>
+      <div class="search-wrap" id="searchWrap">
+        <button class="btn btn-search" onclick="toggleSearchDropdown(event)" title="חיפוש (Ctrl+K)"><span class="search-ico">🔍</span> חיפוש</button>
+        <div class="search-dropdown" id="searchDropdown" onclick="event.stopPropagation()">
+          <div class="search-dropdown-head">
+            <span class="search-dropdown-ico">🔍</span>
+            <input class="search-dropdown-input" id="searchDropdownInput" placeholder="חפש בכל המודולים..." oninput="runInlineSearch(this.value)" onkeydown="if(event.key==='Escape'){closeSearchDropdown()}">
+          </div>
+          <div class="search-dropdown-body" id="searchDropdownBody"></div>
+        </div>
+      </div>
       <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="החלף מצב תצוגה">🌙</button>
       <div style="position:relative"><button class="btn btn-secondary btn-sm btn-icon" onclick="toggleAgenda()" title="סדר יום" id="agendaBtn">🕐<span class="notif-badge" id="agendaBadge" style="display:none">0</span></button><div class="agenda-dropdown" id="agendaDropdown"></div></div>
       <div style="position:relative"><button class="btn btn-secondary btn-sm btn-icon" onclick="toggleNotifications()" title="התראות" id="notifBtn">🔔<span class="notif-badge" id="notifBadge" style="display:none">0</span></button><div class="notif-dropdown" id="notifDropdown"></div></div>
@@ -1122,12 +1141,6 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
   </div>
 </div>
 <div class="toast" id="toast"><span id="toastMsg">נשמר ✅</span></div>
-<div class="global-search-overlay" id="globalSearchOverlay" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="global-search-box">
-    <input class="global-search-input" id="globalSearchInput" placeholder="חפש בכל המודולים..." oninput="doGlobalSearch(this.value)">
-    <div class="global-search-results" id="globalSearchResults"></div>
-  </div>
-</div>
 <div class="reports-popup" id="reportsPopup" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="reports-panel" id="reportsPanel"></div>
 </div>
@@ -2416,7 +2429,7 @@ function _takeSnapshot(){
   els.forEach(function(el){var k=el.id.replace('fld_','');snap[k]=el.type==='checkbox'?el.checked:el.value;});
   _recordSnapshot=JSON.stringify(snap);_recordDirty=false;
 }
-function openRecord(type,id,push){const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;if(push&&currentRecord){recordStack.push({type:currentRecordType,id:currentRecord.id,name:currentRecord.name||currentRecord.title||'—'});}else if(!push){recordStack=[];}currentRecord={...item,notes:item.notes||[],tasks:item.tasks||[],files:item.files||[],history:item.history||[]};currentRecordType=type;_recordDirty=false;
+function openRecord(type,id,push){const item=(DB[type]||[]).find(r=>r.id===id);if(!item)return;try{trackRecentRecord(type,id);}catch(e){}if(push&&currentRecord){recordStack.push({type:currentRecordType,id:currentRecord.id,name:currentRecord.name||currentRecord.title||'—'});}else if(!push){recordStack=[];}currentRecord={...item,notes:item.notes||[],tasks:item.tasks||[],files:item.files||[],history:item.history||[]};currentRecordType=type;_recordDirty=false;
   // Setup nav list
   var listItems=getListItems(type);
   recNavList=listItems;recNavIdx=listItems.findIndex(function(r){return r.id===id});
@@ -3166,42 +3179,136 @@ function boardDrop(event,page,statusKey,newStatus){
   saveData();sbUpsert(page,rec);runAutomations(page,rec,false);renderPage(page);showToast('עודכן ✅');
 }
 
-// ===== GLOBAL SEARCH =====
-function openGlobalSearch(){
-  document.getElementById('globalSearchOverlay').classList.add('open');
-  var inp=document.getElementById('globalSearchInput');inp.value='';inp.focus();
-  document.getElementById('globalSearchResults').innerHTML='';
+// ===== GLOBAL SEARCH — inline FireBerry-style dropdown =====
+var SEARCH_TYPE_LABELS={leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',meetings:'פגישות',tasks:'משימות'};
+var SEARCH_TYPE_ICONS={leads:'⭐',deals:'💼',clients:'👥',payments:'💰',meetings:'📅',tasks:'✅'};
+var SEARCH_TYPE_SINGULAR={leads:'מתעניין',deals:'עסקה',clients:'לקוח',payments:'תשלום',meetings:'פגישה',tasks:'משימה'};
+
+function _recentRecords(){try{return JSON.parse(localStorage.getItem('roicrm_recent_records')||'[]');}catch(e){return[];}}
+function _saveRecentRecords(arr){try{localStorage.setItem('roicrm_recent_records',JSON.stringify(arr.slice(0,8)));}catch(e){}}
+function _recentQueries(){try{return JSON.parse(localStorage.getItem('roicrm_recent_queries')||'[]');}catch(e){return[];}}
+function _saveRecentQueries(arr){try{localStorage.setItem('roicrm_recent_queries',JSON.stringify(arr.slice(0,6)));}catch(e){}}
+
+function trackRecentRecord(type,id){
+  var list=_recentRecords().filter(function(x){return!(x.type===type&&x.id===id);});
+  list.unshift({type:type,id:id,t:Date.now()});
+  _saveRecentRecords(list);
 }
-function doGlobalSearch(q){
-  var res=document.getElementById('globalSearchResults');
-  if(!q||q.length<2){res.innerHTML='';return;}
-  q=q.toLowerCase();
-  var types=['leads','deals','clients','payments','meetings','tasks'];
-  var labels={leads:'מתעניינים',deals:'עסקאות',clients:'לקוחות',payments:'תשלומים',meetings:'פגישות',tasks:'משימות'};
-  var icons={leads:'⭐',deals:'💼',clients:'👥',payments:'💰',meetings:'📅',tasks:'✅'};
+function trackRecentQuery(q){
+  q=(q||'').trim();if(!q)return;
+  var list=_recentQueries().filter(function(x){return x!==q;});
+  list.unshift(q);
+  _saveRecentQueries(list);
+}
+function removeRecentQuery(q,ev){
+  if(ev){ev.stopPropagation();}
+  var list=_recentQueries().filter(function(x){return x!==q;});
+  _saveRecentQueries(list);
+  renderSearchDefault();
+}
+
+function toggleSearchDropdown(ev){
+  if(ev){ev.stopPropagation();}
+  var dd=document.getElementById('searchDropdown');
+  if(!dd)return;
+  if(dd.classList.contains('open')){closeSearchDropdown();return;}
+  dd.classList.add('open');
+  var inp=document.getElementById('searchDropdownInput');
+  if(inp){inp.value='';setTimeout(function(){inp.focus();},10);}
+  renderSearchDefault();
+}
+function closeSearchDropdown(){
+  var dd=document.getElementById('searchDropdown');
+  if(dd)dd.classList.remove('open');
+}
+function _esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+function renderSearchDefault(){
+  var body=document.getElementById('searchDropdownBody');
+  if(!body)return;
   var h='';
+  var rq=_recentQueries();
+  if(rq.length){
+    h+='<div class="search-group-title">חיפושים אחרונים</div>';
+    rq.forEach(function(q){
+      var qe=_esc(q);
+      h+='<div class="recent-query-item" onclick="applyRecentQuery(\''+qe.replace(/\\/g,'\\\\').replace(/\'/g,"\\'")+'\')"><span class="rq-ico">🕐</span><span>'+qe+'</span><span class="rq-remove" onclick="removeRecentQuery(\''+qe.replace(/\\/g,'\\\\').replace(/\'/g,"\\'")+'\',event)">✕</span></div>';
+    });
+  }
+  var rr=_recentRecords();
+  var resolved=[];
+  rr.forEach(function(x){
+    var rec=(DB[x.type]||[]).find(function(r){return r.id===x.id;});
+    if(rec)resolved.push({type:x.type,rec:rec});
+  });
+  if(resolved.length){
+    h+='<div class="search-group-title">אחרונים</div>';
+    resolved.slice(0,6).forEach(function(x){
+      h+=_renderResultItem(x.type,x.rec,'');
+    });
+  }
+  if(!h){
+    h='<div class="search-empty">התחל להקליד לחיפוש<br><span style="font-size:12px;opacity:.7">הרשומות האחרונות שפתחת יופיעו כאן</span></div>';
+  }
+  body.innerHTML=h;
+}
+function applyRecentQuery(q){
+  var inp=document.getElementById('searchDropdownInput');
+  if(inp){inp.value=q;inp.focus();}
+  runInlineSearch(q);
+}
+function _renderResultItem(t,r,q){
+  var name=r.name||r.title||'—';
+  var sub=r.phone||r.status||r.clientName||r.stage||'';
+  return '<div class="search-result-item" onclick="pickSearchResult(\''+t+'\',\''+r.id+'\',\''+_esc(q).replace(/\\/g,'\\\\').replace(/\'/g,"\\'")+'\')">'+
+    '<div class="search-result-icon">'+SEARCH_TYPE_ICONS[t]+'</div>'+
+    '<div class="search-result-body"><div class="search-result-name">'+_esc(name)+'</div>'+
+    '<div class="search-result-sub">'+SEARCH_TYPE_SINGULAR[t]+(sub?' · '+_esc(sub):'')+'</div></div></div>';
+}
+function pickSearchResult(type,id,q){
+  if(q)trackRecentQuery(q);
+  closeSearchDropdown();
+  openRecord(type,id);
+}
+function runInlineSearch(q){
+  var body=document.getElementById('searchDropdownBody');
+  if(!body)return;
+  q=(q||'').trim();
+  if(!q){renderSearchDefault();return;}
+  var ql=q.toLowerCase();
+  var types=['leads','deals','clients','payments','meetings','tasks'];
+  var h='';var total=0;
   types.forEach(function(t){
     var matches=(DB[t]||[]).filter(function(r){
-      return (r.name||'').toLowerCase().indexOf(q)>=0||(r.title||'').toLowerCase().indexOf(q)>=0||(r.phone||'').indexOf(q)>=0||(r.clientName||'').toLowerCase().indexOf(q)>=0||(r.email||'').toLowerCase().indexOf(q)>=0;
+      return (r.name||'').toLowerCase().indexOf(ql)>=0
+        ||(r.title||'').toLowerCase().indexOf(ql)>=0
+        ||(r.phone||'').indexOf(ql)>=0
+        ||(r.clientName||'').toLowerCase().indexOf(ql)>=0
+        ||(r.email||'').toLowerCase().indexOf(ql)>=0;
     }).slice(0,5);
     if(matches.length){
-      h+='<div class="search-group-title">'+icons[t]+' '+labels[t]+'</div>';
-      matches.forEach(function(r){
-        h+='<div class="search-result-item" onclick="document.getElementById(\'globalSearchOverlay\').classList.remove(\'open\');openRecord(\''+t+'\',\''+r.id+'\')">';
-        h+='<div><div class="search-result-name">'+(r.name||r.title||'—')+'</div>';
-        h+='<div class="search-result-sub">'+(r.phone||r.status||r.clientName||'')+'</div></div></div>';
-      });
+      total+=matches.length;
+      h+='<div class="search-group-title">'+SEARCH_TYPE_ICONS[t]+' '+SEARCH_TYPE_LABELS[t]+'</div>';
+      matches.forEach(function(r){h+=_renderResultItem(t,r,q);});
     }
   });
-  if(!h)h='<div class="empty-state" style="padding:20px"><div class="es-sub">לא נמצאו תוצאות</div></div>';
-  res.innerHTML=h;
+  if(!total){h='<div class="search-empty">לא נמצאו תוצאות עבור "'+_esc(q)+'"</div>';}
+  body.innerHTML=h;
 }
+
+document.addEventListener('click',function(e){
+  var dd=document.getElementById('searchDropdown');
+  var wrap=document.getElementById('searchWrap');
+  if(dd&&dd.classList.contains('open')&&wrap&&!wrap.contains(e.target)){
+    closeSearchDropdown();
+  }
+});
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
-    document.getElementById('globalSearchOverlay').classList.remove('open');
-    document.getElementById('reportsPopup').classList.remove('open');
+    closeSearchDropdown();
+    var rp=document.getElementById('reportsPopup');if(rp)rp.classList.remove('open');
   }
-  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openGlobalSearch();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();toggleSearchDropdown(e);}
 });
 
 // ===== NOTIFICATIONS =====
@@ -3374,16 +3481,21 @@ function toggleNotifications(){
   if(dd.classList.contains('open')){dd.classList.remove('open');return;}
   var notifs=getNotifications();
   var read=JSON.parse(localStorage.getItem('roicrm_notif_read')||'[]');
-  var h='<div style="padding:12px 16px;font-weight:700;border-bottom:1px solid var(--border)">התראות ('+notifs.length+')</div>';
+  var h='<div style="padding:14px 18px;font-weight:800;font-size:15px;border-bottom:1px solid var(--border)">התראות ('+notifs.length+')</div>';
   if(notifs.length){
     notifs.forEach(function(n){
       var isRead=read.indexOf(n.id)>=0;
       h+='<div class="notif-item'+(isRead?'':' unread')+'" onclick="markNotifRead(\''+n.id+'\');'+(n.type==='lead'?'openRecord(\'leads\',\''+n.recordId+'\')':'openRecord(\'tasks\',\''+n.recordId+'\')')+'"><div class="notif-title">'+(n.type==='task'?'✅ ':'⭐ ')+n.title+'</div><div class="notif-time">'+fmtDT(n.time)+'</div></div>';
     });
   } else {
-    h+='<div style="padding:20px;text-align:center;color:var(--text2);font-size:13px">אין התראות</div>';
+    h+='<div style="padding:24px;text-align:center;color:var(--text2);font-size:14px">אין התראות</div>';
   }
   dd.innerHTML=h;dd.classList.add('open');
+  // Mark all current notifications as read the moment user opens the bell
+  var merged=read.slice();
+  notifs.forEach(function(n){if(merged.indexOf(n.id)<0)merged.push(n.id);});
+  localStorage.setItem('roicrm_notif_read',JSON.stringify(merged));
+  updateNotifBadge();
 }
 function markNotifRead(id){
   var read=JSON.parse(localStorage.getItem('roicrm_notif_read')||'[]');
