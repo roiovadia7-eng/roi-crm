@@ -163,19 +163,19 @@ a{color:inherit}
   background:linear-gradient(90deg,transparent,rgba(238,189,42,.5),transparent);
   opacity:.35;
 }
-.logo-title{
-  font-size:28px;
-  font-weight:800;
-  color:var(--accent);
-  letter-spacing:-.6px;
-  text-shadow:0 0 24px rgba(238,189,42,.35);
+.logo-mark{
+  display:block;
+  width:168px;
+  height:auto;
+  max-width:100%;
+  filter:drop-shadow(0 0 22px rgba(238,189,42,.25));
 }
 .logo-sub{
   font-size:12px;
   color:rgba(255,255,255,.46);
   font-weight:600;
   letter-spacing:.5px;
-  margin-top:3px;
+  margin-top:8px;
 }
 .nav{flex:1;padding:16px 12px;overflow-y:auto}
 .nav-section{
@@ -684,9 +684,9 @@ select.field-value{appearance:auto}
   position:relative;
   z-index:1;
 }
-.login-logo{text-align:center;margin-bottom:30px}
-.login-logo-text{font-size:44px;font-weight:900;color:#C9A014;letter-spacing:-1.5px;text-shadow:0 2px 10px rgba(238,189,42,.2)}
-.login-logo-sub{font-size:12px;color:#5A616E;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+.login-logo{text-align:center;margin-bottom:30px;display:flex;flex-direction:column;align-items:center}
+.login-logo-mark{width:200px;height:auto;display:block;filter:drop-shadow(0 2px 10px rgba(238,189,42,.18))}
+.login-logo-sub{font-size:12px;color:#5A616E;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:10px}
 .login-title{font-size:23px;font-weight:800;margin-bottom:4px;color:#0D0F14;letter-spacing:-.3px}
 .login-sub{font-size:13px;color:#5A616E;margin-bottom:26px;font-weight:500}
 .login-error{background:#FDEAE8;color:#C73028;padding:11px 14px;border-radius:var(--r);font-size:13px;margin-bottom:14px;display:none;font-weight:600;border:1px solid #F5C6C2}
@@ -992,7 +992,20 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 <body>
 <div id="loginPage" class="login-wrap">
   <div class="login-card">
-    <div class="login-logo"><div class="login-logo-text">ROI</div><div class="login-logo-sub">מערכת CRM</div></div>
+    <div class="login-logo">
+      <svg class="login-logo-mark" viewBox="0 0 260 100" xmlns="http://www.w3.org/2000/svg" aria-label="ROI">
+        <path d="M18 12 H62 a30 30 0 0 1 0 60 H46 l22 20 H48 L26 72 H34 V56 H48 a14 14 0 0 0 0 -28 H34 V92 H18 Z" fill="#2B2E37"/>
+        <g>
+          <rect x="86" y="22" width="110" height="58" rx="29" ry="29" fill="#EEBD2A"/>
+          <path d="M150 76 L162 96 L168 74 Z" fill="#EEBD2A"/>
+          <circle cx="112" cy="51" r="7" fill="#1A1D24"/>
+          <circle cx="141" cy="51" r="7" fill="#1A1D24"/>
+          <circle cx="170" cy="51" r="7" fill="#1A1D24"/>
+        </g>
+        <rect x="216" y="12" width="26" height="80" rx="3" fill="#2B2E37"/>
+      </svg>
+      <div class="login-logo-sub">מערכת CRM</div>
+    </div>
 
     <!-- STEP 1: Enter ID + Password -->
     <div id="loginStep1">
@@ -1032,7 +1045,23 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
 
 <div id="app" style="display:none;width:100%;flex-direction:row;height:100vh">
 <div class="sidebar">
-  <div class="logo"><div class="logo-title">ROI</div><div class="logo-sub">CRM מערכת</div></div>
+  <div class="logo">
+    <svg class="logo-mark" viewBox="0 0 260 100" xmlns="http://www.w3.org/2000/svg" aria-label="ROI">
+      <!-- Letter R -->
+      <path d="M18 12 H62 a30 30 0 0 1 0 60 H46 l22 20 H48 L26 72 H34 V56 H48 a14 14 0 0 0 0 -28 H34 V92 H18 Z" fill="#E9EBF0"/>
+      <!-- Speech bubble pill -->
+      <g>
+        <rect x="86" y="22" width="110" height="58" rx="29" ry="29" fill="#EEBD2A"/>
+        <path d="M150 76 L162 96 L168 74 Z" fill="#EEBD2A"/>
+        <circle cx="112" cy="51" r="7" fill="#1A1D24"/>
+        <circle cx="141" cy="51" r="7" fill="#1A1D24"/>
+        <circle cx="170" cy="51" r="7" fill="#1A1D24"/>
+      </g>
+      <!-- Letter I -->
+      <rect x="216" y="12" width="26" height="80" rx="3" fill="#E9EBF0"/>
+    </svg>
+    <div class="logo-sub">מערכת CRM</div>
+  </div>
   <nav class="nav">
     <div class="nav-section">ראשי</div>
     <div class="nav-item active" onclick="showPage('dashboard')"><span class="icon">📊</span> דאשבורד</div>
