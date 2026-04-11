@@ -2533,16 +2533,15 @@ function renderLeadFields(r) {
   h += secHead('פרטי לקוח', 'lead_details', false);
   h += fv('name','שם מתעניין',r.name);
   h += fv('phone','טלפון ראשי',r.phone,{phone:true});
-  h += fv('isGold','ליד זהב?',r.isGold,{checkbox:true,checkLabel:'ליד זהב ⭐'});
+  h += fv('source','מקור הגעה',r.source,{select:['אינסטגרם אורגני','אינסטגרם רועי','אינסטגרם נתן','קמפיין ממומן','לקוחות חוזרים','אפיליאציה','פייסבוק','גוגל','המלצה','utm_medium','אחר']});
+  h += fv('status','סטטוס',r.status,{select:leadStages});
   // Big green WhatsApp button (replaces tiny "פתח" link)
   if (r.phone) {
     var _waUrl = 'https://wa.me/972' + r.phone.replace(/^0/,'');
-    h += '<div class="field-row"><span class="field-label">קישור לוואטסאפ</span><span class="field-value" style="text-align:left"><a href="'+_waUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;padding:9px 16px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 2px 6px rgba(37,211,102,0.35);transition:all .15s" onmouseover="this.style.background=\'#128c7e\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.background=\'#25d366\';this.style.transform=\'translateY(0)\'"><span style="font-size:17px">💬</span> פתח בוואטסאפ</a></span></div>';
+    h += '<div class="field-row"><span class="field-label">קישור לוואטסאפ</span><span class="field-value" style="text-align:center"><a href="'+_waUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;padding:9px 18px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 2px 6px rgba(37,211,102,0.35);transition:all .15s" onmouseover="this.style.background=\'#128c7e\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.background=\'#25d366\';this.style.transform=\'translateY(0)\'"><span style="font-size:17px">💬</span> פתח בוואטסאפ</a></span></div>';
   }
-  h += fv('status','סטטוס',r.status,{select:leadStages});
-  h += fv('agent','נציג',r.agent,{select:USER_KEYS,selectLabels:USER_NAMES});
-  h += fv('source','מקור הגעה',r.source,{select:['אינסטגרם אורגני','אינסטגרם רועי','אינסטגרם נתן','קמפיין ממומן','לקוחות חוזרים','אפיליאציה','פייסבוק','גוגל','המלצה','utm_medium','אחר']});
   h += fv('email','דואר אלקטרוני',r.email,{email:true});
+  h += fv('agent','נציג',r.agent,{select:USER_KEYS,selectLabels:USER_NAMES});
   h += fv('whyContact','למה השאיר פרטים',r.whyContact,{textarea:true,full:true});
   h += fv('relevantDate','תאריך רלוונטיות עתידי',r.relevantDate,{date:true});
   h += secEnd();
