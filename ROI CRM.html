@@ -2962,7 +2962,105 @@ document.body.appendChild(overlay);
 overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
 document.getElementById('confirmDelItemBtn').addEventListener('click',function(){overlay.remove();DB[type]=DB[type].filter(function(r){return r.id!==id});saveData();sbDelete(type,id);renderPage(currentPage);showToast('נמחק ✅');});}
 function exportData(){if(!perm('export')){showToast('אין הרשאה ❌');return;}const data=DB[currentPage]||[];if(!data.length){showToast('אין נתונים');return;}const cfg=LIST_CONFIGS[currentPage];if(!cfg)return;const csv='\uFEFF'+cfg.cols.join(',')+'\n'+data.map(r=>cfg.fields(r).map(f=>'"'+String(f).replace(/<[^>]+>/g,'').replace(/,/g,'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=currentPage+'_export.csv';a.click();showToast('ייצוא ✅');}
-function renderSettings(){return`<div style="max-width:600px"><div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות מערכת</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><div class="form-group"><label class="form-label">פרטי חשבון בנק</label><input class="form-control" id="bankDetails" value="בנק לאומי | סניף 900 | חשבון 12345678 | ROI"></div><button class="btn btn-primary" onclick="showToast('נשמר ✅')" style="margin-top:8px">שמור</button></div><div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>${Object.keys(DB).map(k=>Array.isArray(DB[k])?`<div class="status-row"><span class="status-label">${PAGE_ICONS[k]||'📋'} ${PAGE_TITLES[k]||k}</span><span class="status-count">${DB[k].length}</span></div>`:'').filter(Boolean).join('')}</div></div>`;}
+// ===== CREDIT CARD SCRUB TOOL =====
+function _luhnValid(num){var s=0,a=false;for(var i=num.length-1;i>=0;i--){var n=parseInt(num.charAt(i),10);if(a){n*=2;if(n>9)n-=9;}s+=n;a=!a;}return s%10===0;}
+function _findCCInText(str){
+  if(str==null||typeof str!=='string')return [];
+  var hits=[];var re=/(\d(?:[\d \-]{11,22})\d)/g;var m;
+  while((m=re.exec(str))!==null){
+    var raw=m[1];var digits=raw.replace(/[^\d]/g,'');
+    if(digits.length>=13&&digits.length<=19&&_luhnValid(digits))hits.push({raw:raw,digits:digits});
+  }
+  return hits;
+}
+var _CC_SKIP_FIELDS={id:1,notes:1,tasks:1,files:1,history:1,created:1,updated:1,createdBy:1,updatedBy:1,created_at:1,updated_at:1};
+function scanForCC(){
+  var findings={leads:[],deals:[],payments:[],notes:[]};
+  ['leads','deals','payments'].forEach(function(type){
+    (DB[type]||[]).forEach(function(r){
+      var dirty=[];
+      Object.keys(r).forEach(function(k){
+        if(_CC_SKIP_FIELDS[k])return;
+        var v=r[k];if(typeof v!=='string')return;
+        var hits=_findCCInText(v);
+        if(hits.length)dirty.push({field:k,value:v,hits:hits});
+      });
+      if(dirty.length)findings[type].push({id:r.id,name:r.name||r.title||'—',fields:dirty});
+      (r.notes||[]).forEach(function(n){
+        var t=_findCCInText(n.text);var cs=_findCCInText(n.callSummary);var cr=_findCCInText(n.callResult);
+        if(t.length||cs.length||cr.length){
+          findings.notes.push({
+            noteId:n.id,recordType:type,recordId:r.id,
+            recordName:r.name||r.title||'—',
+            preview:(n.text||n.callSummary||n.callResult||'').slice(0,100),
+            hitsCount:t.length+cs.length+cr.length
+          });
+        }
+      });
+    });
+  });
+  return findings;
+}
+async function runCCScrub(){
+  var f=scanForCC();
+  var total=f.leads.length+f.deals.length+f.payments.length+f.notes.length;
+  if(total===0){showToast('נקי ✅ לא נמצאו מספרי אשראי');return;}
+  var html='<div class="confirm-dialog" style="max-width:640px;max-height:80vh;overflow-y:auto"><div class="confirm-icon">🔍</div><h3>נמצאו '+total+' ממצאים של מספרי אשראי</h3><div style="text-align:right;direction:rtl;font-size:13.5px;color:var(--text2);max-height:340px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;margin:14px 0;background:var(--bg-3)">';
+  ['leads','deals','payments'].forEach(function(type){
+    if(f[type].length){
+      var tl={leads:'מתעניינים',deals:'עסקאות',payments:'תשלומים'}[type];
+      html+='<div style="font-weight:800;color:var(--text);margin:8px 0 4px">'+tl+' ('+f[type].length+')</div>';
+      f[type].slice(0,20).forEach(function(rec){
+        html+='<div style="padding:6px 10px;border-right:3px solid var(--danger);margin-bottom:4px;background:var(--bg-2);border-radius:4px">'+_esc(rec.name)+' — '+rec.fields.map(function(x){return x.field;}).join(', ')+'</div>';
+      });
+      if(f[type].length>20)html+='<div style="color:var(--text3);font-size:12px;padding:4px 10px">ועוד '+(f[type].length-20)+'...</div>';
+    }
+  });
+  if(f.notes.length){
+    html+='<div style="font-weight:800;color:var(--text);margin:12px 0 4px">הערות ('+f.notes.length+')</div>';
+    f.notes.slice(0,15).forEach(function(n){
+      html+='<div style="padding:6px 10px;border-right:3px solid var(--danger);margin-bottom:4px;background:var(--bg-2);border-radius:4px"><div style="font-weight:700">'+_esc(n.recordName)+' · '+({leads:'מתעניין',deals:'עסקה',payments:'תשלום'}[n.recordType])+'</div><div style="font-size:12px;color:var(--text3);margin-top:2px">'+_esc(n.preview)+'...</div></div>';
+    });
+    if(f.notes.length>15)html+='<div style="color:var(--text3);font-size:12px;padding:4px 10px">ועוד '+(f.notes.length-15)+'...</div>';
+  }
+  html+='</div><p style="font-weight:700;color:var(--danger)">פעולה זו תמחק את ההערות המסומנות ותרוקן את השדות המסומנים — אין חזרה אחורה.</p><div class="confirm-actions"><button class="btn btn-secondary" id="ccCancel">ביטול</button><button class="btn btn-danger" id="ccConfirm">🗑️ מחק וניקוי כולל</button></div></div>';
+  var ov=document.createElement('div');ov.className='confirm-overlay';ov.innerHTML=html;document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  document.getElementById('ccCancel').addEventListener('click',function(){ov.remove();});
+  document.getElementById('ccConfirm').addEventListener('click',async function(){
+    ov.remove();
+    var ok=0,err=0;
+    // Delete notes
+    for(var i=0;i<f.notes.length;i++){
+      try{var res=await apiDelete('/api/data/notes?id=eq.'+f.notes[i].noteId);if(res&&res.error)err++;else{ok++;
+        // Also remove from local DB
+        var parent=(DB[f.notes[i].recordType]||[]).find(function(x){return x.id===f.notes[i].recordId;});
+        if(parent&&parent.notes)parent.notes=parent.notes.filter(function(n){return n.id!==f.notes[i].noteId;});
+      }}catch(e){err++;}
+    }
+    // Clear fields
+    for(var t=0;t<3;t++){
+      var type=['leads','deals','payments'][t];
+      for(var j=0;j<f[type].length;j++){
+        var rec=f[type][j];
+        var live=(DB[type]||[]).find(function(x){return x.id===rec.id;});
+        if(!live){err++;continue;}
+        rec.fields.forEach(function(fld){live[fld.field]='';});
+        live.updated=new Date().toISOString();
+        if(currentUser)live.updatedBy=currentUser.username;
+        try{var r2=await sbUpsert(type,live);if(r2)ok++;else err++;}catch(e){err++;}
+      }
+    }
+    saveData();
+    if(currentPage==='settings')renderPage('settings');
+    showToast('סיום ניקוי: '+ok+' תוקנו'+(err?' · '+err+' שגיאות':' ✅'));
+  });
+}
+function renderSettings(){
+  var isAdmin=currentUser&&currentUser.role==='admin';
+  var scrubBlock=isAdmin?('<div class="dash-card" style="margin-bottom:16px;border:1px solid var(--danger-bg)"><div class="dash-card-title">🔒 פרטיות ואבטחת מידע</div><div style="font-size:14px;color:var(--text2);margin:8px 0 14px;line-height:1.5">סריקה של כל המתעניינים, עסקאות, תשלומים וההערות שלהם. אם יימצאו מספרי אשראי תקינים (עוברים Luhn) — ההערה תימחק או השדה יתרוקן.</div><button class="btn btn-danger" onclick="runCCScrub()">🔍 סרוק ומחק מספרי אשראי</button></div>'):'';
+  return '<div style="max-width:600px">'+scrubBlock+'<div class="dash-card" style="margin-bottom:16px"><div class="dash-card-title">⚙️ הגדרות מערכת</div><div class="form-group"><label class="form-label">שם העסק</label><input class="form-control" value="ROI"></div><div class="form-group"><label class="form-label">פרטי חשבון בנק</label><input class="form-control" id="bankDetails" value="בנק לאומי | סניף 900 | חשבון 12345678 | ROI"></div><button class="btn btn-primary" onclick="showToast(\'נשמר ✅\')" style="margin-top:8px">שמור</button></div><div class="dash-card"><div class="dash-card-title">📊 סטטיסטיקות</div>'+Object.keys(DB).map(function(k){return Array.isArray(DB[k])?'<div class="status-row"><span class="status-label">'+(PAGE_ICONS[k]||'📋')+' '+(PAGE_TITLES[k]||k)+'</span><span class="status-count">'+DB[k].length+'</span></div>':'';}).filter(Boolean).join('')+'</div></div>';
+}
 // ===== AUTOMATIONS =====
 function runAutomations(type, record, isNew) {
   var changed = false;
