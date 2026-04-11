@@ -130,7 +130,7 @@ body{
   display:flex;
   height:100vh;
   overflow:hidden;
-  font-size:14px;
+  font-size:15px;
   font-weight:500;
   line-height:1.5;
   letter-spacing:-.005em;
@@ -144,7 +144,7 @@ a{color:inherit}
    SIDEBAR
    ========================================================== */
 .sidebar{
-  width:232px;
+  width:252px;
   background:var(--sidebar);
   display:flex;
   flex-direction:column;
@@ -153,48 +153,48 @@ a{color:inherit}
   box-shadow:inset -1px 0 0 rgba(255,255,255,.02);
 }
 .logo{
-  padding:22px 20px 20px;
+  padding:24px 22px 22px;
   border-bottom:1px solid rgba(255,255,255,.06);
   position:relative;
 }
 .logo::after{
   content:"";
-  position:absolute;left:20px;right:20px;bottom:-1px;height:1px;
+  position:absolute;left:22px;right:22px;bottom:-1px;height:1px;
   background:linear-gradient(90deg,transparent,rgba(238,189,42,.5),transparent);
   opacity:.35;
 }
 .logo-title{
-  font-size:24px;
+  font-size:28px;
   font-weight:800;
   color:var(--accent);
-  letter-spacing:-.5px;
+  letter-spacing:-.6px;
   text-shadow:0 0 24px rgba(238,189,42,.35);
 }
 .logo-sub{
-  font-size:11px;
-  color:rgba(255,255,255,.42);
-  font-weight:500;
+  font-size:12px;
+  color:rgba(255,255,255,.46);
+  font-weight:600;
   letter-spacing:.5px;
-  margin-top:2px;
+  margin-top:3px;
 }
-.nav{flex:1;padding:14px 10px;overflow-y:auto}
+.nav{flex:1;padding:16px 12px;overflow-y:auto}
 .nav-section{
-  padding:14px 12px 6px;
-  font-size:10px;
-  color:rgba(255,255,255,.34);
+  padding:16px 12px 8px;
+  font-size:11px;
+  color:rgba(255,255,255,.38);
   text-transform:uppercase;
-  letter-spacing:1.2px;
-  font-weight:700;
+  letter-spacing:1.3px;
+  font-weight:800;
 }
 .nav-item{
   display:flex;
   align-items:center;
-  gap:11px;
-  padding:10px 12px;
-  margin:1px 0;
+  gap:12px;
+  padding:12px 14px;
+  margin:2px 0;
   cursor:pointer;
-  color:rgba(255,255,255,.72);
-  font-size:13.5px;
+  color:rgba(255,255,255,.78);
+  font-size:15px;
   font-weight:600;
   border-radius:var(--r);
   transition:background var(--dur) var(--ease),color var(--dur) var(--ease);
@@ -218,37 +218,37 @@ a{color:inherit}
   border-radius:3px 0 0 3px;
   box-shadow:0 0 12px rgba(238,189,42,.5);
 }
-.nav-item .icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;filter:grayscale(.2)}
+.nav-item .icon{font-size:17px;width:22px;text-align:center;flex-shrink:0;filter:grayscale(.2)}
 .nav-item.active .icon{filter:none}
 .nav-badge{
   margin-right:auto;
   background:var(--accent);
   color:var(--accent-text);
-  font-size:10px;
-  padding:1px 7px;
+  font-size:11px;
+  padding:2px 8px;
   border-radius:var(--r-full);
-  font-weight:700;
+  font-weight:800;
 }
 .user-bar{
-  padding:14px 16px;
+  padding:16px 18px;
   border-top:1px solid rgba(255,255,255,.06);
   display:flex;
   align-items:center;
-  gap:11px;
+  gap:12px;
   background:rgba(0,0,0,.2);
 }
 .user-avatar{
-  width:38px;height:38px;
+  width:42px;height:42px;
   border-radius:50%;
   background:linear-gradient(135deg,var(--accent),var(--accent-dark));
   display:flex;align-items:center;justify-content:center;
   color:var(--accent-text);
-  font-weight:800;font-size:15px;
+  font-weight:800;font-size:17px;
   flex-shrink:0;
   box-shadow:0 2px 8px rgba(238,189,42,.35),inset 0 1px 0 rgba(255,255,255,.4);
 }
-.user-name{font-size:13px;color:rgba(255,255,255,.92);font-weight:700;line-height:1.25}
-.user-role{font-size:11px;color:rgba(255,255,255,.45);font-weight:500}
+.user-name{font-size:14px;color:rgba(255,255,255,.94);font-weight:700;line-height:1.25}
+.user-role{font-size:12px;color:rgba(255,255,255,.5);font-weight:500}
 /* ==========================================================
    TOPBAR
    ========================================================== */
@@ -256,38 +256,38 @@ a{color:inherit}
 .topbar{
   background:var(--bg-2);
   border-bottom:1px solid var(--border);
-  padding:0 28px;
-  height:62px;
+  padding:0 30px;
+  height:72px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   flex-shrink:0;
-  gap:16px;
+  gap:18px;
   backdrop-filter:saturate(140%);
 }
 .page-title{
-  font-size:19px;
+  font-size:23px;
   font-weight:800;
   flex-shrink:0;
   margin-left:12px;
-  letter-spacing:-.3px;
+  letter-spacing:-.5px;
   color:var(--text);
 }
-.topbar-actions{display:flex;gap:8px;align-items:center}
+.topbar-actions{display:flex;gap:10px;align-items:center}
 
 /* ==========================================================
    BUTTONS
    ========================================================== */
 .btn{
-  padding:8px 14px;
+  padding:10px 16px;
   border-radius:var(--r);
   border:1px solid transparent;
   cursor:pointer;
-  font-size:13px;
-  font-weight:600;
+  font-size:14.5px;
+  font-weight:700;
   display:inline-flex;
   align-items:center;
-  gap:6px;
+  gap:7px;
   transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease),transform var(--dur) var(--ease),color var(--dur) var(--ease);
   font-family:inherit;
   line-height:1.2;
@@ -317,7 +317,7 @@ a{color:inherit}
 }
 .btn-secondary:hover{background:var(--hover);border-color:var(--border-2)}
 
-.btn-sm{padding:6px 11px;font-size:12px;border-radius:var(--r-sm)}
+.btn-sm{padding:8px 13px;font-size:13.5px;border-radius:var(--r-sm)}
 
 .btn-danger{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-bg)}
 .btn-danger:hover{filter:brightness(.97);border-color:var(--danger)}
@@ -328,7 +328,23 @@ a{color:inherit}
 .btn-whatsapp{background:#25d366;color:#fff;border:none;box-shadow:var(--shadow-sm)}
 .btn-whatsapp:hover{background:#1ebe5b;box-shadow:var(--shadow)}
 
-.btn-icon{padding:7px 9px;font-size:14px}
+.btn-icon{padding:9px 11px;font-size:16px;line-height:1}
+
+.btn-search{
+  padding:10px 18px;
+  font-size:14.5px;
+  font-weight:700;
+  gap:9px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  color:var(--accent-text);
+  border:1px solid var(--accent);
+  box-shadow:var(--shadow-gold);
+  min-width:140px;
+  justify-content:center;
+}
+.btn-search:hover{filter:brightness(1.06);box-shadow:var(--shadow),var(--shadow-gold);transform:translateY(-1px)}
+.btn-search .search-ico{font-size:16px}
 
 .btn-closed{
   background:linear-gradient(135deg,var(--accent2),var(--accent-dark));
@@ -344,10 +360,11 @@ a{color:inherit}
   background:var(--bg-2);
   color:var(--text2);
   border:1px solid var(--border);
-  padding:7px 9px;
+  padding:9px 11px;
   border-radius:var(--r-sm);
   cursor:pointer;
-  font-size:14px;
+  font-size:16px;
+  line-height:1;
   transition:all var(--dur) var(--ease);
   box-shadow:var(--shadow-xs);
 }
@@ -1037,7 +1054,7 @@ td[onclick*="inlineEdit"]:hover .badge{box-shadow:0 0 0 2px var(--accent)}
   <div class="topbar">
     <div class="page-title" id="pageTitle">דאשבורד</div>
     <div class="topbar-actions">
-      <button class="btn btn-secondary btn-sm btn-icon" onclick="openGlobalSearch()" title="חיפוש">🔍</button>
+      <button class="btn btn-search" onclick="openGlobalSearch()" title="חיפוש (Ctrl+K)"><span class="search-ico">🔍</span> חיפוש</button>
       <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="החלף מצב תצוגה">🌙</button>
       <div style="position:relative"><button class="btn btn-secondary btn-sm btn-icon" onclick="toggleAgenda()" title="סדר יום" id="agendaBtn">🕐<span class="notif-badge" id="agendaBadge" style="display:none">0</span></button><div class="agenda-dropdown" id="agendaDropdown"></div></div>
       <div style="position:relative"><button class="btn btn-secondary btn-sm btn-icon" onclick="toggleNotifications()" title="התראות" id="notifBtn">🔔<span class="notif-badge" id="notifBadge" style="display:none">0</span></button><div class="notif-dropdown" id="notifDropdown"></div></div>
